@@ -2,6 +2,8 @@
 
 A simple go board web component built with [Joist](https://github.com/joist-framework/joist)
 
+[See It In Action](https://codepen.io/deebloo/full/WNwRBbb)
+
 ```html
 <go-board></go-board>
 
