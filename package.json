@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build --clean",
+    "test": "wtr src/**/*.spec.ts",
+    "test:watch": "wtr src/**/*.spec.ts --watch"
+  },
+  "dependencies": {
+    "@joist/component": "1.5.0",
+    "@joist/di": "1.5.0",
+    "@joist/router": "1.5.0",
+    "lit-html": "1.3.0",
+    "tslib": "2.0.1"
+  },
+  "devDependencies": {
+    "@open-wc/testing": "2.5.24",
+    "@web/dev-server-esbuild": "0.2.1",
+    "@web/test-runner": "0.7.6",
+    "rollup-plugin-terser": "7.0.0",
+    "snowpack": "2.9.0",
+    "typescript": "4.0.2"
+  }
+}
