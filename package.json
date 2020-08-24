@@ -1,4 +1,21 @@
 {
+  "name": "go-board",
+  "version": "1.0.0",
+  "description": "A Go Board web component",
+  "main": "build/__dist__/main.js",
+  "module": "build/__dist__/main.js",
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deebloo/joist.git"
+  },
+  "author": "deebloo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deebloo/joist/issues"
+  },
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build --clean",
@@ -8,7 +25,6 @@
   "dependencies": {
     "@joist/component": "1.5.0",
     "@joist/di": "1.5.0",
-    "@joist/router": "1.5.0",
     "lit-html": "1.3.0",
     "tslib": "2.0.1"
   },
@@ -16,7 +32,6 @@
     "@open-wc/testing": "2.5.24",
     "@web/dev-server-esbuild": "0.2.1",
     "@web/test-runner": "0.7.6",
-    "rollup-plugin-terser": "7.0.0",
     "snowpack": "2.9.0",
     "typescript": "4.0.2"
   }
