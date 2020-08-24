@@ -1,6 +1,6 @@
 # Go Board
 
-A simple go board web component
+A simple go board web component built with [Joist](https://github.com/joist-framework/joist)
 
 ```html
 <go-board></go-board>
