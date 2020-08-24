@@ -175,16 +175,16 @@ export class GoBoard extends JoistElement {
   private state!: State<GoBoardState>;
 
   @property()
-  public rows: number = 13;
+  public rows: number = 19;
 
   @property()
-  public cols: number = 13;
+  public cols: number = 19;
 
   @property()
   public currentPlayer: BoardSpace.Black | BoardSpace.White = BoardSpace.Black;
 
   onPropChanges(changes: PropChange[]) {
-    const keys = changes.map((c) => c.key);
+    const keys = changes.map((change) => change.key);
 
     if (keys.includes('rows') || keys.includes('cols')) {
       this.state.patchValue({ board: this.setupBoard() });

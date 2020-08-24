@@ -9,12 +9,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deebloo/joist.git"
+    "url": "git+https://github.com/deebloo/go-board.git"
   },
   "author": "deebloo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/deebloo/joist/issues"
+    "url": "https://github.com/deebloo/go-board/issues"
   },
   "scripts": {
     "start": "snowpack dev",
