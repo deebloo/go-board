@@ -15,9 +15,11 @@ export const enum BoardSpace {
   White = 'WHITE',
 }
 
+export type Player = BoardSpace.Black | BoardSpace.White;
+
 export interface GoBoardState {
   board: BoardSpace[][];
-  currentPlayer: BoardSpace.Black | BoardSpace.White;
+  currentPlayer: Player;
 }
 
 function determineRowClass(i: number, rowCount: number): string {
@@ -159,6 +161,7 @@ function determineSpaceClass(space: BoardSpace): string {
                     <button
                       class="piece"
                       @click=${run('space_clicked', [row, col])}
+                      @contextmenu=${run('right_click_stone', [row, col])}
                     ></button>
                   </div>
                 `;
@@ -181,7 +184,7 @@ export class GoBoard extends JoistElement {
   public cols: number = 19;
 
   @property()
-  public currentPlayer: BoardSpace.Black | BoardSpace.White = BoardSpace.Black;
+  public currentPlayer: Player = BoardSpace.Black;
 
   onPropChanges(changes: PropChange[]) {
     const keys = changes.map((change) => change.key);
@@ -204,10 +207,18 @@ export class GoBoard extends JoistElement {
     this.currentPlayer = this.decideCurrentPlayer(currentPlayer);
   }
 
-  makeMove(
-    player: BoardSpace.Black | BoardSpace.White,
-    [row, col]: [number, number]
-  ) {
+  @handle('right_click_stone')
+  async clearStone(e: Event, [row, col]: [number, number]) {
+    e.preventDefault();
+
+    const { board } = this.state.value;
+
+    board[row][col] = BoardSpace.Empty;
+
+    return this.state.patchValue({ board });
+  }
+
+  makeMove(player: Player, [row, col]: [number, number]) {
     const { board } = this.state.value;
 
     board[row][col] = player;
@@ -215,9 +226,7 @@ export class GoBoard extends JoistElement {
     return this.state.patchValue({ board });
   }
 
-  private decideCurrentPlayer(
-    currentPlayer: BoardSpace.Black | BoardSpace.White
-  ) {
+  private decideCurrentPlayer(currentPlayer: Player) {
     return currentPlayer === BoardSpace.Black
       ? BoardSpace.White
       : BoardSpace.Black;
