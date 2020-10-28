@@ -29,7 +29,7 @@
     "tslib": "2.0.3"
   },
   "devDependencies": {
-    "@open-wc/testing": "2.5.29",
+    "@open-wc/testing": "2.5.32",
     "@web/dev-server-esbuild": "0.2.5",
     "@web/test-runner": "0.9.3",
     "snowpack": "2.14.1",
