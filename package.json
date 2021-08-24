@@ -25,7 +25,7 @@
   "dependencies": {
     "@joist/component": "1.8.4",
     "@joist/di": "1.8.4",
-    "lit-html": "1.4.0",
+    "lit-html": "1.4.1",
     "tslib": "2.3.1"
   },
   "devDependencies": {
