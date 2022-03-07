@@ -23,7 +23,7 @@
     "test:watch": "wtr src/**/*.spec.ts --watch"
   },
   "dependencies": {
-    "@joist/component": "1.8.6",
+    "@joist/component": "1.8.10",
     "@joist/di": "1.8.6",
     "lit-html": "1.4.1",
     "tslib": "2.3.1"
