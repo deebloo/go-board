@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@open-wc/testing": "2.5.33",
-    "@web/dev-server-esbuild": "0.2.14",
+    "@web/dev-server-esbuild": "0.2.16",
     "@web/test-runner": "0.13.16",
     "snowpack": "3.8.6",
     "typescript": "4.3.4"
