@@ -1,0 +1,34 @@
+{
+  "name": "@integration/go-board",
+  "version": "2.0.0",
+  "sideEffects": false,
+  "private": true,
+  "description": "Go board",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deebloo/joist.git"
+  },
+  "keywords": [],
+  "author": "deebloo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deebloo/joist/issues"
+  },
+  "scripts": {
+    "start": "vite",
+    "test": "tsc -p tsconfig.spec.json && wtr \"target/spec/**/**.spec.js\" --node-resolve"
+  },
+  "dependencies": {
+    "@joist/di": "^2.0.0-alpha.16",
+    "@joist/observable": "^2.0.0-alpha.16",
+    "@joist/query": "^2.0.0-alpha.16",
+    "@joist/styled": "^2.0.0-alpha.16"
+  },
+  "devDependencies": {
+    "@open-wc/testing": "^3.1.2",
+    "@web/test-runner": "^0.13.27",
+    "rollup-plugin-minify-html-literals": "^1.2.6",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.1"
+  }
+}
