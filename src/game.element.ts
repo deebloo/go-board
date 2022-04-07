@@ -79,13 +79,15 @@ export class GoGameElement extends HTMLElement {
   findGroup(stone: GoStoneElement, stones: GoStoneElement[] = []) {
     const coords = this.parseCoords(stone.slot);
 
-    stones.push(stone);
+    if (!stones.includes(stone)) {
+      stones.push(stone);
+    }
 
     const up = this.querySelector<GoStoneElement>(
       `[slot="${coords.col}${Number(coords.row) - 1}"]`
     );
 
-    if (up && !stones.includes(up)) {
+    if (up && up.color === stone.color && !stones.includes(up)) {
       stones.push(up);
 
       this.findGroup(up, stones);
@@ -95,7 +97,7 @@ export class GoGameElement extends HTMLElement {
       `[slot="${coords.col}${Number(coords.row) + 1}"]`
     );
 
-    if (down && !stones.includes(down)) {
+    if (down && down.color === stone.color && !stones.includes(down)) {
       stones.push(down);
 
       this.findGroup(down, stones);
@@ -105,7 +107,7 @@ export class GoGameElement extends HTMLElement {
       `[slot="${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}"]`
     );
 
-    if (left && !stones.includes(left)) {
+    if (left && left.color === stone.color && !stones.includes(left)) {
       stones.push(left);
 
       this.findGroup(left, stones);
@@ -115,7 +117,7 @@ export class GoGameElement extends HTMLElement {
       `[slot="${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}"]`
     );
 
-    if (right && !stones.includes(right)) {
+    if (right && right.color === stone.color && !stones.includes(right)) {
       stones.push(right);
 
       this.findGroup(right, stones);
@@ -123,4 +125,6 @@ export class GoGameElement extends HTMLElement {
 
     return stones;
   }
+
+  // countLiberties(group: GoStoneElement[]): number {}
 }
