@@ -13,26 +13,35 @@ describe(GoGameElement.name, () => {
     const el = await fixture<GoGameElement>(html`
       <go-game>
         <go-board>
-          <go-stone slot="C17" color="black"></go-stone>
+          <go-stone slot="C18" color="white"></go-stone>
+          <go-stone slot="D18" color="white"></go-stone>
+          <go-stone slot="C17" color="white"></go-stone>
+
+          <go-stone slot="E18" color="black"></go-stone>
+          <go-stone slot="D17" color="black"></go-stone>
           <go-stone slot="D16" color="black"></go-stone>
           <go-stone slot="E16" color="black"></go-stone>
           <go-stone slot="F16" color="black"></go-stone>
           <go-stone slot="F15" color="black"></go-stone>
-          <go-stone slot="F14" color="black"></go-stone>
         </go-board>
       </go-game>
     `);
 
-    const group = el.findGroup(el.querySelector("[slot='D16']")!);
+    const blackGroup = el.findGroup(el.querySelector("[slot='E16']")!);
+    const whiteGroup = el.findGroup(el.querySelector("[slot='C18']")!);
 
-    expect(Array.from(group).map((s) => s.slot)).to.deep.equal([
-      "D16",
+    expect(Array.from(blackGroup).map((s) => s.slot)).to.deep.equal([
       "E16",
+      "D16",
+      "D17",
       "F16",
       "F15",
-      "F14",
+    ]);
+
+    expect(Array.from(whiteGroup).map((s) => s.slot)).to.deep.equal([
+      "C18",
+      "C17",
+      "D18",
     ]);
   });
-
-  it("should count liberties", () => {});
 });
