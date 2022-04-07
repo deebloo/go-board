@@ -66,6 +66,6 @@ Go Board WebComponent
 </go-game>
 ```
 
-## The produce the following board
+## Will produce the following board
 
 ![go board](images/board.png)
