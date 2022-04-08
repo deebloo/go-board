@@ -12,6 +12,18 @@ export class Debug {
 
   constructor(private config: Injected<GoConfig>) {}
 
+  group() {
+    if (this.config().debug) {
+      console.group();
+    }
+  }
+
+  groupEnd() {
+    if (this.config().debug) {
+      console.groupEnd();
+    }
+  }
+
   log(...args: any[]) {
     if (this.config().debug) {
       console.log("DEBUG:", ...args);

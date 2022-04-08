@@ -34,15 +34,21 @@ export class GoGameElement extends HTMLElement {
 
       this.debug().log("Adding Stone", stone);
 
-      this.board.appendChild(stone);
+      // find group for the new stone. Only append if it has liberties
+      if (this.findGroup(stone).liberties.length) {
+        this.board.appendChild(stone);
+      }
 
-      const orthonginal = this.findAttachedEnemyStones(stone);
+      // find all attached enemies
+      const enemies = this.findAttachedEnemyStones(stone);
 
-      this.debug().log("Enemy stones", orthonginal);
+      this.debug().log("Enemy stones", enemies);
 
-      orthonginal.forEach((stone) => {
+      // for each enemy stone check its group and liberties.
+      enemies.forEach((stone) => {
         const group = this.findGroup(stone);
 
+        // if a group has no liberties remove all of its stones
         if (!group.liberties.length) {
           group.stones.forEach((stone) => {
             this.board.removeChild(stone);
@@ -187,6 +193,7 @@ export class GoGameElement extends HTMLElement {
     const debug = this.debug();
     const stone = this.querySelector<GoStoneElement>(`[slot="${space}"]`);
 
+    debug.group();
     debug.log("orthogonal space:", space);
 
     if (!stone) {
@@ -200,5 +207,6 @@ export class GoGameElement extends HTMLElement {
     }
 
     debug.log("liberties:", liberties);
+    debug.groupEnd();
   }
 }
