@@ -158,19 +158,23 @@ export class GoGameElement extends HTMLElement {
       );
     }
 
-    // left
-    this.handleStone(
-      `${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}`,
-      stones,
-      liberties
-    );
+    if (alphabet.indexOf(coords.col) - 1 > -1) {
+      // left
+      this.handleStone(
+        `${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}`,
+        stones,
+        liberties
+      );
+    }
 
-    // right
-    this.handleStone(
-      `${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}`,
-      stones,
-      liberties
-    );
+    if (alphabet.indexOf(coords.col) + 1 < this.board.cols) {
+      // right
+      this.handleStone(
+        `${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}`,
+        stones,
+        liberties
+      );
+    }
 
     return { stones, liberties };
   }
