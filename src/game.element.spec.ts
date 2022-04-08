@@ -78,11 +78,16 @@ describe(GoGameElement.name, () => {
     const el = await fixture<GoGameElement>(html`
       <go-game>
         <go-board>
+          <go-stone slot="C18" color="white"></go-stone>
+          <go-stone slot="D18" color="white"></go-stone>
+          <go-stone slot="C17" color="white"></go-stone>
+
+          <go-stone slot="E18" color="black"></go-stone>
+          <go-stone slot="D17" color="black"></go-stone>
+          <go-stone slot="D16" color="black"></go-stone>
           <go-stone slot="E16" color="black"></go-stone>
           <go-stone slot="F16" color="black"></go-stone>
-          <go-stone slot="G16" color="black"></go-stone>
-          <go-stone slot="E17" color="black"></go-stone>
-          <go-stone slot="E18" color="black"></go-stone>
+          <go-stone slot="F15" color="black"></go-stone>
         </go-board>
       </go-game>
     `);
@@ -92,12 +97,21 @@ describe(GoGameElement.name, () => {
 
     expect(Array.from(blackGroup.stones).map((s) => s.slot)).to.deep.equal([
       "E16",
-      "E17",
-      "E18",
+      "D16",
+      "D17",
       "F16",
-      "G16",
+      "F15",
     ]);
 
-    expect(blackGroup.liberties.length).to.equal(11);
+    expect(blackGroup.liberties).to.deep.equal([
+      "E17",
+      "E15",
+      "D15",
+      "C16",
+      "F17",
+      "F14",
+      "G15",
+      "G16",
+    ]);
   });
 });

@@ -12,11 +12,11 @@
     <go-debug>
       <go-game>
         <go-board static="false">
-          <!-- <go-stone slot="C18" color="white"></go-stone>
+          <go-stone slot="C18" color="white"></go-stone>
           <go-stone slot="D18" color="white"></go-stone>
-          <go-stone slot="C17" color="white"></go-stone> -->
+          <go-stone slot="C17" color="white"></go-stone>
 
-          <!-- <go-stone slot="E18" color="black"></go-stone> -->
+          <go-stone slot="E18" color="black"></go-stone>
           <go-stone slot="D17" color="black"></go-stone>
           <go-stone slot="D16" color="black"></go-stone>
           <go-stone slot="E16" color="black"></go-stone>
@@ -27,13 +27,5 @@
     </go-debug>
 
     <script src="./src/register.ts" type="module"></script>
-
-    <script type="module">
-      const game = document.querySelector("go-game");
-
-      const group = game.findGroup(game.querySelector("[slot='D16']"));
-
-      console.log(group);
-    </script>
   </body>
 </html>

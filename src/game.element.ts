@@ -36,6 +36,20 @@ export class GoGameElement extends HTMLElement {
 
       this.board.appendChild(stone);
 
+      const orthonginal = this.findAttachedEnemyStones(stone);
+
+      this.debug().log("Enemy stones", orthonginal);
+
+      orthonginal.forEach((stone) => {
+        const group = this.findGroup(stone);
+
+        if (!group.liberties.length) {
+          group.stones.forEach((stone) => {
+            this.board.removeChild(stone);
+          });
+        }
+      });
+
       this.turn = this.turn === "black" ? "white" : "black";
       this.board.turn = this.turn;
     });
@@ -76,6 +90,45 @@ export class GoGameElement extends HTMLElement {
     };
   }
 
+  findAttachedEnemyStones(stone: GoStoneElement): GoStoneElement[] {
+    const coords = this.parseCoords(stone.slot);
+    const stones: GoStoneElement[] = [];
+
+    const up = this.querySelector<GoStoneElement>(
+      `[slot="${coords.col}${Number(coords.row) + 1}"]`
+    );
+
+    const down = this.querySelector<GoStoneElement>(
+      `[slot="${coords.col}${Number(coords.row) - 1}"]`
+    );
+
+    const left = this.querySelector<GoStoneElement>(
+      `[slot="${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}"]`
+    );
+
+    const right = this.querySelector<GoStoneElement>(
+      `[slot="${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}"]`
+    );
+
+    if (up) {
+      stones.push(up);
+    }
+
+    if (down) {
+      stones.push(down);
+    }
+
+    if (left) {
+      stones.push(left);
+    }
+
+    if (right) {
+      stones.push(right);
+    }
+
+    return stones;
+  }
+
   findGroup(
     stone: GoStoneElement,
     stones: GoStoneElement[] = [],
@@ -87,19 +140,23 @@ export class GoGameElement extends HTMLElement {
       stones.push(stone);
     }
 
-    // up
-    this.handleStone(
-      `${coords.col}${Number(coords.row) + 1}`,
-      stones,
-      liberties
-    );
+    if (!(Number(coords.row) + 1 > this.board.rows)) {
+      // up
+      this.handleStone(
+        `${coords.col}${Number(coords.row) + 1}`,
+        stones,
+        liberties
+      );
+    }
 
-    // down
-    this.handleStone(
-      `${coords.col}${Number(coords.row) - 1}`,
-      stones,
-      liberties
-    );
+    if (!(Number(coords.row) - 1 < 1)) {
+      // down
+      this.handleStone(
+        `${coords.col}${Number(coords.row) - 1}`,
+        stones,
+        liberties
+      );
+    }
 
     // left
     this.handleStone(
@@ -126,7 +183,7 @@ export class GoGameElement extends HTMLElement {
     const debug = this.debug();
     const stone = this.querySelector<GoStoneElement>(`[slot="${space}"]`);
 
-    debug.log("up space:", space);
+    debug.log("orthogonal space:", space);
 
     if (!stone) {
       if (!liberties.includes(space)) {
