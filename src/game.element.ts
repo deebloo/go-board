@@ -33,6 +33,7 @@ export class GoGameElement extends HTMLElement {
       stone.color = this.turn;
       stone.slot = evt.space;
 
+      debug.group();
       debug.log("Adding Stone:", stone);
 
       this.board.appendChild(stone);
@@ -54,16 +55,20 @@ export class GoGameElement extends HTMLElement {
         }
       });
 
+      // find added stones group
       const group = this.findGroup(stone);
 
       debug.log("Added stone group:", group);
 
+      // if the current group has no liberties remove it. not allowed
       if (!group.liberties.length) {
         this.board.removeChild(stone);
       } else {
         this.turn = this.turn === "black" ? "white" : "black";
         this.board.turn = this.turn;
       }
+
+      debug.groupEnd();
     });
 
     this.addEventListener("contextmenu", (e) => {
