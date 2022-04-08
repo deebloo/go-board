@@ -110,19 +110,19 @@ export class GoGameElement extends HTMLElement {
       `[slot="${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}"]`
     );
 
-    if (up) {
+    if (up && up.color !== stone.color) {
       stones.push(up);
     }
 
-    if (down) {
+    if (down && down.color !== stone.color) {
       stones.push(down);
     }
 
-    if (left) {
+    if (left && left.color !== stone.color) {
       stones.push(left);
     }
 
-    if (right) {
+    if (right && right.color !== stone.color) {
       stones.push(right);
     }
 
