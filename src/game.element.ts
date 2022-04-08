@@ -27,22 +27,20 @@ export class GoGameElement extends HTMLElement {
 
     this.addEventListener("goboard", (e) => {
       const evt = e as BoardEvent;
+      const debug = this.debug();
 
       const stone = new GoStoneElement();
       stone.color = this.turn;
       stone.slot = evt.space;
 
-      this.debug().log("Adding Stone", stone);
+      debug.log("Adding Stone:", stone);
 
-      // find group for the new stone. Only append if it has liberties
-      if (this.findGroup(stone).liberties.length) {
-        this.board.appendChild(stone);
-      }
+      this.board.appendChild(stone);
 
       // find all attached enemies
       const enemies = this.findAttachedEnemyStones(stone);
 
-      this.debug().log("Enemy stones", enemies);
+      debug.log("Enemy stones:", enemies);
 
       // for each enemy stone check its group and liberties.
       enemies.forEach((stone) => {
@@ -56,8 +54,16 @@ export class GoGameElement extends HTMLElement {
         }
       });
 
-      this.turn = this.turn === "black" ? "white" : "black";
-      this.board.turn = this.turn;
+      const group = this.findGroup(stone);
+
+      debug.log("Added stone group:", group);
+
+      if (!group.liberties.length) {
+        this.board.removeChild(stone);
+      } else {
+        this.turn = this.turn === "black" ? "white" : "black";
+        this.board.turn = this.turn;
+      }
     });
 
     this.addEventListener("contextmenu", (e) => {
@@ -193,9 +199,6 @@ export class GoGameElement extends HTMLElement {
     const debug = this.debug();
     const stone = this.querySelector<GoStoneElement>(`[slot="${space}"]`);
 
-    debug.group();
-    debug.log("orthogonal space:", space);
-
     if (!stone) {
       if (!liberties.includes(space)) {
         liberties.push(space);
@@ -205,8 +208,5 @@ export class GoGameElement extends HTMLElement {
 
       this.findGroup(stone, stones, liberties);
     }
-
-    debug.log("liberties:", liberties);
-    debug.groupEnd();
   }
 }
