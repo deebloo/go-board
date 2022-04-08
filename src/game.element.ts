@@ -201,7 +201,6 @@ export class GoGameElement extends HTMLElement {
     stones: GoStoneElement[],
     liberties: string[]
   ) {
-    const debug = this.debug();
     const stone = this.querySelector<GoStoneElement>(`[slot="${space}"]`);
 
     if (!stone) {
