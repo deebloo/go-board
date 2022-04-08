@@ -14,7 +14,7 @@ export class Debug {
 
   log(...args: any[]) {
     if (this.config().debug) {
-      console.log(...args);
+      console.log("DEBUG:", ...args);
     }
   }
 }

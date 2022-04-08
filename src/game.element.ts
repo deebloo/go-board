@@ -76,55 +76,68 @@ export class GoGameElement extends HTMLElement {
     };
   }
 
-  findGroup(stone: GoStoneElement, stones: GoStoneElement[] = []) {
+  findGroup(
+    stone: GoStoneElement,
+    stones: GoStoneElement[] = [],
+    liberties: string[] = []
+  ): { stones: GoStoneElement[]; liberties: string[] } {
     const coords = this.parseCoords(stone.slot);
 
     if (!stones.includes(stone)) {
       stones.push(stone);
     }
 
-    const up = this.querySelector<GoStoneElement>(
-      `[slot="${coords.col}${Number(coords.row) - 1}"]`
+    // up
+    this.handleStone(
+      `${coords.col}${Number(coords.row) + 1}`,
+      stones,
+      liberties
     );
 
-    if (up && up.color === stone.color && !stones.includes(up)) {
-      stones.push(up);
-
-      this.findGroup(up, stones);
-    }
-
-    const down = this.querySelector<GoStoneElement>(
-      `[slot="${coords.col}${Number(coords.row) + 1}"]`
+    // down
+    this.handleStone(
+      `${coords.col}${Number(coords.row) - 1}`,
+      stones,
+      liberties
     );
 
-    if (down && down.color === stone.color && !stones.includes(down)) {
-      stones.push(down);
-
-      this.findGroup(down, stones);
-    }
-
-    const left = this.querySelector<GoStoneElement>(
-      `[slot="${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}"]`
+    // left
+    this.handleStone(
+      `${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}`,
+      stones,
+      liberties
     );
 
-    if (left && left.color === stone.color && !stones.includes(left)) {
-      stones.push(left);
-
-      this.findGroup(left, stones);
-    }
-
-    const right = this.querySelector<GoStoneElement>(
-      `[slot="${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}"]`
+    // right
+    this.handleStone(
+      `${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}`,
+      stones,
+      liberties
     );
 
-    if (right && right.color === stone.color && !stones.includes(right)) {
-      stones.push(right);
-
-      this.findGroup(right, stones);
-    }
-
-    return stones;
+    return { stones, liberties };
   }
 
-  // countLiberties(group: GoStoneElement[]): number {}
+  private handleStone(
+    space: string,
+    stones: GoStoneElement[],
+    liberties: string[]
+  ) {
+    const debug = this.debug();
+    const stone = this.querySelector<GoStoneElement>(`[slot="${space}"]`);
+
+    debug.log("up space:", space);
+
+    if (!stone) {
+      if (!liberties.includes(space)) {
+        liberties.push(space);
+      }
+    } else if (stone.color === stones[0].color && !stones.includes(stone)) {
+      stones.push(stone);
+
+      this.findGroup(stone, stones, liberties);
+    }
+
+    debug.log("liberties:", liberties);
+  }
 }
