@@ -33,8 +33,7 @@ export class GoGameElement extends HTMLElement {
       stone.color = this.turn;
       stone.slot = evt.space;
 
-      debug.group();
-      debug.log("Adding Stone:", stone);
+      debug.group("Adding Stone:", stone);
 
       this.board.appendChild(stone);
 

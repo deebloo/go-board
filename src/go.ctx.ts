@@ -12,9 +12,9 @@ export class Debug {
 
   constructor(private config: Injected<GoConfig>) {}
 
-  group() {
+  group(...label: any[]) {
     if (this.config().debug) {
-      console.group();
+      console.group(...label);
     }
   }
 
