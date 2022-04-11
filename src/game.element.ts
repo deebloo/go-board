@@ -33,14 +33,14 @@ export class GoGameElement extends HTMLElement {
       stone.color = this.turn;
       stone.slot = evt.space;
 
-      debug.group("Adding Stone:", stone);
+      debug.group("Adding stone:", stone);
 
       this.board.appendChild(stone);
 
       // find all attached enemies
       const enemies = this.findAttachedEnemyStones(stone);
 
-      debug.log("Enemy stones:", enemies);
+      debug.log("Finding enemy stones:", enemies);
 
       // for each enemy stone check its group and liberties.
       enemies.forEach((stone) => {
@@ -48,6 +48,8 @@ export class GoGameElement extends HTMLElement {
 
         // if a group has no liberties remove all of its stones
         if (!group.liberties.length) {
+          debug.log(`Removing ${group.stones.length} stones`);
+
           group.stones.forEach((stone) => {
             this.board.removeChild(stone);
           });
@@ -57,7 +59,7 @@ export class GoGameElement extends HTMLElement {
       // find added stones group
       const group = this.findGroup(stone);
 
-      debug.log("Added stone group:", group);
+      debug.log("Stone part of following group:", group);
 
       // if the current group has no liberties remove it. not allowed
       if (!group.liberties.length) {

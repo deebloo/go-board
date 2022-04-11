@@ -17,8 +17,35 @@ template.innerHTML = /*html*/ `
 `;
 
 const num = attr({ read: Number });
-const alpha = Array.from(Array(26)).map((_, i) => i + 65);
-export const alphabet = alpha.map((x) => String.fromCharCode(x));
+export const alphabet = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
+
+console.log(alphabet);
 
 export class BoardEvent extends Event {
   constructor(public space: string) {
@@ -152,6 +179,7 @@ export class GoBoardElement extends HTMLElement {
   @observe @num rows: number = 19;
   @observe @num cols: number = 19;
   @observe @attr static = true;
+  @observe @attr coords = true;
   @observe @attr turn: StoneColor = "black";
 
   @query("#header") header!: HTMLDivElement;
@@ -195,8 +223,11 @@ export class GoBoardElement extends HTMLElement {
     this.shadowRoot!.appendChild(template.content.cloneNode(true));
 
     this.createBoard();
-    this.createRowNumbers();
-    this.createColumnLetters();
+
+    if (this.coords) {
+      this.createRowNumbers();
+      this.createColumnLetters();
+    }
   }
 
   private createBoard() {
