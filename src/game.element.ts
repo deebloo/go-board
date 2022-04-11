@@ -3,7 +3,7 @@ import { injectable } from "@joist/di/dom";
 import { attr, observable, observe } from "@joist/observable";
 import { query, queryAll } from "@joist/query";
 
-import { alphabet, BoardEvent, GoBoardElement } from "./board.element";
+import { columnLabels, BoardEvent, GoBoardElement } from "./board.element";
 import { Debug } from "./go.ctx";
 import { GoStoneElement, StoneColor } from "./stone.element";
 
@@ -121,11 +121,15 @@ export class GoGameElement extends HTMLElement {
     );
 
     const left = this.querySelector<GoStoneElement>(
-      `[slot="${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}"]`
+      `[slot="${columnLabels[columnLabels.indexOf(coords.col) - 1]}${
+        coords.row
+      }"]`
     );
 
     const right = this.querySelector<GoStoneElement>(
-      `[slot="${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}"]`
+      `[slot="${columnLabels[columnLabels.indexOf(coords.col) + 1]}${
+        coords.row
+      }"]`
     );
 
     if (up && up.color !== stone.color) {
@@ -176,19 +180,19 @@ export class GoGameElement extends HTMLElement {
       );
     }
 
-    if (alphabet.indexOf(coords.col) - 1 > -1) {
+    if (columnLabels.indexOf(coords.col) - 1 > -1) {
       // left
       this.handleStone(
-        `${alphabet[alphabet.indexOf(coords.col) - 1]}${coords.row}`,
+        `${columnLabels[columnLabels.indexOf(coords.col) - 1]}${coords.row}`,
         stones,
         liberties
       );
     }
 
-    if (alphabet.indexOf(coords.col) + 1 < this.board.cols) {
+    if (columnLabels.indexOf(coords.col) + 1 < this.board.cols) {
       // right
       this.handleStone(
-        `${alphabet[alphabet.indexOf(coords.col) + 1]}${coords.row}`,
+        `${columnLabels[columnLabels.indexOf(coords.col) + 1]}${coords.row}`,
         stones,
         liberties
       );
