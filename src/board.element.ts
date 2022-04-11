@@ -17,7 +17,7 @@ template.innerHTML = /*html*/ `
 `;
 
 const num = attr({ read: Number });
-export const alphabet = [
+export const columnLabels = [
   "A",
   "B",
   "C",
@@ -44,8 +44,6 @@ export const alphabet = [
   "Y",
   "Z",
 ];
-
-console.log(alphabet);
 
 export class BoardEvent extends Event {
   constructor(public space: string) {
@@ -255,7 +253,7 @@ export class GoBoardElement extends HTMLElement {
   private createColumnLetters() {
     for (let r = 0; r < this.rows; r++) {
       const col = document.createElement("div");
-      col.innerHTML = alphabet[r];
+      col.innerHTML = columnLabels[r];
 
       this.header.appendChild(col);
     }
@@ -263,7 +261,7 @@ export class GoBoardElement extends HTMLElement {
 
   private createSlot(r: number, c: number) {
     const slot = document.createElement("slot");
-    slot.name = `${alphabet[c]}${this.rows - r}`;
+    slot.name = `${columnLabels[c]}${this.rows - r}`;
 
     const btn = document.createElement("button");
     btn.id = slot.name;
