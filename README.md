@@ -6,7 +6,7 @@ Go Board WebComponent
 
 ```HTML
 <go-game>
-  <go-board id="board">
+  <go-board>
     <go-stone slot="P16" color="black"></go-stone>
     <go-stone slot="D16" color="white"></go-stone>
     <go-stone slot="P3" color="black"></go-stone>
