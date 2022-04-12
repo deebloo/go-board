@@ -1,13 +1,13 @@
-import { Injected } from "@joist/di";
-import { injectable } from "@joist/di/dom";
-import { css, styled } from "@joist/styled";
-import { observable, attr, observe } from "@joist/observable";
-import { query } from "@joist/query";
+import { Injected } from '@joist/di';
+import { injectable } from '@joist/di/dom';
+import { css, styled } from '@joist/styled';
+import { observable, attr, observe } from '@joist/observable';
+import { query } from '@joist/query';
 
-import { Debug, GoConfig } from "./go.ctx";
-import { StoneColor } from "./stone.element";
+import { Debug, GoConfig } from './go.ctx';
+import { StoneColor } from './stone.element';
 
-const template = document.createElement("template");
+const template = document.createElement('template');
 template.innerHTML = /*html*/ `
   <div id="header"></div>
 
@@ -18,36 +18,36 @@ template.innerHTML = /*html*/ `
 
 const num = attr({ read: Number });
 export const columnLabels = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
 ];
 
 export class BoardEvent extends Event {
   constructor(public space: string) {
-    super("goboard", { bubbles: true });
+    super('goboard', { bubbles: true });
   }
 }
 
@@ -60,7 +60,7 @@ export class GoBoardElement extends HTMLElement {
   static styles = [
     css`
       :host {
-        background: #dcb35c;
+        background: #caa472;
         display: inline-block;
         padding: 4rem;
         position: relative;
@@ -178,11 +178,11 @@ export class GoBoardElement extends HTMLElement {
   @observe @num cols: number = 19;
   @observe @attr static = true;
   @observe @attr coords = true;
-  @observe @attr turn: StoneColor = "black";
+  @observe @attr turn: StoneColor = 'black';
 
-  @query("#header") header!: HTMLDivElement;
-  @query("#container") container!: HTMLDivElement;
-  @query("#sidebar") sidebar!: HTMLDivElement;
+  @query('#header') header!: HTMLDivElement;
+  @query('#container') container!: HTMLDivElement;
+  @query('#sidebar') sidebar!: HTMLDivElement;
 
   constructor(
     private config: Injected<GoConfig>,
@@ -190,17 +190,17 @@ export class GoBoardElement extends HTMLElement {
   ) {
     super();
 
-    const root = this.attachShadow({ mode: "open" });
+    const root = this.attachShadow({ mode: 'open' });
 
-    root.addEventListener("click", (e) => {
+    root.addEventListener('click', (e) => {
       if (e.target instanceof HTMLButtonElement) {
         this.dispatchEvent(new BoardEvent(e.target.id));
       }
     });
 
-    root.addEventListener("drop", (evt) => {
+    root.addEventListener('drop', (evt) => {
       const e = evt as DragEvent;
-      const currentLocation = e.dataTransfer!.getData("stone");
+      const currentLocation = e.dataTransfer!.getData('stone');
 
       const btn = e.target as HTMLButtonElement;
       const stone = this.querySelector<HTMLSlotElement>(
@@ -230,8 +230,8 @@ export class GoBoardElement extends HTMLElement {
 
   private createBoard() {
     for (let r = 0; r < this.rows; r++) {
-      const row = document.createElement("div");
-      row.className = "row";
+      const row = document.createElement('div');
+      row.className = 'row';
 
       for (let c = 0; c < this.cols; c++) {
         row.appendChild(this.createSlot(r, c));
@@ -243,7 +243,7 @@ export class GoBoardElement extends HTMLElement {
 
   private createRowNumbers() {
     for (let r = 0; r < this.rows; r++) {
-      const row = document.createElement("div");
+      const row = document.createElement('div');
       row.innerHTML = (this.rows - r).toString();
 
       this.sidebar.appendChild(row);
@@ -252,7 +252,7 @@ export class GoBoardElement extends HTMLElement {
 
   private createColumnLetters() {
     for (let r = 0; r < this.rows; r++) {
-      const col = document.createElement("div");
+      const col = document.createElement('div');
       col.innerHTML = columnLabels[r];
 
       this.header.appendChild(col);
@@ -260,10 +260,10 @@ export class GoBoardElement extends HTMLElement {
   }
 
   private createSlot(r: number, c: number) {
-    const slot = document.createElement("slot");
+    const slot = document.createElement('slot');
     slot.name = `${columnLabels[c]}${this.rows - r}`;
 
-    const btn = document.createElement("button");
+    const btn = document.createElement('button');
     btn.id = slot.name;
 
     if (!this.static) {
@@ -271,7 +271,7 @@ export class GoBoardElement extends HTMLElement {
     }
 
     if (this.config().debug) {
-      btn.style.opacity = ".2";
+      btn.style.opacity = '.2';
     }
 
     slot.appendChild(btn);
