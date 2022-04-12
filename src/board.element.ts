@@ -202,6 +202,7 @@ export class GoBoardElement extends HTMLElement {
     root.addEventListener('drop', (evt) => {
       const e = evt as DragEvent;
       const currentLocation = e.dataTransfer!.getData('stone');
+      const debug = this.debug();
 
       const btn = e.target as HTMLButtonElement;
       const stone = this.querySelector<HTMLSlotElement>(
@@ -209,11 +210,11 @@ export class GoBoardElement extends HTMLElement {
       );
 
       if (stone) {
-        this.debug().log(`stone ${stone!.slot} moved to ${btn.id}`);
+        debug.log(`stone ${stone!.slot} moved to ${btn.id}`);
 
-        stone!.slot = btn.id;
+        stone.slot = btn.id;
       } else {
-        this.debug().log(`Could not find stone`);
+        debug.log(`Could not find stone`);
       }
     });
   }

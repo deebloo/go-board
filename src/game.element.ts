@@ -111,6 +111,7 @@ export class GoGameElement extends HTMLElement {
   findAttachedEnemyStones(stone: GoStoneElement): GoStoneElement[] {
     const coords = this.parseCoords(stone.slot);
     const stones: GoStoneElement[] = [];
+    const columns = this.board.columnLabels;
 
     const up = this.querySelector<GoStoneElement>(
       `[slot="${coords.col}${Number(coords.row) + 1}"]`
@@ -121,15 +122,11 @@ export class GoGameElement extends HTMLElement {
     );
 
     const left = this.querySelector<GoStoneElement>(
-      `[slot="${columnLabels[columnLabels.indexOf(coords.col) - 1]}${
-        coords.row
-      }"]`
+      `[slot="${columns[columns.indexOf(coords.col) - 1]}${coords.row}"]`
     );
 
     const right = this.querySelector<GoStoneElement>(
-      `[slot="${columnLabels[columnLabels.indexOf(coords.col) + 1]}${
-        coords.row
-      }"]`
+      `[slot="${columns[columns.indexOf(coords.col) + 1]}${coords.row}"]`
     );
 
     if (up && up.color !== stone.color) {
