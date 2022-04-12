@@ -111,7 +111,7 @@ export class GoGameElement extends HTMLElement {
   findAttachedEnemyStones(stone: GoStoneElement): GoStoneElement[] {
     const coords = this.parseCoords(stone.slot);
     const stones: GoStoneElement[] = [];
-    const columns = this.board.columnLabels;
+    const { columnLabels: columns } = this.board;
 
     const up = this.querySelector<GoStoneElement>(
       `[slot="${coords.col}${Number(coords.row) + 1}"]`
@@ -154,6 +154,7 @@ export class GoGameElement extends HTMLElement {
     liberties: string[] = []
   ): { stones: GoStoneElement[]; liberties: string[] } {
     const coords = this.parseCoords(stone.slot);
+    const { columnLabels } = this.board;
 
     if (!stones.includes(stone)) {
       stones.push(stone);
@@ -177,27 +178,19 @@ export class GoGameElement extends HTMLElement {
       );
     }
 
-    if (this.board.columnLabels.indexOf(coords.col) - 1 > -1) {
+    if (columnLabels.indexOf(coords.col) - 1 > -1) {
       // left
       this.handleStone(
-        `${
-          this.board.columnLabels[
-            this.board.columnLabels.indexOf(coords.col) - 1
-          ]
-        }${coords.row}`,
+        `${columnLabels[columnLabels.indexOf(coords.col) - 1]}${coords.row}`,
         stones,
         liberties
       );
     }
 
-    if (this.board.columnLabels.indexOf(coords.col) + 1 < this.board.cols) {
+    if (columnLabels.indexOf(coords.col) + 1 < this.board.cols) {
       // right
       this.handleStone(
-        `${
-          this.board.columnLabels[
-            this.board.columnLabels.indexOf(coords.col) + 1
-          ]
-        }${coords.row}`,
+        `${columnLabels[columnLabels.indexOf(coords.col) + 1]}${coords.row}`,
         stones,
         liberties
       );
