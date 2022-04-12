@@ -17,33 +17,6 @@ template.innerHTML = /*html*/ `
 `;
 
 const num = attr({ read: Number });
-export const columnLabels = [
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z',
-];
 
 export class BoardEvent extends Event {
   constructor(public space: string) {
@@ -180,6 +153,34 @@ export class GoBoardElement extends HTMLElement {
   @observe @attr coords = true;
   @observe @attr turn: StoneColor = 'black';
 
+  @observe @attr columnLabels = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
+
   @query('#header') header!: HTMLDivElement;
   @query('#container') container!: HTMLDivElement;
   @query('#sidebar') sidebar!: HTMLDivElement;
@@ -253,7 +254,7 @@ export class GoBoardElement extends HTMLElement {
   private createColumnLetters() {
     for (let r = 0; r < this.rows; r++) {
       const col = document.createElement('div');
-      col.innerHTML = columnLabels[r];
+      col.innerHTML = this.columnLabels[r];
 
       this.header.appendChild(col);
     }
@@ -261,7 +262,7 @@ export class GoBoardElement extends HTMLElement {
 
   private createSlot(r: number, c: number) {
     const slot = document.createElement('slot');
-    slot.name = `${columnLabels[c]}${this.rows - r}`;
+    slot.name = `${this.columnLabels[c]}${this.rows - r}`;
 
     const btn = document.createElement('button');
     btn.id = slot.name;
