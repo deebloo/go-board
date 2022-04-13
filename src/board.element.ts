@@ -216,8 +216,6 @@ export class GoBoardElement extends HTMLElement {
       const target = e.target as HTMLSlotElement;
 
       target.assignedElements().forEach((stone) => {
-        console.log(stone);
-
         if (stone instanceof GoStoneElement && !this.static) {
           stone.draggable = true;
         }
