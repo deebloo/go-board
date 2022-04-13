@@ -212,40 +212,9 @@ export class GoBoardElement extends HTMLElement {
 
     const root = this.attachShadow({ mode: "open" });
 
-    root.addEventListener("slotchange", (e) => {
-      const target = e.target as HTMLSlotElement;
-
-      target.assignedElements().forEach((stone) => {
-        if (stone instanceof GoStoneElement && !this.static) {
-          stone.draggable = true;
-        }
-      });
-    });
-
-    root.addEventListener("click", (e) => {
-      if (e.target instanceof HTMLButtonElement) {
-        this.dispatchEvent(new BoardEvent(e.target.id));
-      }
-    });
-
-    root.addEventListener("drop", (evt) => {
-      const e = evt as DragEvent;
-      const currentLocation = e.dataTransfer!.getData("stone");
-      const debug = this.debug();
-
-      const btn = e.target as HTMLButtonElement;
-      const stone = this.querySelector<HTMLSlotElement>(
-        `[slot="${currentLocation}"]`
-      );
-
-      if (stone) {
-        debug.log(`stone ${stone!.slot} moved to ${btn.id}`);
-
-        stone.slot = btn.id;
-      } else {
-        debug.log(`Could not find stone`);
-      }
-    });
+    root.addEventListener("slotchange", this.onSlotChange.bind(this));
+    root.addEventListener("click", this.onClick.bind(this));
+    root.addEventListener("drop", this.onDrop.bind(this));
   }
 
   connectedCallback() {
@@ -256,6 +225,41 @@ export class GoBoardElement extends HTMLElement {
     if (this.coords) {
       this.createRowNumbers();
       this.createColumnLetters();
+    }
+  }
+
+  private onSlotChange(e: Event) {
+    const target = e.target as HTMLSlotElement;
+
+    target.assignedElements().forEach((stone) => {
+      if (stone instanceof GoStoneElement && !this.static) {
+        stone.draggable = true;
+      }
+    });
+  }
+
+  private onClick(e: Event) {
+    if (e.target instanceof HTMLButtonElement) {
+      this.dispatchEvent(new BoardEvent(e.target.id));
+    }
+  }
+
+  private onDrop(evt: Event) {
+    const e = evt as DragEvent;
+    const currentLocation = e.dataTransfer!.getData("stone");
+    const debug = this.debug();
+
+    const btn = e.target as HTMLButtonElement;
+    const stone = this.querySelector<HTMLSlotElement>(
+      `[slot="${currentLocation}"]`
+    );
+
+    if (stone) {
+      debug.log(`stone ${stone!.slot} moved to ${btn.id}`);
+
+      stone.slot = btn.id;
+    } else {
+      debug.log(`Could not find stone`);
     }
   }
 
