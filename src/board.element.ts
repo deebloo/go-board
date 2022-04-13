@@ -115,8 +115,8 @@ export class GoBoardElement extends HTMLElement {
       .row slot button {
         position: absolute;
         transform: translate(-50%, -50%);
-        height: 47px;
-        width: 47px;
+        height: 48px;
+        width: 48px;
         display: flex;
         align-items: center;
         justify-content: center;
