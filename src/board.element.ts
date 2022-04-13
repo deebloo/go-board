@@ -117,7 +117,27 @@ export class GoBoardElement extends HTMLElement {
         transform: translate(-50%, -50%);
         height: 47px;
         width: 47px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
+
+      .row slot::slotted(go-stone:last-child)::after {
+        content: '';
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        border: solid 2px;
+      }
+
+      .row slot::slotted(go-stone[color="white"]:last-child)::after {
+        border-color: #000;
+      }
+
+      .row slot::slotted(go-stone[color="black"]:last-child)::after {
+        border-color: #fff;
+      }
+
 
       .row slot::slotted(go-stone) {
         cursor: grab;
