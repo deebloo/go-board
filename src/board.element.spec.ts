@@ -29,7 +29,10 @@ describe(GoBoardElement.name, () => {
       </go-board>
     `);
 
+    // should match for the same state
     expect(await board1.key()).to.deep.equal(await board1.key());
+
+    // should NOT match for different states
     expect(await board1.key()).to.not.deep.equal(await board2.key());
   });
 });
