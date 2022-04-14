@@ -226,6 +226,18 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
+  key(): Promise<Uint8Array> {
+    const stones = this.querySelectorAll<GoStoneElement>("go-stone");
+    const keyString = Array.from(stones).reduce(
+      (key, stone) => key + `${stone.slot}${stone.color}`,
+      ""
+    );
+
+    return crypto.subtle
+      .digest("SHA-256", new TextEncoder().encode(keyString))
+      .then((res) => new Uint8Array(res));
+  }
+
   private onSlotChange(e: Event) {
     const target = e.target as HTMLSlotElement;
 
