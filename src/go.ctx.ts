@@ -25,8 +25,14 @@ export class Debug {
   }
 
   log(...args: any[]) {
-    if (this.config().debug) {
+    this.eval(() => {
       console.log("DEBUG:", ...args);
+    });
+  }
+
+  eval(fn: () => void) {
+    if (this.config().debug) {
+      fn();
     }
   }
 }
