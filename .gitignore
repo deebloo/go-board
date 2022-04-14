@@ -1,3 +1,6 @@
 /node_modules
+/bundled
 /dist
 /target
+/src/**/*.js
+/src/**/*.d.ts

@@ -16,8 +16,6 @@ template.innerHTML = /*html*/ `
   <div id="sidebar"></div>
 `;
 
-const num = attr({ read: Number });
-
 export class BoardEvent extends Event {
   constructor(public space: string) {
     super("goboard", { bubbles: true });
@@ -166,8 +164,8 @@ export class GoBoardElement extends HTMLElement {
     `,
   ];
 
-  @observe @num rows: number = 19;
-  @observe @num cols: number = 19;
+  @observe @attr({ read: Number }) rows: number = 19;
+  @observe @attr({ read: Number }) cols: number = 19;
   @observe @attr static = true;
   @observe @attr coords = true;
   @observe @attr turn: StoneColor = "black";
@@ -248,7 +246,6 @@ export class GoBoardElement extends HTMLElement {
     const e = evt as DragEvent;
     const currentLocation = e.dataTransfer!.getData("stone");
     const debug = this.debug();
-
     const btn = e.target as HTMLButtonElement;
     const stone = this.querySelector<HTMLSlotElement>(
       `[slot="${currentLocation}"]`

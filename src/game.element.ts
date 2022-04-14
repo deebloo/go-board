@@ -73,7 +73,11 @@ export class GoGameElement extends HTMLElement {
     });
 
     this.addEventListener("contextmenu", (e) => {
-      if (e.target instanceof GoStoneElement && e.target.slot) {
+      if (
+        e.target instanceof GoStoneElement &&
+        e.target.slot &&
+        !this.board.static
+      ) {
         e.preventDefault();
 
         this.board.removeChild(e.target);

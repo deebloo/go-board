@@ -1,9 +1,12 @@
 import minifyHTML from "rollup-plugin-minify-html-literals";
 
-export default {
+import { defineConfig } from "vite";
+
+export default defineConfig({
   build: {
+    outDir: "bundled",
     lib: {
-      entry: "src/lib.ts",
+      entry: "src/register.ts",
       name: "Go",
       fileName: (format) => `go.${format}.js`,
     },
@@ -13,4 +16,4 @@ export default {
       plugins: [minifyHTML.default()],
     },
   },
-};
+});
