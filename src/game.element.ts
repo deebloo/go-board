@@ -25,52 +25,7 @@ export class GoGameElement extends HTMLElement {
   constructor(private debug: Injected<Debug>) {
     super();
 
-    this.addEventListener("goboard", (e) => {
-      const evt = e as BoardEvent;
-      const debug = this.debug();
-
-      const stone = new GoStoneElement();
-      stone.color = this.turn;
-      stone.slot = evt.space;
-
-      debug.group("Adding stone:", stone);
-
-      this.board.appendChild(stone);
-
-      // find all attached enemies
-      const enemies = this.findAttachedEnemyStones(stone);
-
-      debug.log("Finding enemy stones:", enemies);
-
-      // for each enemy stone check its group and liberties.
-      enemies.forEach((stone) => {
-        const group = this.findGroup(stone);
-
-        // if a group has no liberties remove all of its stones
-        if (!group.liberties.length) {
-          debug.log(`Removing ${group.stones.length} stones`);
-
-          group.stones.forEach((stone) => {
-            this.board.removeChild(stone);
-          });
-        }
-      });
-
-      // find added stones group
-      const group = this.findGroup(stone);
-
-      debug.log("Stone part of following group:", group);
-
-      // if the current group has no liberties remove it. not allowed
-      if (!group.liberties.length) {
-        this.board.removeChild(stone);
-      } else {
-        this.turn = this.turn === "black" ? "white" : "black";
-        this.board.turn = this.turn;
-      }
-
-      debug.groupEnd();
-    });
+    this.addEventListener("goboard", this.onGoBoardEvent.bind(this));
 
     this.addEventListener("contextmenu", (e) => {
       if (
@@ -219,5 +174,52 @@ export class GoGameElement extends HTMLElement {
 
       this.findGroup(stone, stones, liberties);
     }
+  }
+
+  private onGoBoardEvent(e: Event) {
+    const evt = e as BoardEvent;
+    const debug = this.debug();
+
+    const stone = new GoStoneElement();
+    stone.color = this.turn;
+    stone.slot = evt.space;
+
+    debug.group("Adding stone:", stone);
+
+    this.board.appendChild(stone);
+
+    // find all attached enemies
+    const enemies = this.findAttachedEnemyStones(stone);
+
+    debug.log("Finding enemy stones:", enemies);
+
+    // for each enemy stone check its group and liberties.
+    enemies.forEach((stone) => {
+      const group = this.findGroup(stone);
+
+      // if a group has no liberties remove all of its stones
+      if (!group.liberties.length) {
+        debug.log(`Removing ${group.stones.length} stones`);
+
+        group.stones.forEach((stone) => {
+          this.board.removeChild(stone);
+        });
+      }
+    });
+
+    // find added stones group
+    const group = this.findGroup(stone);
+
+    debug.log("Stone part of following group:", group);
+
+    // if the current group has no liberties remove it. not allowed
+    if (!group.liberties.length) {
+      this.board.removeChild(stone);
+    } else {
+      this.turn = this.turn === "black" ? "white" : "black";
+      this.board.turn = this.turn;
+    }
+
+    debug.groupEnd();
   }
 }

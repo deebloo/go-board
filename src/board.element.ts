@@ -4,7 +4,7 @@ import { css, styled } from "@joist/styled";
 import { observable, attr, observe } from "@joist/observable";
 import { query } from "@joist/query";
 
-import { Debug, GoConfig } from "./go.ctx";
+import { Debug } from "./go.ctx";
 import { GoStoneElement, StoneColor } from "./stone.element";
 
 const template = document.createElement("template");
@@ -26,7 +26,7 @@ export class BoardEvent extends Event {
 @styled
 @injectable
 export class GoBoardElement extends HTMLElement {
-  static inject = [GoConfig, Debug];
+  static inject = [Debug];
 
   static styles = [
     css`
@@ -120,6 +120,21 @@ export class GoBoardElement extends HTMLElement {
         justify-content: center;
       }
 
+      .row slot::slotted(go-stone) {
+        z-index: 1000;
+      }
+
+      .row slot.starpoint:after {
+        content: "";
+        display: block;
+        height: 10px;
+        width: 10px;
+        background: #000;
+        border-radius: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+      }
+
       .row slot::slotted(go-stone:last-child)::after {
         content: "";
         height: 25px;
@@ -202,10 +217,7 @@ export class GoBoardElement extends HTMLElement {
   @query("#container") container!: HTMLDivElement;
   @query("#sidebar") sidebar!: HTMLDivElement;
 
-  constructor(
-    private config: Injected<GoConfig>,
-    private debug: Injected<Debug>
-  ) {
+  constructor(private debug: Injected<Debug>) {
     super();
 
     const root = this.attachShadow({ mode: "open" });
@@ -304,8 +316,19 @@ export class GoBoardElement extends HTMLElement {
   }
 
   private createSlot(r: number, c: number) {
+    const debug = this.debug();
+
     const slot = document.createElement("slot");
     slot.name = `${this.columnLabels[c]}${this.rows - r}`;
+
+    const spacing = Math.floor(this.rows / 3);
+    const start = Math.floor(this.rows / 4) - 1;
+
+    const spaces = [start, start + spacing, start + spacing * 2];
+
+    if (spaces.includes(r) && spaces.includes(c)) {
+      slot.classList.add("starpoint");
+    }
 
     const btn = document.createElement("button");
     btn.id = slot.name;
@@ -314,9 +337,9 @@ export class GoBoardElement extends HTMLElement {
       btn.ondragover = (e) => e.preventDefault();
     }
 
-    if (this.config().debug) {
+    debug.eval(() => {
       btn.style.opacity = ".2";
-    }
+    });
 
     slot.appendChild(btn);
 
