@@ -59,23 +59,9 @@ export class GoGameElement extends HTMLElement {
     };
   }
 
-  findAttachedEnemyStones(stone: GoStoneElement): GoStoneElement[] {
-    const surroundingSpaces = this.findSurroundingSpaces(stone);
-    const stones: GoStoneElement[] = [];
-
-    for (let i = 0; i < surroundingSpaces.length; i++) {
-      const { row, col } = surroundingSpaces[i];
-      const slot = `${this.board.columnLabels[col]}${row}`;
-      const nextStone = this.querySelector<GoStoneElement>(`[slot="${slot}"]`);
-
-      if (nextStone && nextStone.color !== stone.color) {
-        stones.push(nextStone);
-      }
-    }
-
-    return stones;
-  }
-
+  /**
+   * Find all of the stones that are a part of a given stones group
+   */
   findGroup(
     stone: GoStoneElement,
     state: GroupState = new GroupState()
@@ -124,6 +110,27 @@ export class GoGameElement extends HTMLElement {
 
       return rowIsValid && colIsValid;
     });
+  }
+
+  /**
+   * Find all enemy stones that are orthogonally connected to a given stone
+   */
+  findAttachedEnemyStones(stone: GoStoneElement): GoStoneElement[] {
+    const surroundingSpaces = this.findSurroundingSpaces(stone);
+    const stones: GoStoneElement[] = [];
+
+    for (let i = 0; i < surroundingSpaces.length; i++) {
+      const { row, col } = surroundingSpaces[i];
+      const next = this.querySelector<GoStoneElement>(
+        `[slot="${this.board.columnLabels[col]}${row}"]`
+      );
+
+      if (next && next.color !== stone.color) {
+        stones.push(next);
+      }
+    }
+
+    return stones;
   }
 
   private onGoBoardEvent(e: Event) {
