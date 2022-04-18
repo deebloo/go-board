@@ -7,9 +7,9 @@ import { BoardEvent, GoBoardElement } from "./board.element";
 import { Debug } from "./go.ctx";
 import { GoStoneElement, StoneColor } from "./stone.element";
 
-interface GroupState {
-  stones: Set<GoStoneElement>;
-  liberties: Set<string>;
+class GroupState {
+  stones = new Set<GoStoneElement>();
+  liberties = new Set<string>();
 }
 
 @observable
@@ -91,7 +91,7 @@ export class GoGameElement extends HTMLElement {
 
   findGroup(
     stone: GoStoneElement,
-    state: GroupState = { stones: new Set(), liberties: new Set() }
+    state: GroupState = new GroupState()
   ): GroupState {
     const coords = this.parseCoords(stone.slot);
     const { columnLabels } = this.board;
