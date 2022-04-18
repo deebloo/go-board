@@ -35,6 +35,7 @@ export class GoBoardElement extends HTMLElement {
         display: inline-block;
         padding: 4rem;
         position: relative;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
       }
 
       * {
@@ -241,7 +242,7 @@ export class GoBoardElement extends HTMLElement {
   key(): Promise<Uint8Array> {
     const stones = this.querySelectorAll<GoStoneElement>("go-stone");
     const keyString = Array.from(stones).reduce(
-      (key, stone) => key + `${stone.slot}${stone.color}`,
+      (key, { slot, color }) => `${key}${slot}${color}`,
       ""
     );
 
@@ -253,11 +254,13 @@ export class GoBoardElement extends HTMLElement {
   private onSlotChange(e: Event) {
     const target = e.target as HTMLSlotElement;
 
-    target.assignedElements().forEach((stone) => {
-      if (stone instanceof GoStoneElement && !this.static) {
-        stone.draggable = true;
-      }
-    });
+    if (!this.static) {
+      target.assignedElements().forEach((stone) => {
+        if (stone instanceof GoStoneElement) {
+          stone.draggable = true;
+        }
+      });
+    }
   }
 
   private onClick(e: Event) {
