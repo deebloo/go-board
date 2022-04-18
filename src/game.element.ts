@@ -110,13 +110,10 @@ export class GoGameElement extends HTMLElement {
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
       const { row, col } = surroundingSpaces[i];
+      const rowIsValid = row <= this.board.rows && row >= 0;
+      const constIsValid = col > -1 && col < this.board.cols;
 
-      if (
-        row <= this.board.rows &&
-        row >= 0 &&
-        col > -1 &&
-        col < this.board.cols
-      ) {
+      if (rowIsValid && constIsValid) {
         const slot = `${columnLabels[col]}${row}`;
         const nextStone = this.querySelector<GoStoneElement>(
           `[slot="${slot}"]`
