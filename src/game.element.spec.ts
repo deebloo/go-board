@@ -25,7 +25,7 @@ describe(GoGameElement.name, () => {
       "E16",
     ]);
 
-    expect(blackGroup.liberties.length).to.equal(4);
+    expect(blackGroup.liberties.size).to.equal(4);
   });
 
   it("should have 8 liberties for column", async () => {
@@ -48,7 +48,7 @@ describe(GoGameElement.name, () => {
       "E14",
     ]);
 
-    expect(blackGroup.liberties.length).to.equal(8);
+    expect(blackGroup.liberties.size).to.equal(8);
   });
 
   it("should have 8 liberties for row", async () => {
@@ -71,7 +71,7 @@ describe(GoGameElement.name, () => {
       "G16",
     ]);
 
-    expect(blackGroup.liberties.length).to.equal(8);
+    expect(blackGroup.liberties.size).to.equal(8);
   });
 
   it("should could 11 liberties for row and col", async () => {
@@ -103,7 +103,7 @@ describe(GoGameElement.name, () => {
       "F15",
     ]);
 
-    expect(blackGroup.liberties).to.deep.equal([
+    expect(Array.from(blackGroup.liberties)).to.deep.equal([
       "E17",
       "E15",
       "D15",
