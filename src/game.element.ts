@@ -60,30 +60,24 @@ export class GoGameElement extends HTMLElement {
   }
 
   findAttachedEnemyStones(stone: GoStoneElement): GoStoneElement[] {
-    const coords = this.parseCoords(stone.slot);
+    const surroundingSpaces = this.findSurroundingSpaces(stone);
     const stones: GoStoneElement[] = [];
-    const columnIndex = this.board.columnLabels.indexOf(coords.col);
-    const row = Number(coords.row);
 
-    const up = this.querySlot(coords.col, row + 1);
-    const down = this.querySlot(coords.col, row - 1);
-    const left = this.querySlot(this.board.columnLabels[columnIndex - 1], row);
-    const right = this.querySlot(this.board.columnLabels[columnIndex + 1], row);
+    for (let i = 0; i < surroundingSpaces.length; i++) {
+      const { row, col } = surroundingSpaces[i];
+      const rowIsValid = row <= this.board.rows && row >= 0;
+      const constIsValid = col > -1 && col < this.board.cols;
 
-    if (up && up.color !== stone.color) {
-      stones.push(up);
-    }
+      if (rowIsValid && constIsValid) {
+        const slot = `${this.board.columnLabels[col]}${row}`;
+        const nextStone = this.querySelector<GoStoneElement>(
+          `[slot="${slot}"]`
+        );
 
-    if (down && down.color !== stone.color) {
-      stones.push(down);
-    }
-
-    if (left && left.color !== stone.color) {
-      stones.push(left);
-    }
-
-    if (right && right.color !== stone.color) {
-      stones.push(right);
+        if (nextStone && nextStone.color !== stone.color) {
+          stones.push(nextStone);
+        }
+      }
     }
 
     return stones;
@@ -93,20 +87,11 @@ export class GoGameElement extends HTMLElement {
     stone: GoStoneElement,
     state: GroupState = new GroupState()
   ): GroupState {
-    const coords = this.parseCoords(stone.slot);
     const { columnLabels } = this.board;
 
     state.stones.add(stone);
 
-    const row = Number(coords.row);
-    const col = columnLabels.indexOf(coords.col);
-
-    const surroundingSpaces = [
-      { row: row + 1, col },
-      { row: row - 1, col },
-      { row: row, col: col - 1 },
-      { row: row, col: col + 1 },
-    ];
+    const surroundingSpaces = this.findSurroundingSpaces(stone);
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
       const { row, col } = surroundingSpaces[i];
@@ -196,7 +181,17 @@ export class GoGameElement extends HTMLElement {
     }
   }
 
-  private querySlot(col: string, row: number) {
-    return this.querySelector<GoStoneElement>(`[slot="${col}${row}"]`);
+  private findSurroundingSpaces(stone: GoStoneElement) {
+    const coords = this.parseCoords(stone.slot);
+
+    const row = Number(coords.row);
+    const col = this.board.columnLabels.indexOf(coords.col);
+
+    return [
+      { row: row + 1, col },
+      { row: row - 1, col },
+      { row: row, col: col - 1 },
+      { row: row, col: col + 1 },
+    ];
   }
 }
