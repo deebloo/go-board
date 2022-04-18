@@ -98,32 +98,33 @@ export class GoGameElement extends HTMLElement {
 
     state.stones.add(stone);
 
-    if (!(Number(coords.row) + 1 > this.board.rows)) {
-      // up
-      this.handleStone(stone, `${coords.col}${Number(coords.row) + 1}`, state);
+    // UP
+    const upRow = Number(coords.row) + 1;
+
+    if (!(upRow > this.board.rows)) {
+      this.handleStone(stone, `${coords.col}${upRow}`, state);
     }
 
-    if (!(Number(coords.row) - 1 < 1)) {
-      // down
-      this.handleStone(stone, `${coords.col}${Number(coords.row) - 1}`, state);
+    // DOWN
+    const downRow = Number(coords.row) - 1;
+
+    if (!(downRow < 1)) {
+      this.handleStone(stone, `${coords.col}${downRow}`, state);
     }
 
-    if (columnLabels.indexOf(coords.col) - 1 > -1) {
-      // left
-      this.handleStone(
-        stone,
-        `${columnLabels[columnLabels.indexOf(coords.col) - 1]}${coords.row}`,
-        state
-      );
+    // LEFT
+    const leftCol = columnLabels.indexOf(coords.col) - 1;
+
+    if (leftCol > -1) {
+      this.handleStone(stone, `${columnLabels[leftCol]}${coords.row}`, state);
     }
 
-    if (columnLabels.indexOf(coords.col) + 1 < this.board.cols) {
+    // RIGHT
+    const rightCol = columnLabels.indexOf(coords.col) + 1;
+
+    if (rightCol < this.board.cols) {
       // right
-      this.handleStone(
-        stone,
-        `${columnLabels[columnLabels.indexOf(coords.col) + 1]}${coords.row}`,
-        state
-      );
+      this.handleStone(stone, `${columnLabels[rightCol]}${coords.row}`, state);
     }
 
     return state;
