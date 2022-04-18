@@ -108,7 +108,9 @@ export class GoGameElement extends HTMLElement {
       { row: row, col: col + 1 },
     ];
 
-    surroundingSpaces.forEach(({ row, col }) => {
+    for (let i = 0; i < surroundingSpaces.length; i++) {
+      const { row, col } = surroundingSpaces[i];
+
       if (
         row <= this.board.rows &&
         row >= 0 &&
@@ -131,7 +133,7 @@ export class GoGameElement extends HTMLElement {
           this.findGroup(nextStone, state);
         }
       }
-    });
+    }
 
     return state;
   }
