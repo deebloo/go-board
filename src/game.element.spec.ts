@@ -19,13 +19,17 @@ describe(GoGameElement.name, () => {
     `);
 
     const blackGroup = el.findGroup(el.querySelector("[slot='E16']")!);
-    // const whiteGroup = el.findGroup(el.querySelector("[slot='C18']")!);
 
     expect(Array.from(blackGroup.stones).map((s) => s.slot)).to.deep.equal([
       "E16",
     ]);
 
-    expect(blackGroup.liberties.size).to.equal(4);
+    expect(Array.from(blackGroup.liberties)).to.deep.equal([
+      "E17",
+      "E15",
+      "D16",
+      "F16",
+    ]);
   });
 
   it("should have 8 liberties for column", async () => {

@@ -98,51 +98,42 @@ export class GoGameElement extends HTMLElement {
 
     state.stones.add(stone);
 
-    // UP
-    const upRow = Number(coords.row) + 1;
+    const row = Number(coords.row);
+    const col = columnLabels.indexOf(coords.col);
 
-    if (!(upRow > this.board.rows)) {
-      this.handleStone(stone, `${coords.col}${upRow}`, state);
-    }
+    const surroundingSpaces = [
+      { row: row + 1, col },
+      { row: row - 1, col },
+      { row: row, col: col - 1 },
+      { row: row, col: col + 1 },
+    ];
 
-    // DOWN
-    const downRow = Number(coords.row) - 1;
+    surroundingSpaces.forEach(({ row, col }) => {
+      if (
+        row <= this.board.rows &&
+        row >= 0 &&
+        col > -1 &&
+        col < this.board.cols
+      ) {
+        const slot = `${columnLabels[col]}${row}`;
+        const nextStone = this.querySelector<GoStoneElement>(
+          `[slot="${slot}"]`
+        );
 
-    if (!(downRow < 1)) {
-      this.handleStone(stone, `${coords.col}${downRow}`, state);
-    }
+        if (!nextStone) {
+          state.liberties.add(slot);
+        } else if (
+          nextStone.color === stone.color &&
+          !state.stones.has(nextStone)
+        ) {
+          state.stones.add(nextStone);
 
-    // LEFT
-    const leftCol = columnLabels.indexOf(coords.col) - 1;
-
-    if (leftCol > -1) {
-      this.handleStone(stone, `${columnLabels[leftCol]}${coords.row}`, state);
-    }
-
-    // RIGHT
-    const rightCol = columnLabels.indexOf(coords.col) + 1;
-
-    if (rightCol < this.board.cols) {
-      // right
-      this.handleStone(stone, `${columnLabels[rightCol]}${coords.row}`, state);
-    }
+          this.findGroup(nextStone, state);
+        }
+      }
+    });
 
     return state;
-  }
-
-  private handleStone(stone: GoStoneElement, space: string, state: GroupState) {
-    const nextStone = this.querySelector<GoStoneElement>(`[slot="${space}"]`);
-
-    if (!nextStone) {
-      state.liberties.add(space);
-    } else if (
-      nextStone.color === stone.color &&
-      !state.stones.has(nextStone)
-    ) {
-      state.stones.add(nextStone);
-
-      this.findGroup(nextStone, state);
-    }
   }
 
   private onGoBoardEvent(e: Event) {
