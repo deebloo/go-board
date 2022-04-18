@@ -143,7 +143,7 @@ export class GoGameElement extends HTMLElement {
 
       // if a group has no liberties remove all of its stones
       if (!group.liberties.size) {
-        debug.log(`Removing ${group.stones.size} stones`);
+        debug.log("Removing Stones:\n", ...group.stones);
 
         group.stones.forEach((stone) => {
           this.board.removeChild(stone);
