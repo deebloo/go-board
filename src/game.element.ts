@@ -65,18 +65,11 @@ export class GoGameElement extends HTMLElement {
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
       const { row, col } = surroundingSpaces[i];
-      const rowIsValid = row <= this.board.rows && row >= 0;
-      const constIsValid = col > -1 && col < this.board.cols;
+      const slot = `${this.board.columnLabels[col]}${row}`;
+      const nextStone = this.querySelector<GoStoneElement>(`[slot="${slot}"]`);
 
-      if (rowIsValid && constIsValid) {
-        const slot = `${this.board.columnLabels[col]}${row}`;
-        const nextStone = this.querySelector<GoStoneElement>(
-          `[slot="${slot}"]`
-        );
-
-        if (nextStone && nextStone.color !== stone.color) {
-          stones.push(nextStone);
-        }
+      if (nextStone && nextStone.color !== stone.color) {
+        stones.push(nextStone);
       }
     }
 
@@ -95,29 +88,42 @@ export class GoGameElement extends HTMLElement {
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
       const { row, col } = surroundingSpaces[i];
-      const rowIsValid = row <= this.board.rows && row >= 0;
-      const constIsValid = col > -1 && col < this.board.cols;
 
-      if (rowIsValid && constIsValid) {
-        const slot = `${columnLabels[col]}${row}`;
-        const nextStone = this.querySelector<GoStoneElement>(
-          `[slot="${slot}"]`
-        );
+      const slot = columnLabels[col] + row;
+      const next = this.querySelector<GoStoneElement>(`[slot="${slot}"]`);
 
-        if (!nextStone) {
-          state.liberties.add(slot);
-        } else if (
-          nextStone.color === stone.color &&
-          !state.stones.has(nextStone)
-        ) {
-          state.stones.add(nextStone);
+      if (!next) {
+        state.liberties.add(slot);
+      } else if (next.color === stone.color && !state.stones.has(next)) {
+        state.stones.add(next);
 
-          this.findGroup(nextStone, state);
-        }
+        this.findGroup(next, state);
       }
     }
 
     return state;
+  }
+
+  /**
+   * Find all orthogonally connected spaces.
+   */
+  findSurroundingSpaces(stone: GoStoneElement) {
+    const coords = this.parseCoords(stone.slot);
+
+    const row = Number(coords.row);
+    const col = this.board.columnLabels.indexOf(coords.col);
+
+    return [
+      { row: row + 1, col },
+      { row: row - 1, col },
+      { row: row, col: col - 1 },
+      { row: row, col: col + 1 },
+    ].filter(({ row, col }) => {
+      const rowIsValid = row <= this.board.rows && row >= 0;
+      const colIsValid = col > -1 && col < this.board.cols;
+
+      return rowIsValid && colIsValid;
+    });
   }
 
   private onGoBoardEvent(e: Event) {
@@ -179,19 +185,5 @@ export class GoGameElement extends HTMLElement {
 
       this.debug().log("Stone removed: ", e.target);
     }
-  }
-
-  private findSurroundingSpaces(stone: GoStoneElement) {
-    const coords = this.parseCoords(stone.slot);
-
-    const row = Number(coords.row);
-    const col = this.board.columnLabels.indexOf(coords.col);
-
-    return [
-      { row: row + 1, col },
-      { row: row - 1, col },
-      { row: row, col: col - 1 },
-      { row: row, col: col + 1 },
-    ];
   }
 }
