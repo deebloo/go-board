@@ -35,8 +35,7 @@
     "build:bundle": "vite build",
     "test": "run-s test:*",
     "test:build": "tsc -p tsconfig.spec.json",
-    "test:wtr": "wtr \"target/spec/**/**.spec.js\" --node-resolve",
-    "cypress:open": "cypress open"
+    "test:wtr": "wtr \"target/spec/**/**.spec.js\" --node-resolve"
   },
   "dependencies": {
     "@joist/di": "^2.0.0-alpha.16",

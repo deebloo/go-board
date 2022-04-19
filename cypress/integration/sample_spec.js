@@ -1,6 +1,6 @@
 describe("My First Test", () => {
   it("Does not do much!", () => {
-    cy.visit("http://localhost:3000");
+    cy.visit("http://localhost:3000/integration.html");
 
     const moves = [
       "D16",
