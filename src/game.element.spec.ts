@@ -44,7 +44,6 @@ describe(GoGameElement.name, () => {
     `);
 
     const blackGroup = el.findGroup(el.querySelector("[slot='E16']")!);
-    // const whiteGroup = el.findGroup(el.querySelector("[slot='C18']")!);
 
     expect(Array.from(blackGroup.stones).map((s) => s.slot)).to.deep.equal([
       "E16",
@@ -67,7 +66,6 @@ describe(GoGameElement.name, () => {
     `);
 
     const blackGroup = el.findGroup(el.querySelector("[slot='E16']")!);
-    // const whiteGroup = el.findGroup(el.querySelector("[slot='C18']")!);
 
     expect(Array.from(blackGroup.stones).map((s) => s.slot)).to.deep.equal([
       "E16",
