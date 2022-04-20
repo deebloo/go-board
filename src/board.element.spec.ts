@@ -1,6 +1,7 @@
 import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element";
+import { Debug, GoConfig } from "./go.ctx";
 import { GoStoneElement } from "./stone.element";
 
 customElements.define("go-board", GoBoardElement);
@@ -34,5 +35,13 @@ describe(GoBoardElement.name, () => {
 
     // should NOT match for different states
     expect(await board1.key()).to.not.deep.equal(await board2.key());
+  });
+
+  it("should throw an error if board size is greater then 19", () => {
+    const board = new GoBoardElement(() => new Debug(() => new GoConfig()));
+    board.rows = 20;
+    board.cols = 19;
+
+    expect(board.connectedCallback.bind(this)).to.throw();
   });
 });

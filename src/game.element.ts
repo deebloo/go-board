@@ -63,7 +63,7 @@ export class GoGameElement extends HTMLElement {
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
       const slot = surroundingSpaces[i];
-      const next = this.querySelector<GoStoneElement>(`[slot="${slot}"]`);
+      const next = this.querySpace(slot);
 
       if (!next) {
         state.liberties.add(slot);
@@ -109,8 +109,7 @@ export class GoGameElement extends HTMLElement {
     const stones: GoStoneElement[] = [];
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
-      const slot = surroundingSpaces[i];
-      const next = this.querySelector<GoStoneElement>(`[slot="${slot}"]`);
+      const next = this.querySpace(surroundingSpaces[i]);
 
       if (next && next.color !== stone.color) {
         stones.push(next);
@@ -188,5 +187,9 @@ export class GoGameElement extends HTMLElement {
       col: array.shift() as string,
       row: array.join(""),
     };
+  }
+
+  private querySpace(space: string): GoStoneElement | null {
+    return this.querySelector<GoStoneElement>(`[slot="${space}"]`);
   }
 }

@@ -229,13 +229,20 @@ export class GoBoardElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.shadowRoot!.appendChild(template.content.cloneNode(true));
+    // only create board  once
+    if (!this.shadowRoot!.children.length) {
+      this.shadowRoot!.appendChild(template.content.cloneNode(true));
 
-    this.createBoard();
+      if (this.rows > 19 || this.cols > 19) {
+        throw new Error("Cannot create a board size greater then 19");
+      }
 
-    if (this.coords) {
-      this.createRowNumbers();
-      this.createColumnLetters();
+      this.createBoard();
+
+      if (this.coords) {
+        this.createRowNumbers();
+        this.createColumnLetters();
+      }
     }
   }
 

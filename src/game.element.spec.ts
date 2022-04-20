@@ -2,6 +2,7 @@ import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element";
 import { GoGameElement } from "./game.element";
+import { Debug, GoConfig } from "./go.ctx";
 import { GoStoneElement } from "./stone.element";
 
 customElements.define("go-game", GoGameElement);
@@ -9,6 +10,15 @@ customElements.define("go-board", GoBoardElement);
 customElements.define("go-stone", GoStoneElement);
 
 describe(GoGameElement.name, () => {
+  it("should throw if no board is available", async () => {
+    const config = () => new GoConfig();
+    const debug = () => new Debug(config);
+
+    const game = new GoGameElement(debug);
+
+    expect(game.connectedCallback.bind(this)).to.throw();
+  });
+
   it("should could 4 liberties for a single stone", async () => {
     const el = await fixture<GoGameElement>(html`
       <go-game>
