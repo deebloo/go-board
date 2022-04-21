@@ -12,6 +12,8 @@ export class SGFViewerElement extends HTMLElement {
 
   @observe @attr ogsid?: string;
 
+  @observe @attr({ read: Number }) delay = 100;
+
   @query("go-board,#board") board!: GoBoardElement;
 
   async connectedCallback() {
@@ -27,13 +29,19 @@ export class SGFViewerElement extends HTMLElement {
     let timeout = 0;
 
     data.forEach((move) => {
-      timeout = timeout + 100;
+      timeout = timeout + this.delay;
 
-      setTimeout(() => {
-        this.board
-          .shadowRoot!.querySelector<HTMLButtonElement>(`button#${move}`)!
-          .click();
-      }, timeout);
+      const button = this.board.shadowRoot!.querySelector<HTMLButtonElement>(
+        `button#${move}`
+      )!;
+
+      if (this.delay > 0) {
+        setTimeout(() => {
+          button.click();
+        }, timeout);
+      } else {
+        button.click();
+      }
     });
   }
 
