@@ -114,6 +114,7 @@ export class GoBoardElement extends HTMLElement {
       .row slot button {
         position: absolute;
         transform: translate(-50%, -50%);
+        padding: 0;
         height: 48px;
         width: 48px;
         display: flex;
@@ -166,16 +167,27 @@ export class GoBoardElement extends HTMLElement {
         cursor: pointer;
       }
 
-      :host([turn="black"]) .row slot button:hover {
-        background: #000;
+      :host .row slot button:hover {
+        background: none;
         opacity: 0.75 !important;
-        border-radius: 50%;
       }
 
-      :host([turn="white"]) .row slot button:hover {
-        background: #fff;
-        opacity: 0.75 !important;
+      :host([turn="black"]) .row slot button:hover:after {
+        content: "";
+        display: block;
+        background: #000;
         border-radius: 50%;
+        height: 100%;
+        width: 100%;
+      }
+
+      :host([turn="white"]) .row slot button:hover:after {
+        content: "";
+        display: block;
+        background: #fff;
+        border-radius: 50%;
+        height: 100%;
+        width: 100%;
       }
     `,
   ];
