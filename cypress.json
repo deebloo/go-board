@@ -1,4 +1,5 @@
 {
   "viewportWidth": 1040,
-  "viewportHeight": 1050
+  "viewportHeight": 1050,
+  "numTestsKeptInMemory": 0
 }

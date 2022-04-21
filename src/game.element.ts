@@ -97,7 +97,7 @@ export class GoGameElement extends HTMLElement {
       { row, col: col + 1 },
     ]
       .filter(({ row, col }) => {
-        const rowIsValid = row <= this.board.rows && row >= 0;
+        const rowIsValid = row <= this.board.rows && row > 0;
         const colIsValid = col > -1 && col < this.board.cols;
 
         return rowIsValid && colIsValid;

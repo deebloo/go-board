@@ -9,7 +9,10 @@ describe("My First Test", () => {
         const moves = parseSGF(res);
 
         moves.forEach((move) => {
-          cy.get("go-board").shadow().find(`button#${move}`).click();
+          cy.get("go-board")
+            .shadow()
+            .find(`button#${move}`)
+            .click({ force: true });
         });
       }
     );
