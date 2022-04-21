@@ -135,6 +135,8 @@ export class GoBoardElement extends HTMLElement {
         border-radius: 50%;
         position: absolute;
         transform: translate(-50%, -50%);
+        top: 0;
+        left: 0;
       }
 
       .row slot::slotted(go-stone:last-child)::after {
@@ -165,6 +167,7 @@ export class GoBoardElement extends HTMLElement {
         border: none;
         opacity: 0;
         cursor: pointer;
+        z-index: 1;
       }
 
       :host .row slot button:hover {

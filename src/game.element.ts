@@ -48,6 +48,10 @@ export class GoGameElement extends HTMLElement {
 
     this.turn = this.black.length > this.white.length ? "white" : "black";
     this.board.turn = this.turn;
+
+    console.log(
+      Array.from(this.querySelectorAll("go-stone")).map((stone) => stone.slot)
+    );
   }
 
   /**
