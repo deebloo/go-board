@@ -9,9 +9,7 @@
   </head>
 
   <body>
-    <sgf-viewer
-      path="./cypress/fixtures/43067921-196-longlivetheother-biliskovmarin.sgf"
-    >
+    <sgf-viewer>
       <go-debug>
         <go-game>
           <go-board></go-board>
@@ -20,5 +18,16 @@
     </sgf-viewer>
 
     <script src="./src/register.ts" type="module"></script>
+
+    <script type="module">
+      const ogsId = new URLSearchParams(window.location.search).get("ogsId");
+      const viewer = document.querySelector("sgf-viewer");
+
+      if (ogsId && viewer) {
+        viewer.ogsid = ogsId;
+
+        viewer.go();
+      }
+    </script>
   </body>
 </html>

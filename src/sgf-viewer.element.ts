@@ -16,12 +16,14 @@ export class SGFViewerElement extends HTMLElement {
 
   @query("go-board,#board") board!: GoBoardElement;
 
-  async connectedCallback() {
+  connectedCallback() {
+    this.go();
+  }
+
+  async go() {
     const path = this.ogsid
       ? `https://online-go.com/api/v1/games/${this.ogsid}/sgf`
       : this.path;
-
-    console.log("###", this.ogsid);
 
     const raw = await fetch(path || "").then((res) => res.text());
 
