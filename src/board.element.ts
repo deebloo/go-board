@@ -193,13 +193,18 @@ export class GoBoardElement extends HTMLElement {
     `,
   ];
 
-  @observe @attr({ read: Number }) rows: number = 19;
-  @observe @attr({ read: Number }) cols: number = 19;
+  @observe @attr<number>({ read: Number }) rows = 19;
+  @observe @attr<number>({ read: Number }) cols = 19;
   @observe @attr static = true;
   @observe @attr coords = true;
   @observe @attr turn: StoneColor = "black";
 
-  @observe @attr columnLabels = [
+  @observe
+  @attr<string[]>({
+    read: (val) => val.split(","),
+    write: (val) => val.join(","),
+  })
+  columnLabels = [
     "A",
     "B",
     "C",
@@ -330,6 +335,7 @@ export class GoBoardElement extends HTMLElement {
   }
 
   private createColumnLetters() {
+    console.log(this.columnLabels);
     for (let r = 0; r < this.rows; r++) {
       const col = document.createElement("div");
       col.innerHTML = this.columnLabels[r];

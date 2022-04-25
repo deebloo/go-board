@@ -9,7 +9,10 @@
   </head>
 
   <body>
-    <sgf-viewer>
+    <!-- <sgf-viewer ogs-id="43125597"> -->
+    <sgf-viewer
+      path="cypress/fixtures/41385759-275-laser_lobster-longlivetheother.sgf"
+    >
       <go-debug>
         <go-game>
           <go-board></go-board>
@@ -19,15 +22,15 @@
 
     <script src="./src/register.ts" type="module"></script>
 
-    <script type="module">
+    <!-- <script type="module">
       const ogsId = new URLSearchParams(window.location.search).get("ogsId");
       const viewer = document.querySelector("sgf-viewer");
 
       if (ogsId && viewer) {
-        viewer.ogsid = ogsId;
+        viewer.ogsId = ogsId;
 
         viewer.go();
       }
-    </script>
+    </script> -->
   </body>
 </html>
