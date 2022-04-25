@@ -8,7 +8,8 @@
     <title>Document</title>
 
     <style>
-      go-game {
+      go-game,
+      go-debug {
         box-sizing: border-box;
         width: 100%;
         display: block;
@@ -17,9 +18,11 @@
   </head>
 
   <body>
-    <go-game>
-      <go-board></go-board>
-    </go-game>
+    <go-debug>
+      <go-game>
+        <go-board></go-board>
+      </go-game>
+    </go-debug>
 
     <script src="./src/register.ts" type="module"></script>
   </body>
