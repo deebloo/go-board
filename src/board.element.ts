@@ -31,11 +31,14 @@ export class GoBoardElement extends HTMLElement {
   static styles = [
     css`
       :host {
+        box-sizing: border-box;
         background: #caa472;
         display: inline-block;
-        padding: 4rem;
+        padding: 4rem 0 0 4rem;
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        aspect-ratio: 1/1;
       }
 
       * {
@@ -53,19 +56,18 @@ export class GoBoardElement extends HTMLElement {
       #header > * {
         align-items: center;
         display: flex;
-        width: 50px;
         height: 4rem;
         justify-content: center;
         font-size: 1.5rem;
         font-family: system-ui;
         transform: translateX(-50%);
+        flex-grow: 1;
       }
 
       #container {
         display: inline-flex;
         flex-direction: column;
-        border-top: solid 1px #000;
-        border-left: solid 1px #000;
+        width: 100%;
       }
 
       #sidebar {
@@ -74,13 +76,14 @@ export class GoBoardElement extends HTMLElement {
         position: absolute;
         top: 4rem;
         left: 0;
+        bottom: 0;
       }
 
       #sidebar > * {
         align-items: center;
         display: flex;
         width: 4rem;
-        height: 50px;
+        flex-grow: 1;
         justify-content: center;
         font-size: 1.5rem;
         font-family: system-ui;
@@ -89,24 +92,29 @@ export class GoBoardElement extends HTMLElement {
 
       .row {
         display: flex;
-      }
-
-      .row:last-child slot {
-        height: 0;
-        border: none;
+        width: 100%;
       }
 
       .row slot {
-        border-bottom: solid 1px #000;
-        border-right: solid 1px #000;
+        border-top: solid 1px #000;
+        border-left: solid 1px #000;
         display: block;
-        height: 50px;
-        width: 50px;
+        flex-grow: 1;
+        aspect-ratio: 1/1;
         position: relative;
       }
 
+      .row:last-child slot {
+        border: none;
+        border-top: solid 1px #000;
+      }
+
       .row slot:last-child {
-        width: 0;
+        border: none;
+        border-left: solid 1px #000;
+      }
+
+      .row:last-child slot:last-child {
         border: none;
       }
 
@@ -115,8 +123,8 @@ export class GoBoardElement extends HTMLElement {
         position: absolute;
         transform: translate(-50%, -50%);
         padding: 0;
-        height: 48px;
-        width: 48px;
+        height: 98%;
+        width: 98%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -141,8 +149,8 @@ export class GoBoardElement extends HTMLElement {
 
       .row slot::slotted(go-stone:last-child)::after {
         content: "";
-        height: 25px;
-        width: 25px;
+        height: 50%;
+        width: 50%;
         border-radius: 50%;
         border: solid 2px;
       }
@@ -189,6 +197,20 @@ export class GoBoardElement extends HTMLElement {
 
       :host([turn="white"]) .row slot button:hover:after {
         background: #fff;
+      }
+
+      @media (max-width: 900px) {
+        #header > *,
+        #sidebar > * {
+          font-size: 1rem;
+        }
+      }
+
+      @media (min-width: 1500px) {
+        #header > *,
+        #sidebar > * {
+          font-size: 1.75rem;
+        }
       }
     `,
   ];

@@ -2,9 +2,9 @@ import { attr, observable, observe } from "@joist/observable";
 import { query } from "@joist/query";
 import { GoBoardElement } from "./board.element";
 
-const regex = /[A-Z]\[[a-z]{2}\]/gm;
 const alpha = Array.from(Array(26)).map((_, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
+const regex = /([A-Z])\[([a-z]{2})\]/;
 
 @observable
 export class SGFViewerElement extends HTMLElement {
@@ -20,7 +20,7 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async go() {
-    if (this.isRunning) {
+    if (this.isRunning || (!this.ogsId && !this.path)) {
       return;
     }
 
@@ -56,22 +56,25 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   parseSGF(value: string) {
-    return value
-      .split("\n")
-      .filter((line) => !!line.match(regex))
-      .map((line) => {
-        const parsed = line.split("");
+    const moves: string[] = [];
+    const lines = value.split("\n");
+    const { columnLabels, rows } = this.board;
 
-        const column =
-          this.board.columnLabels[
-            alphabet.indexOf(parsed[parsed.length - 3].toUpperCase())
-          ];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const match = regex.exec(line.trim());
 
-        const row =
-          this.board.rows -
-          alphabet.indexOf(parsed[parsed.length - 2].toUpperCase());
+      if (match) {
+        const coords = match[2].split("");
 
-        return column + row.toString();
-      });
+        const column = columnLabels[alphabet.indexOf(coords[0].toUpperCase())];
+
+        const row = rows - alphabet.indexOf(coords[1].toUpperCase());
+
+        moves.push(column + row.toString());
+      }
+    }
+
+    return moves;
   }
 }
