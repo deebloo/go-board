@@ -37,7 +37,6 @@ export class GoBoardElement extends HTMLElement {
         padding: 4rem 0 0 4rem;
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-        width: 100%;
         aspect-ratio: 1/1;
       }
 

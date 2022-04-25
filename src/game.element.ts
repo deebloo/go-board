@@ -39,8 +39,6 @@ export class GoGameElement extends HTMLElement {
       throw new Error("no board found");
     }
 
-    this.style.display = "inline-block";
-
     const debug = this.debug();
 
     debug.log("black:", this.black.length);
@@ -48,10 +46,6 @@ export class GoGameElement extends HTMLElement {
 
     this.turn = this.black.length > this.white.length ? "white" : "black";
     this.board.turn = this.turn;
-
-    console.log(
-      Array.from(this.querySelectorAll("go-stone")).map((stone) => stone.slot)
-    );
   }
 
   /**
