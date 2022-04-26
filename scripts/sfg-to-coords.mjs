@@ -37,8 +37,6 @@ export function parseSGF(value) {
     .map((line) => {
       const parsed = line.split("");
 
-      console.log(parsed);
-
       const column =
         columnNames[alphabet.indexOf(parsed[parsed.length - 3].toUpperCase())];
 

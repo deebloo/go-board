@@ -356,7 +356,6 @@ export class GoBoardElement extends HTMLElement {
   }
 
   private createColumnLetters() {
-    console.log(this.columnLabels);
     for (let r = 0; r < this.rows; r++) {
       const col = document.createElement("div");
       col.innerHTML = this.columnLabels[r];
