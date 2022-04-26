@@ -104,17 +104,17 @@ export class GoBoardElement extends HTMLElement {
       }
 
       .row:last-child slot {
-        border: none;
+        border-color: transparent;
         border-top: solid 1px #000;
       }
 
       .row slot:last-child {
-        border: none;
+        border-color: transparent;
         border-left: solid 1px #000;
       }
 
       .row:last-child slot:last-child {
-        border: none;
+        border-color: transparent;
       }
 
       .row slot::slotted(go-stone),
