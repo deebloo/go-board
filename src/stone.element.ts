@@ -36,8 +36,6 @@ export class GoStoneElement extends HTMLElement {
     `,
   ];
 
-  draggable: boolean = false;
-
   @attr color: StoneColor = "black";
 
   constructor() {

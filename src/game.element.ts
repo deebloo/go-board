@@ -117,15 +117,12 @@ export class GoGameElement extends HTMLElement {
     return stones;
   }
 
-  private onGoBoardEvent(e: Event) {
-    const evt = e as BoardEvent;
+  placeStone(stone: GoStoneElement) {
     const debug = this.debug();
 
-    const stone = new GoStoneElement();
-    stone.color = this.turn;
-    stone.slot = evt.space;
-
     debug.group("Adding stone:", stone);
+
+    stone.setAttribute("space", stone.slot);
 
     this.board.appendChild(stone);
 
@@ -143,7 +140,7 @@ export class GoGameElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         group.stones.forEach((stone) => {
-          this.board.removeChild(stone);
+          stone.removeAttribute("slot");
         });
       }
     });
@@ -162,6 +159,16 @@ export class GoGameElement extends HTMLElement {
     }
 
     debug.groupEnd();
+  }
+
+  private onGoBoardEvent(e: Event) {
+    const evt = e as BoardEvent;
+
+    const stone = new GoStoneElement();
+    stone.color = this.turn;
+    stone.slot = evt.space;
+
+    this.placeStone(stone);
   }
 
   private onRightClick(e: Event) {

@@ -1,6 +1,8 @@
 import { attr, observable, observe } from "@joist/observable";
 import { query } from "@joist/query";
 import { GoBoardElement } from "./board.element";
+import { GoGameElement } from "./game.element";
+import { GoStoneElement, StoneColor } from "./stone.element";
 
 const alpha = Array.from(Array(26)).map((_, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
@@ -14,6 +16,7 @@ export class SGFViewerElement extends HTMLElement {
   @observe @attr<number>({ read: Number }) delay = 100;
 
   @query("go-board,#board") board!: GoBoardElement;
+  @query("go-game,#game") game!: GoGameElement;
 
   connectedCallback() {
     this.go();
@@ -39,16 +42,16 @@ export class SGFViewerElement extends HTMLElement {
     data.forEach((move) => {
       timeout = timeout + this.delay;
 
-      const button = this.board.shadowRoot!.querySelector<HTMLButtonElement>(
-        `button#${move}`
-      )!;
+      const stone = new GoStoneElement();
+      stone.color = move.color;
+      stone.slot = move.space;
 
       if (this.delay > 0) {
         setTimeout(() => {
-          button.click();
+          this.game.placeStone(stone);
         }, timeout);
       } else {
-        button.click();
+        this.game.placeStone(stone);
       }
     });
 
@@ -56,7 +59,7 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   parseSGF(value: string) {
-    const moves: string[] = [];
+    const moves: Array<{ color: StoneColor; space: string }> = [];
     const lines = value.split("\n");
     const { columnLabels, rows } = this.board;
 
@@ -71,7 +74,10 @@ export class SGFViewerElement extends HTMLElement {
 
         const row = rows - alphabet.indexOf(coords[1].toUpperCase());
 
-        moves.push(column + row.toString());
+        moves.push({
+          color: match[1] === "B" ? "black" : "white",
+          space: column + row.toString(),
+        });
       }
     }
 
