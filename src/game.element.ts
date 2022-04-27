@@ -17,8 +17,6 @@ class GroupState {
 export class GoGameElement extends HTMLElement {
   static inject = [Debug];
 
-  @observe @attr turn: StoneColor = "black";
-
   @query("#board,go-board") board!: GoBoardElement;
 
   @queryAll("go-stone[color='black']", { cache: false })
@@ -44,8 +42,7 @@ export class GoGameElement extends HTMLElement {
     debug.log("black:", this.black.length);
     debug.log("white:", this.white.length);
 
-    this.turn = this.black.length > this.white.length ? "white" : "black";
-    this.board.turn = this.turn;
+    this.board.turn = this.black.length > this.white.length ? "white" : "black";
   }
 
   /**
@@ -154,8 +151,7 @@ export class GoGameElement extends HTMLElement {
     if (!group.liberties.size) {
       this.board.removeChild(stone);
     } else {
-      this.turn = this.turn === "black" ? "white" : "black";
-      this.board.turn = this.turn;
+      this.board.turn = this.board.turn === "black" ? "white" : "black";
     }
 
     debug.groupEnd();
@@ -165,7 +161,7 @@ export class GoGameElement extends HTMLElement {
     const evt = e as BoardEvent;
 
     const stone = new GoStoneElement();
-    stone.color = this.turn;
+    stone.color = this.board.turn;
     stone.slot = evt.space;
 
     this.placeStone(stone);

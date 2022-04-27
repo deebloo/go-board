@@ -136,8 +136,8 @@ export class GoBoardElement extends HTMLElement {
       .row slot.starpoint:after {
         content: "";
         display: block;
-        height: 10px;
-        width: 10px;
+        height: 30%;
+        width: 30%;
         background: #000;
         border-radius: 50%;
         position: absolute;
