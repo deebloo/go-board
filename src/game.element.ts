@@ -12,18 +12,21 @@ class GroupState {
   liberties = new Set<string>();
 }
 
+function stones(color: StoneColor) {
+  return queryAll(`go-stone[color='${color}']`, { cache: false });
+}
+
+const board = query("#board,go-board");
+
 @observable
 @injectable
 export class GoGameElement extends HTMLElement {
   static inject = [Debug];
 
-  @query("#board,go-board") board!: GoBoardElement;
+  @board board!: GoBoardElement;
 
-  @queryAll("go-stone[color='black']", { cache: false })
-  black!: NodeListOf<GoStoneElement>;
-
-  @queryAll("go-stone[color='white']", { cache: false })
-  white!: NodeListOf<GoStoneElement>;
+  @stones("black") black!: NodeListOf<GoStoneElement>;
+  @stones("white") white!: NodeListOf<GoStoneElement>;
 
   constructor(private debug: Injected<Debug>) {
     super();
@@ -119,8 +122,6 @@ export class GoGameElement extends HTMLElement {
 
     debug.group("Adding stone:", stone);
 
-    stone.setAttribute("space", stone.slot);
-
     this.board.appendChild(stone);
 
     // find all attached enemies
@@ -137,7 +138,7 @@ export class GoGameElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         group.stones.forEach((stone) => {
-          stone.removeAttribute("slot");
+          this.board.removeChild(stone);
         });
       }
     });

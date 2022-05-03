@@ -22,6 +22,8 @@ export class BoardEvent extends Event {
   }
 }
 
+export const num = attr<number>({ read: Number });
+
 @observable
 @styled
 @injectable
@@ -214,8 +216,8 @@ export class GoBoardElement extends HTMLElement {
     `,
   ];
 
-  @observe @attr<number>({ read: Number }) rows = 19;
-  @observe @attr<number>({ read: Number }) cols = 19;
+  @observe @num rows = 19;
+  @observe @num cols = 19;
   @observe @attr static = true;
   @observe @attr coords = true;
   @observe @attr turn: StoneColor = "black";
@@ -270,18 +272,20 @@ export class GoBoardElement extends HTMLElement {
   connectedCallback() {
     // only create board  once
     if (!this.shadowRoot!.children.length) {
-      this.shadowRoot!.appendChild(template.content.cloneNode(true));
+      return;
+    }
 
-      if (this.rows > 19 || this.cols > 19) {
-        throw new Error("Cannot create a board size greater then 19");
-      }
+    this.shadowRoot!.appendChild(template.content.cloneNode(true));
 
-      this.createBoard();
+    if (this.rows > 19 || this.cols > 19) {
+      throw new Error("Cannot create a board size greater then 19");
+    }
 
-      if (this.coords) {
-        this.createRowNumbers();
-        this.createColumnLetters();
-      }
+    this.createBoard();
+
+    if (this.coords) {
+      this.createRowNumbers();
+      this.createColumnLetters();
     }
   }
 
