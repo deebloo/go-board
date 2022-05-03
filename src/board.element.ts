@@ -271,7 +271,7 @@ export class GoBoardElement extends HTMLElement {
 
   connectedCallback() {
     // only create board  once
-    if (!this.shadowRoot!.children.length) {
+    if (this.shadowRoot!.children.length) {
       return;
     }
 
