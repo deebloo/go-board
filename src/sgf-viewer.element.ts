@@ -1,5 +1,6 @@
 import { attr, observable, observe } from "@joist/observable";
 
+import { num } from "./attributes";
 import { GoGameElement } from "./game.element";
 import { game } from "./queries";
 import { GoStoneElement, StoneColor } from "./stone.element";
@@ -12,22 +13,33 @@ const regex = /([A-Z])\[([a-z]{2})\]/;
 export class SGFViewerElement extends HTMLElement {
   @observe @attr path?: string;
   @observe @attr ogsId?: string;
-  @observe @attr isRunning = false;
-  @observe @attr<number>({ read: Number }) delay = 100;
+  @observe @attr running = false;
+  @observe @num delay = 100;
 
   @game game!: GoGameElement;
+
+  private data: ParseSGF[] = [];
+  private step = 0;
 
   connectedCallback() {
     if (!this.game) {
       throw new Error("SGFViewerElement requires a child of GoGameElement");
     }
 
-    this.go();
+    if (this.path || this.ogsId) {
+      this.go();
+    }
   }
 
   async go() {
-    if (this.isRunning || (!this.ogsId && !this.path)) {
-      return;
+    this.running = true;
+
+    if (!this.data.length) {
+      this.game.board.clear();
+    }
+
+    if (this.data.length) {
+      return this.play();
     }
 
     const path = this.ogsId
@@ -36,33 +48,47 @@ export class SGFViewerElement extends HTMLElement {
 
     const raw = await fetch(path || "").then((res) => res.text());
 
-    this.isRunning = true;
+    this.data = this.parseSGF(raw);
 
-    const data = this.parseSGF(raw);
+    this.play();
+  }
 
-    let timeout = 0;
+  async play() {
+    if (this.running && this.step <= this.data.length - 1) {
+      const move = this.data[this.step];
 
-    data.forEach((move, i) => {
-      timeout = timeout + this.delay;
+      this.step += 1;
 
       const stone = new GoStoneElement();
       stone.color = move.color;
       stone.slot = move.space;
 
-      if (this.delay > 0 && i > 0) {
+      if (this.delay > 0 && this.step > 0) {
         setTimeout(() => {
           this.game.placeStone(stone);
-        }, timeout);
+
+          this.play();
+        }, this.delay);
       } else {
         this.game.placeStone(stone);
-      }
-    });
 
-    this.isRunning = false;
+        this.play();
+      }
+    }
+
+    if (this.step >= this.data.length - 1) {
+      this.step = 0;
+      this.data = [];
+      this.running = false;
+    }
+  }
+
+  pause() {
+    this.running = false;
   }
 
   parseSGF(value: string) {
-    const moves: Array<{ color: StoneColor; space: string }> = [];
+    const moves: ParseSGF[] = [];
     const lines = value.split("\n");
     const { columnLabels, rows } = this.game.board;
 
@@ -86,4 +112,9 @@ export class SGFViewerElement extends HTMLElement {
 
     return moves;
   }
+}
+
+interface ParseSGF {
+  color: StoneColor;
+  space: string;
 }

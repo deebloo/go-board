@@ -132,7 +132,7 @@ export class GoGameElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         group.stones.forEach((stone) => {
-          this.board.removeChild(stone);
+          stone.removeAttribute("slot");
         });
       }
     });

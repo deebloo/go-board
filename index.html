@@ -10,22 +10,15 @@
 
   <body>
     <style>
-      html,
-      body,
       go-game,
-      go-debug {
+      go-board {
         box-sizing: border-box;
         width: 100%;
         display: block;
         margin: 0;
       }
-
-      go-board {
-        width: 100%;
-      }
     </style>
 
-    <!-- <go-debug> -->
     <go-game>
       <go-board static="false">
         <go-stone slot="Q4" color="black"></go-stone>
@@ -88,7 +81,6 @@
         <go-stone slot="C9" color="white"></go-stone>
       </go-board>
     </go-game>
-    <!-- </go-debug> -->
 
     <script src="./src/register.ts" type="module"></script>
   </body>

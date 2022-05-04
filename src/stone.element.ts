@@ -1,5 +1,5 @@
 import { css, styled } from "@joist/styled";
-import { observable, attr } from "@joist/observable";
+import { observable, observe, attr } from "@joist/observable";
 
 export type StoneColor = "black" | "white";
 
@@ -36,7 +36,8 @@ export class GoStoneElement extends HTMLElement {
     `,
   ];
 
-  @attr color: StoneColor = "black";
+  @observe @attr color: StoneColor = "black";
+  @observe @attr space?: string;
 
   constructor() {
     super();
@@ -47,5 +48,15 @@ export class GoStoneElement extends HTMLElement {
       e.dataTransfer!.setData("stone", this.slot);
       e.dataTransfer!.effectAllowed = "move";
     });
+  }
+
+  connectedCallback() {
+    this.space = this.slot;
+  }
+
+  attributeChangedCallback(key: string) {
+    if (key === "slot") {
+      this.space = this.slot;
+    }
   }
 }

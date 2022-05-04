@@ -4,3 +4,5 @@
 /target
 /src/**/*.js
 /src/**/*.d.ts
+/website/dist
+.firebase
