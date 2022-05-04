@@ -1,22 +1,16 @@
 import { Injected } from "@joist/di";
 import { injectable } from "@joist/di/dom";
-import { attr, observable, observe } from "@joist/observable";
-import { query, queryAll } from "@joist/query";
+import { observable } from "@joist/observable";
 
 import { BoardEvent, GoBoardElement } from "./board.element";
 import { Debug } from "./go.ctx";
-import { GoStoneElement, StoneColor } from "./stone.element";
+import { board, stones } from "./queries";
+import { GoStoneElement } from "./stone.element";
 
 class GroupState {
   stones = new Set<GoStoneElement>();
   liberties = new Set<string>();
 }
-
-function stones(color: StoneColor) {
-  return queryAll(`go-stone[color='${color}']`, { cache: false });
-}
-
-const board = query("#board,go-board");
 
 @observable
 @injectable

@@ -6,6 +6,7 @@ import { query } from "@joist/query";
 
 import { Debug } from "./go.ctx";
 import { GoStoneElement, StoneColor } from "./stone.element";
+import { arr, num } from "./attributes";
 
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
@@ -21,8 +22,6 @@ export class BoardEvent extends Event {
     super("goboard", { bubbles: true });
   }
 }
-
-export const num = attr<number>({ read: Number });
 
 @observable
 @styled
@@ -221,13 +220,7 @@ export class GoBoardElement extends HTMLElement {
   @observe @attr static = true;
   @observe @attr coords = true;
   @observe @attr turn: StoneColor = "black";
-
-  @observe
-  @attr<string[]>({
-    read: (val) => val.split(","),
-    write: (val) => val.join(","),
-  })
-  columnLabels = [
+  @observe @arr columnLabels = [
     "A",
     "B",
     "C",
@@ -299,6 +292,14 @@ export class GoBoardElement extends HTMLElement {
     return crypto.subtle
       .digest("SHA-256", new TextEncoder().encode(keyString))
       .then((res) => new Uint8Array(res));
+  }
+
+  clear() {
+    this.innerHTML = "";
+  }
+
+  copyToClipboard() {
+    return navigator.clipboard.writeText(this.outerHTML);
   }
 
   private onSlotChange(e: Event) {

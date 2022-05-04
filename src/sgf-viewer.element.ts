@@ -1,7 +1,7 @@
 import { attr, observable, observe } from "@joist/observable";
-import { query } from "@joist/query";
-import { GoBoardElement } from "./board.element";
+
 import { GoGameElement } from "./game.element";
+import { game } from "./queries";
 import { GoStoneElement, StoneColor } from "./stone.element";
 
 const alpha = Array.from(Array(26)).map((_, i) => i + 65);
@@ -15,10 +15,13 @@ export class SGFViewerElement extends HTMLElement {
   @observe @attr isRunning = false;
   @observe @attr<number>({ read: Number }) delay = 100;
 
-  @query("go-board,#board") board!: GoBoardElement;
-  @query("go-game,#game") game!: GoGameElement;
+  @game game!: GoGameElement;
 
   connectedCallback() {
+    if (!this.game) {
+      throw new Error("SGFViewerElement requires a child of GoGameElement");
+    }
+
     this.go();
   }
 
@@ -39,14 +42,14 @@ export class SGFViewerElement extends HTMLElement {
 
     let timeout = 0;
 
-    data.forEach((move) => {
+    data.forEach((move, i) => {
       timeout = timeout + this.delay;
 
       const stone = new GoStoneElement();
       stone.color = move.color;
       stone.slot = move.space;
 
-      if (this.delay > 0) {
+      if (this.delay > 0 && i > 0) {
         setTimeout(() => {
           this.game.placeStone(stone);
         }, timeout);
@@ -61,7 +64,7 @@ export class SGFViewerElement extends HTMLElement {
   parseSGF(value: string) {
     const moves: Array<{ color: StoneColor; space: string }> = [];
     const lines = value.split("\n");
-    const { columnLabels, rows } = this.board;
+    const { columnLabels, rows } = this.game.board;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
