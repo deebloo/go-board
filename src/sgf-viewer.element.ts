@@ -13,7 +13,7 @@ const regex = /([A-Z])\[([a-z]{2})\]/;
 export class SGFViewerElement extends HTMLElement {
   @observe @attr path?: string;
   @observe @attr ogsId?: string;
-  @observe @attr running = false;
+  @observe @attr isRunning = false;
   @observe @num delay = 100;
 
   @game game!: GoGameElement;
@@ -32,7 +32,7 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async go() {
-    this.running = true;
+    this.isRunning = true;
 
     if (!this.data.length) {
       this.game.board.clear();
@@ -54,7 +54,7 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async play() {
-    if (this.running) {
+    if (this.isRunning) {
       const move = this.data[this.step];
 
       this.step += 1;
@@ -77,12 +77,12 @@ export class SGFViewerElement extends HTMLElement {
     if (this.step >= this.data.length) {
       this.step = 0;
       this.data = [];
-      this.running = false;
+      this.isRunning = false;
     }
   }
 
   pause() {
-    this.running = false;
+    this.isRunning = false;
   }
 
   parseSGF(value: string) {

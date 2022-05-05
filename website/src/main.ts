@@ -19,6 +19,12 @@ form?.addEventListener("submit", (e) => {
   const pathOrId = data.get("pathOrId");
 
   if (viewer && pathOrId) {
+    if (viewer.isRunning) {
+      viewer.isRunning = false;
+
+      return;
+    }
+
     if (!isNaN(parseInt(pathOrId.toString()))) {
       viewer.ogsId = pathOrId.toString();
 
@@ -39,6 +45,8 @@ form?.addEventListener("submit", (e) => {
 
 copyBtn?.addEventListener("click", () => {
   viewer?.game.board.copyToClipboard();
+
+  alert("Board HTML copied to clipboard");
 });
 
 pauseBtn?.addEventListener("click", () => {

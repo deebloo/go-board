@@ -39,10 +39,10 @@
     "test:wtr": "wtr \"target/spec/**/**.spec.js\" --node-resolve"
   },
   "dependencies": {
-    "@joist/di": "2.0.0-alpha.19",
-    "@joist/observable": "2.0.0-alpha.19",
-    "@joist/query": "2.0.0-alpha.19",
-    "@joist/styled": "2.0.0-alpha.19"
+    "@joist/di": "2.0.0-alpha.20",
+    "@joist/observable": "2.0.0-alpha.20",
+    "@joist/query": "2.0.0-alpha.20",
+    "@joist/styled": "2.0.0-alpha.20"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.1.2",
