@@ -155,9 +155,7 @@ export class GoGameElement extends HTMLElement {
   private onGoBoardEvent(e: Event) {
     const evt = e as BoardEvent;
 
-    const stone = new GoStoneElement();
-    stone.color = this.board.turn;
-    stone.slot = evt.space;
+    const stone = GoStoneElement.create(this.board.turn, evt.space);
 
     this.placeStone(stone);
   }

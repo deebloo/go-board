@@ -6,6 +6,18 @@ export type StoneColor = "black" | "white";
 @observable
 @styled
 export class GoStoneElement extends HTMLElement {
+  static create(color: StoneColor, slot?: string) {
+    const stone = new GoStoneElement();
+
+    stone.color = color;
+
+    if (slot) {
+      stone.slot = slot;
+    }
+
+    return stone;
+  }
+
   static styles = [
     css`
       :host {

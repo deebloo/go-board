@@ -54,14 +54,12 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async play() {
-    if (this.running && this.step <= this.data.length - 1) {
+    if (this.running) {
       const move = this.data[this.step];
 
       this.step += 1;
 
-      const stone = new GoStoneElement();
-      stone.color = move.color;
-      stone.slot = move.space;
+      const stone = GoStoneElement.create(move.color, move.space);
 
       if (this.delay > 0 && this.step > 0) {
         setTimeout(() => {
@@ -76,7 +74,7 @@ export class SGFViewerElement extends HTMLElement {
       }
     }
 
-    if (this.step >= this.data.length - 1) {
+    if (this.step >= this.data.length) {
       this.step = 0;
       this.data = [];
       this.running = false;

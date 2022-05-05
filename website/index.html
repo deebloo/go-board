@@ -16,6 +16,28 @@
         width: 100%;
         display: block;
       }
+
+      form {
+        display: flex;
+        align-items: center;
+      }
+
+      form > * {
+        margin-right: 1rem;
+      }
+
+      form button {
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 1.5rem;
+      }
+
+      input {
+        padding: .5rem 1rem;
+        border: solid 1px gray;
+        border-radius: 4px;
+      }
     </style>
 
     <h1>Hello World</h1>
@@ -26,12 +48,13 @@
         <input id="pathOrId" name="pathOrId"/>
 
         <button type="submit">&#9658;</button>
-        <button type="button" id="pause">&#9616;&#9616;</button>
+        <button type="button" id="pause">&#10074;&#10074;</button>
+        <button type="button" id="copy" style="font-size: 2rem;">&#9986;</button>
       </form>
     </p>
 
     <p>
-      <button id="copy">Copy Board</button>
+
     </p>
 
     <sgf-viewer>

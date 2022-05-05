@@ -199,6 +199,16 @@ export class GoBoardElement extends HTMLElement {
         background: #fff;
       }
 
+      @media (max-width: 525px) {
+        :host {
+          padding: 2rem 0 0 2rem;
+        }
+        #header,
+        #sidebar {
+          display: none;
+        }
+      }
+
       @media (max-width: 900px) {
         #header > *,
         #sidebar > * {
