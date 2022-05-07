@@ -1,5 +1,4 @@
-import { Injected, service } from "@joist/di";
-import { injectable } from "@joist/di/dom";
+import { Injected, service, injectable } from "@joist/di";
 
 @service
 export class GoConfig {
