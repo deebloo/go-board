@@ -9,11 +9,9 @@ import { arr, num } from "./attributes";
 
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
-  <div id="header"></div>
-
-  <div id="container"></div>
-
-  <div id="sidebar"></div>
+  <div id="header" class="row">
+    <spacer></spacer>
+  </div>
 `;
 
 export class BoardEvent extends Event {
@@ -34,7 +32,7 @@ export class GoBoardElement extends HTMLElement {
         box-sizing: border-box;
         background: #caa472;
         display: inline-block;
-        padding: 4rem 0 0 4rem;
+        padding: 1rem;
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
         aspect-ratio: 1/1;
@@ -42,51 +40,12 @@ export class GoBoardElement extends HTMLElement {
 
       * {
         box-sizing: border-box;
-      }
-
-      #header {
-        display: flex;
-        position: absolute;
-        left: 4rem;
-        right: 0;
-        top: 0;
+        font-family: inherit;
       }
 
       #header > * {
-        align-items: center;
-        display: flex;
-        height: 4rem;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-family: system-ui;
-        transform: translateX(-50%);
-        flex-grow: 1;
-      }
-
-      #container {
-        display: inline-flex;
-        flex-direction: column;
-        width: 100%;
-      }
-
-      #sidebar {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 4rem;
-        left: 0;
-        bottom: 0;
-      }
-
-      #sidebar > * {
-        align-items: center;
-        display: flex;
-        width: 4rem;
-        flex-grow: 1;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-family: system-ui;
-        transform: translateY(-50%);
+        border-color: transparent;
+        transform: translate(-50%, -20%);
       }
 
       .row {
@@ -94,13 +53,33 @@ export class GoBoardElement extends HTMLElement {
         width: 100%;
       }
 
-      .row slot {
+      .row > * {
+        align-items: center;
+        justify-content: center;
         border-top: solid 1px #000;
         border-left: solid 1px #000;
-        display: block;
+        display: flex;
         flex-grow: 1;
         aspect-ratio: 1/1;
         position: relative;
+      }
+
+      .row > * > * {
+        position: absolute;
+      }
+
+      #header > * {
+        border-color: transparent;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .row spacer {
+        border-color: transparent;
+      }
+
+      .row spacer {
+        transform: translate(-20%, -50%);
       }
 
       .row:last-child slot {
@@ -198,26 +177,16 @@ export class GoBoardElement extends HTMLElement {
         background: #fff;
       }
 
-      @media (max-width: 525px) {
-        :host {
-          padding: 2rem 0 0 2rem;
-        }
-        #header,
-        #sidebar {
-          display: none;
-        }
-      }
-
       @media (max-width: 900px) {
         #header > *,
-        #sidebar > * {
+        spacer {
           font-size: 1rem;
         }
       }
 
       @media (min-width: 1500px) {
         #header > *,
-        #sidebar > * {
+        spacer * {
           font-size: 1.75rem;
         }
       }
@@ -258,7 +227,6 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   @query("#header") header!: HTMLDivElement;
-  @query("#container") container!: HTMLDivElement;
   @query("#sidebar") sidebar!: HTMLDivElement;
 
   constructor(private debug: Injected<Debug>) {
@@ -286,7 +254,7 @@ export class GoBoardElement extends HTMLElement {
     this.createBoard();
 
     if (this.coords) {
-      this.createRowNumbers();
+      // this.createRowNumbers();
       this.createColumnLetters();
     }
   }
@@ -352,11 +320,16 @@ export class GoBoardElement extends HTMLElement {
       const row = document.createElement("div");
       row.className = "row";
 
+      const spacer = document.createElement("spacer");
+      row.appendChild(spacer);
+
+      spacer.innerHTML = `<span>${(this.rows - r).toString()}</span>`;
+
       for (let c = 0; c < this.cols; c++) {
         row.appendChild(this.createSlot(r, c));
       }
 
-      this.container.appendChild(row);
+      this.shadowRoot!.appendChild(row);
     }
   }
 
@@ -372,7 +345,10 @@ export class GoBoardElement extends HTMLElement {
   private createColumnLetters() {
     for (let r = 0; r < this.rows; r++) {
       const col = document.createElement("div");
-      col.innerHTML = this.columnLabels[r];
+      const letter = document.createElement("span");
+      letter.innerHTML = this.columnLabels[r];
+
+      col.appendChild(letter);
 
       this.header.appendChild(col);
     }
