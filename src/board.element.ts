@@ -38,14 +38,17 @@ export class GoBoardElement extends HTMLElement {
         aspect-ratio: 1/1;
       }
 
+      :host([show-coords="false"]) #header > * {
+        visibility: hidden;
+      }
+
+      :host([show-coords="false"]) .row > *:first-child {
+        visibility: hidden;
+      }
+
       * {
         box-sizing: border-box;
         font-family: inherit;
-      }
-
-      #header > * {
-        border-color: transparent;
-        transform: translate(-50%, -20%);
       }
 
       .row {
@@ -70,15 +73,11 @@ export class GoBoardElement extends HTMLElement {
 
       #header > * {
         border-color: transparent;
-        align-items: center;
-        justify-content: center;
+        transform: translate(-50%, -20%);
       }
 
       .row spacer {
         border-color: transparent;
-      }
-
-      .row spacer {
         transform: translate(-20%, -50%);
       }
 
@@ -196,7 +195,7 @@ export class GoBoardElement extends HTMLElement {
   @observe @num rows = 19;
   @observe @num cols = 19;
   @observe @attr static = true;
-  @observe @attr coords = true;
+  @observe @attr showCoords = true;
   @observe @attr turn: StoneColor = "black";
   @observe @arr columnLabels = [
     "A",
@@ -252,11 +251,7 @@ export class GoBoardElement extends HTMLElement {
     }
 
     this.createBoard();
-
-    if (this.coords) {
-      // this.createRowNumbers();
-      this.createColumnLetters();
-    }
+    this.createColumnLetters();
   }
 
   key(): Promise<Uint8Array> {
