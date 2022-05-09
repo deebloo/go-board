@@ -36,6 +36,7 @@ export class GoBoardElement extends HTMLElement {
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
         aspect-ratio: 1/1;
+        font-size: clamp(0.5rem, 2vw, 3rem);
       }
 
       :host([show-coords="false"]) #header > * {
@@ -174,20 +175,6 @@ export class GoBoardElement extends HTMLElement {
 
       :host([turn="white"]) .row slot button:hover:after {
         background: #fff;
-      }
-
-      @media (max-width: 900px) {
-        #header > *,
-        spacer {
-          font-size: 1rem;
-        }
-      }
-
-      @media (min-width: 1500px) {
-        #header > *,
-        spacer * {
-          font-size: 1.75rem;
-        }
       }
     `,
   ];
