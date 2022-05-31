@@ -21,7 +21,7 @@ export class GoStoneElement extends HTMLElement {
   static styles = [
     css`
       :host {
-        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
         display: inline-flex;
         border-radius: 50%;
         height: 50px;

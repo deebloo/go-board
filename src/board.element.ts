@@ -36,7 +36,7 @@ export class GoBoardElement extends HTMLElement {
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
         aspect-ratio: 1/1;
-        font-size: clamp(0.5rem, 2vw, 3rem);
+        font-size: clamp(0.5rem, 2vw, 2.1rem);
       }
 
       :host([show-coords="false"]) #header > * {
@@ -213,7 +213,6 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   @query("#header") header!: HTMLDivElement;
-  @query("#sidebar") sidebar!: HTMLDivElement;
 
   constructor(private debug: Injected<Debug>) {
     super();
@@ -312,15 +311,6 @@ export class GoBoardElement extends HTMLElement {
       }
 
       this.shadowRoot!.appendChild(row);
-    }
-  }
-
-  private createRowNumbers() {
-    for (let r = 0; r < this.rows; r++) {
-      const row = document.createElement("div");
-      row.innerHTML = (this.rows - r).toString();
-
-      this.sidebar.appendChild(row);
     }
   }
 

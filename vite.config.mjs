@@ -3,6 +3,9 @@ import minifyHTML from "rollup-plugin-minify-html-literals";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  server: {
+    port: 4200,
+  },
   build: {
     outDir: "bundled",
     lib: {
