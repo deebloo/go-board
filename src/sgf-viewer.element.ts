@@ -1,4 +1,5 @@
 import { attr, observable, observe } from "@joist/observable";
+import { css, styled } from "@joist/styled";
 
 import { num } from "./attributes";
 import { GoGameElement } from "./game.element";
@@ -9,8 +10,22 @@ const alpha = Array.from(Array(26)).map((_, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 const regex = /([A-Z])\[([a-z]{2})\]/;
 
+interface ParseSGF {
+  color: StoneColor;
+  space: string;
+}
+
 @observable
+@styled
 export class SGFViewerElement extends HTMLElement {
+  static styles = [
+    css`
+      :host {
+        display: contents;
+      }
+    `,
+  ];
+
   @observe @attr path?: string;
   @observe @attr ogsId?: string;
   @observe @attr isRunning = false;
@@ -21,6 +36,13 @@ export class SGFViewerElement extends HTMLElement {
   private data: ParseSGF[] = [];
   private step = 0;
 
+  constructor() {
+    super();
+
+    const root = this.attachShadow({ mode: "open" });
+    root.innerHTML = "<slot></slot>";
+  }
+
   connectedCallback() {
     if (!this.game) {
       throw new Error("SGFViewerElement requires a child of GoGameElement");
@@ -29,6 +51,10 @@ export class SGFViewerElement extends HTMLElement {
     if (this.path || this.ogsId) {
       this.go();
     }
+  }
+
+  queryRoot() {
+    return this;
   }
 
   async go() {
@@ -110,9 +136,4 @@ export class SGFViewerElement extends HTMLElement {
 
     return moves;
   }
-}
-
-interface ParseSGF {
-  color: StoneColor;
-  space: string;
 }

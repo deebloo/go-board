@@ -219,19 +219,14 @@ export class GoBoardElement extends HTMLElement {
 
     const root = this.attachShadow({ mode: "open" });
 
+    root.appendChild(template.content.cloneNode(true));
+
     root.addEventListener("slotchange", this.onSlotChange.bind(this));
     root.addEventListener("click", this.onClick.bind(this));
     root.addEventListener("drop", this.onDrop.bind(this));
   }
 
   connectedCallback() {
-    // only create board  once
-    if (this.shadowRoot!.children.length) {
-      return;
-    }
-
-    this.shadowRoot!.appendChild(template.content.cloneNode(true));
-
     if (this.rows > 19 || this.cols > 19) {
       throw new Error("Cannot create a board size greater then 19");
     }
@@ -240,6 +235,9 @@ export class GoBoardElement extends HTMLElement {
     this.createColumnLetters();
   }
 
+  /**
+   * Creates a hash based on the current board state
+   */
   key(): Promise<Uint8Array> {
     const stones = this.querySelectorAll<GoStoneElement>("go-stone");
     const keyString = Array.from(stones).reduce(
