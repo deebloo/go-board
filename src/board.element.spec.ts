@@ -31,10 +31,10 @@ describe(GoBoardElement.name, () => {
     `);
 
     // should match for the same state
-    expect(await board1.key()).to.deep.equal(await board1.key());
+    expect(board1.key()).to.deep.equal(board1.key());
 
     // should NOT match for different states
-    expect(await board1.key()).to.not.deep.equal(await board2.key());
+    expect(board1.key()).to.not.deep.equal(board2.key());
   });
 
   it("should throw an error if board size is greater then 19", () => {

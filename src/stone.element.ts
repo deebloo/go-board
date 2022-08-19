@@ -63,7 +63,9 @@ export class GoStoneElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.space = this.slot;
+    if (!this.space) {
+      this.space = this.slot;
+    }
   }
 
   attributeChangedCallback(key: string) {

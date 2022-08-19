@@ -27,6 +27,8 @@ export class GoGameElement extends HTMLElement {
   @stones("black") black!: NodeListOf<GoStoneElement>;
   @stones("white") white!: NodeListOf<GoStoneElement>;
 
+  #pastStates = new Set<string>();
+
   constructor(
     private debug: Injected<Debug>,
     private game: Injected<GoGameService>
@@ -50,7 +52,17 @@ export class GoGameElement extends HTMLElement {
     debug.log("black:", this.black.length);
     debug.log("white:", this.white.length);
 
-    this.board.turn = this.black.length > this.white.length ? "white" : "black";
+    const nodes = Array.from(this.board.children);
+
+    this.board.clear();
+
+    nodes.forEach((node) => {
+      if (node instanceof GoStoneElement) {
+        this.placeStone(node);
+      } else {
+        this.board.append(node);
+      }
+    });
   }
 
   queryRoot() {
@@ -70,6 +82,9 @@ export class GoGameElement extends HTMLElement {
 
     debug.log("Finding enemy stones:", enemies);
 
+    // keep track of removed stones
+    const removedStones: GoStoneElement[] = [];
+
     // for each enemy stone check its group and liberties.
     enemies.forEach((stone) => {
       const group = game.findGroup(this.board, stone);
@@ -79,21 +94,48 @@ export class GoGameElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         group.stones.forEach((stone) => {
-          stone.removeAttribute("slot");
+          stone.removeAttribute("slot"); // stones are removed by removing it's assinged slot
+
+          removedStones.push(stone);
         });
       }
     });
 
-    // find added stones group
-    const group = game.findGroup(this.board, stone);
+    const key = this.board.key();
 
-    debug.log("Stone part of following group:", group);
+    if (this.#pastStates.has(key)) {
+      // If the current board state has already existed the move is not allowed
 
-    // if the current group has no liberties remove it. not allowed
-    if (!group.liberties.size) {
-      this.board.removeChild(stone);
+      debug.group("Move not allowed!");
+      debug.log(key.toString());
+      debug.log(this.#pastStates);
+      debug.groupEnd();
+
+      // Add the removed stones back
+      removedStones.forEach((stone) => {
+        stone.slot = stone.space!;
+      });
+
+      stone.remove();
+
+      game.alert("Move not allowed!");
     } else {
-      this.board.turn = this.board.turn === "black" ? "white" : "black";
+      // keep track of previous board states
+      this.#pastStates.add(key);
+
+      // find added stones group
+      const group = game.findGroup(this.board, stone);
+
+      debug.log("Stone part of following group:", group);
+
+      // if the current group has no liberties remove it. not allowed
+      if (!group.liberties.size) {
+        stone.remove();
+
+        game.alert("Move is suicidal!");
+      } else {
+        this.board.turn = this.board.turn === "black" ? "white" : "black";
+      }
     }
 
     debug.groupEnd();

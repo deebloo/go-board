@@ -9,6 +9,10 @@ export class GroupState {
 
 @service
 export class GoGameService {
+  alert(message: string) {
+    window.alert(message);
+  }
+
   /**
    * Find all of the stones that are a part of a given stones group
    */

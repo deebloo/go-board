@@ -10,7 +10,7 @@ import { arr, num } from "./attributes";
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
   <div id="header" class="row">
-    <spacer></spacer>
+    <board-spacer></board-spacer>
   </div>
 `;
 
@@ -31,7 +31,7 @@ export class GoBoardElement extends HTMLElement {
       :host {
         box-sizing: border-box;
         background: #caa472;
-        display: inline-block;
+        display: block;
         padding: 1rem;
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
@@ -77,7 +77,7 @@ export class GoBoardElement extends HTMLElement {
         transform: translate(-50%, -20%);
       }
 
-      .row spacer {
+      .row board-spacer {
         border-color: transparent;
         transform: translate(-20%, -50%);
       }
@@ -236,18 +236,12 @@ export class GoBoardElement extends HTMLElement {
   }
 
   /**
-   * Creates a hash based on the current board state
+   * Creates a unique key based on the current stones on the board
    */
-  key(): Promise<Uint8Array> {
-    const stones = this.querySelectorAll<GoStoneElement>("go-stone");
-    const keyString = Array.from(stones).reduce(
-      (key, { slot, color }) => `${key}${slot}${color}`,
-      ""
-    );
-
-    return crypto.subtle
-      .digest("SHA-256", new TextEncoder().encode(keyString))
-      .then((res) => new Uint8Array(res));
+  key() {
+    return Array.from(this.querySelectorAll<GoStoneElement>("go-stone[slot]"))
+      .sort(stoneSort)
+      .reduce((key, s) => `${key}${s.slot}${s.color}`, "");
   }
 
   clear() {
@@ -299,7 +293,7 @@ export class GoBoardElement extends HTMLElement {
       const row = document.createElement("div");
       row.className = "row";
 
-      const spacer = document.createElement("spacer");
+      const spacer = document.createElement("board-spacer");
       row.appendChild(spacer);
 
       spacer.innerHTML = `<span>${(this.rows - r).toString()}</span>`;
@@ -354,4 +348,26 @@ export class GoBoardElement extends HTMLElement {
 
     return slot;
   }
+}
+
+function stoneSort(a: GoStoneElement, b: GoStoneElement) {
+  const coordsA = parseCoords(a.slot);
+  const coordsB = parseCoords(b.slot);
+
+  const colComparrison = coordsA.col.localeCompare(coordsB.col);
+
+  if (colComparrison !== 0) {
+    return colComparrison;
+  }
+
+  return Number(coordsA.row) - Number(coordsB.row);
+}
+
+function parseCoords(space: string) {
+  const array = space.split("");
+
+  return {
+    col: array.shift() as string,
+    row: array.join(""),
+  };
 }
