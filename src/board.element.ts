@@ -239,7 +239,9 @@ export class GoBoardElement extends HTMLElement {
    * Creates a unique key based on the current stones on the board
    */
   key() {
-    return Array.from(this.querySelectorAll<GoStoneElement>("go-stone[slot]"))
+    const stones = this.querySelectorAll<GoStoneElement>("go-stone[slot]");
+
+    return Array.from(stones)
       .sort(stoneSort)
       .reduce((key, s) => `${key}${s.slot}${s.color}`, "");
   }

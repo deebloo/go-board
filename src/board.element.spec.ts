@@ -31,10 +31,29 @@ describe(GoBoardElement.name, () => {
     `);
 
     // should match for the same state
-    expect(board1.key()).to.deep.equal(board1.key());
+    expect(board1.key()).to.equal(board1.key());
 
     // should NOT match for different states
-    expect(board1.key()).to.not.deep.equal(board2.key());
+    expect(board1.key()).to.not.equal(board2.key());
+  });
+
+  it("should create the same board state even with moves in a different order", async () => {
+    const board1 = await fixture<GoBoardElement>(html`
+      <go-board>
+        <go-stone slot="C18" color="white"></go-stone>
+        <go-stone slot="D18" color="white"></go-stone>
+      </go-board>
+    `);
+
+    const board2 = await fixture<GoBoardElement>(html`
+      <go-board>
+        <go-stone slot="D18" color="white"></go-stone>
+        <go-stone slot="C18" color="white"></go-stone>
+      </go-board>
+    `);
+
+    // should NOT match for different states
+    expect(board1.key()).to.equal(board2.key());
   });
 
   it("should throw an error if board size is greater then 19", () => {
