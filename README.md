@@ -2,7 +2,7 @@
 
 Go Board WebComponent.
 
-## The following markup
+## All you need to get started is some markup and a script tag
 
 ```HTML
 <go-game>
