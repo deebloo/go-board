@@ -1,6 +1,6 @@
 {
   "name": "go-board",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": false,
   "description": "Go board",
   "main": "./target/build/lib.js",
@@ -36,10 +36,10 @@
     "test:wtr": "wtr \"target/spec/**/**.spec.js\" --node-resolve"
   },
   "dependencies": {
-    "@joist/di": "2.0.0",
-    "@joist/observable": "2.0.0",
-    "@joist/query": "2.0.0",
-    "@joist/styled": "2.0.0"
+    "@joist/di": "2.0.1",
+    "@joist/observable": "2.0.1",
+    "@joist/query": "2.0.1",
+    "@joist/styled": "2.0.1"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.1.2",
