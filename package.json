@@ -1,6 +1,6 @@
 {
-  "name": "@integration/go-board",
-  "version": "2.0.0",
+  "name": "go-board",
+  "version": "1.0.0",
   "sideEffects": false,
   "private": true,
   "description": "Go board",
