@@ -1,6 +1,6 @@
 {
   "name": "go-board",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": false,
   "description": "Go board",
   "main": "./target/build/lib.js",
@@ -10,7 +10,7 @@
       "import": "./target/build/lib.js"
     },
     "./register": {
-      "import": "./target/build/lib/register.js"
+      "import": "./target/build/register.js"
     }
   },
   "files": [
