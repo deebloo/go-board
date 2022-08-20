@@ -1,8 +1,8 @@
-import { GoBoardElement } from "./board.element";
-import { GoGameElement } from "./game.element";
-import { DebugCtxElement } from "./go.ctx";
-import { SGFViewerElement } from "./sgf-viewer.element";
-import { GoStoneElement } from "./stone.element";
+import { GoBoardElement } from "./board.element.js";
+import { GoGameElement } from "./game.element.js";
+import { DebugCtxElement } from "./go.ctx.js";
+import { SGFViewerElement } from "./sgf-viewer.element.js";
+import { GoStoneElement } from "./stone.element.js";
 
 customElements.define("go-debug", DebugCtxElement);
 customElements.define("go-stone", GoStoneElement);

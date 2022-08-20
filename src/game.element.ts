@@ -2,11 +2,11 @@ import { Injected, injectable } from "@joist/di";
 import { observable } from "@joist/observable";
 import { css, styled } from "@joist/styled";
 
-import { BoardEvent, GoBoardElement } from "./board.element";
-import { GoGameService } from "./game.service";
-import { Debug } from "./go.ctx";
-import { board, stones } from "./queries";
-import { GoStoneElement } from "./stone.element";
+import { BoardEvent, GoBoardElement } from "./board.element.js";
+import { GoGameService } from "./game.service.js";
+import { Debug } from "./go.ctx.js";
+import { board, stones } from "./queries.js";
+import { GoStoneElement } from "./stone.element.js";
 
 @observable
 @styled

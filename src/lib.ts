@@ -1,4 +1,5 @@
-export { GoBoardElement } from "./board.element";
-export { GoGameElement } from "./game.element";
-export { DebugCtxElement } from "./go.ctx";
-export { GoStoneElement } from "./stone.element";
+export { GoBoardElement } from "./board.element.js";
+export { GoGameElement } from "./game.element.js";
+export { DebugCtxElement } from "./go.ctx.js";
+export { GoStoneElement } from "./stone.element.js";
+export { GoGameService } from "./game.service.js";

@@ -1,8 +1,8 @@
 import { expect, fixture, html } from "@open-wc/testing";
 
-import { GoBoardElement } from "./board.element";
-import { GoGameService } from "./game.service";
-import { GoStoneElement } from "./stone.element";
+import { GoBoardElement } from "./board.element.js";
+import { GoGameService } from "./game.service.js";
+import { GoStoneElement } from "./stone.element.js";
 
 customElements.define("go-board", GoBoardElement);
 customElements.define("go-stone", GoStoneElement);

@@ -1,6 +1,7 @@
 import { service } from "@joist/di";
-import { GoBoardElement } from "./board.element";
-import { GoStoneElement } from "./stone.element";
+
+import { GoBoardElement } from "./board.element.js";
+import { GoStoneElement } from "./stone.element.js";
 
 export class GroupState {
   stones = new Set<GoStoneElement>();

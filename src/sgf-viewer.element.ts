@@ -1,10 +1,10 @@
 import { attr, observable, observe } from "@joist/observable";
 import { css, styled } from "@joist/styled";
 
-import { num } from "./attributes";
-import { GoGameElement } from "./game.element";
-import { game } from "./queries";
-import { GoStoneElement, StoneColor } from "./stone.element";
+import { num } from "./attributes.js";
+import { GoGameElement } from "./game.element.js";
+import { game } from "./queries.js";
+import { GoStoneElement, StoneColor } from "./stone.element.js";
 
 const alpha = Array.from(Array(26)).map((_, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));

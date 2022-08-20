@@ -1,6 +1,6 @@
 import { queryAll, query } from "@joist/query";
 
-import { StoneColor } from "./stone.element";
+import { StoneColor } from "./stone.element.js";
 
 export function stones(color: StoneColor) {
   return queryAll(`go-stone[color='${color}']`, { cache: false });

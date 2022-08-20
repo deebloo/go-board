@@ -31,6 +31,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "build-lib": "tsc -p tsconfig.build.json",
     "test": "run-s test:*",
     "test:build": "tsc -p tsconfig.spec.json",
     "test:wtr": "wtr \"target/spec/**/**.spec.js\" --node-resolve"

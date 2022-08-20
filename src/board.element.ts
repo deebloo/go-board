@@ -3,9 +3,9 @@ import { css, styled } from "@joist/styled";
 import { observable, attr, observe } from "@joist/observable";
 import { query } from "@joist/query";
 
-import { Debug } from "./go.ctx";
-import { GoStoneElement, StoneColor } from "./stone.element";
-import { arr, num } from "./attributes";
+import { Debug } from "./go.ctx.js";
+import { GoStoneElement, StoneColor } from "./stone.element.js";
+import { arr, num } from "./attributes.js";
 
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
