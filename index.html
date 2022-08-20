@@ -62,5 +62,51 @@
     </sgf-viewer>
 
     <script src="./src/register.ts" type="module"></script>
+
+    <script type="module">
+      const viewer = document.querySelector("sgf-viewer");
+      const form = document.querySelector("form");
+      const input = form.querySelector("input#pathOrId");
+      const copyBtn = document.querySelector("button#copy");
+
+      input.value = new URLSearchParams(window.location.search).get("ogsIdOrPath") || "";
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const data = new FormData(form);
+        const pathOrId = data.get("pathOrId");
+
+        if (viewer && pathOrId) {
+          if (viewer.isRunning) {
+            viewer.isRunning = false;
+
+            return;
+          }
+
+          if (!isNaN(parseInt(pathOrId.toString()))) {
+            viewer.ogsId = pathOrId.toString();
+
+            viewer.go();
+
+            url.searchParams.set("ogsIdOrPath", viewer.ogsId);
+          } else {
+            viewer.path = pathOrId.toString();
+
+            viewer.go();
+
+            url.searchParams.set("ogsIdOrPath", viewer.path);
+          }
+
+          history.pushState(null, "", url);
+        }
+      });
+
+      copyBtn.addEventListener("click", () => {
+        viewer.game.board.copyToClipboard();
+
+        alert("Board HTML copied to clipboard");
+      });
+    </script>
   </body>
 </html>
