@@ -15,7 +15,7 @@ Go Board WebComponent.
 </go-game>
 
 <script
-  src="https://cdn.skypack.dev/go-board@2.0.3/register.js"
+  src="https://cdn.skypack.dev/go-board/register.js"
   type="module"
 ></script>
 ```
