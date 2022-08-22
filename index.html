@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Document</title>
+    <title>Go Viewer</title>
   </head>
 
   <body>
@@ -54,10 +54,17 @@
         <button type="button" id="copy" style="font-size: 2rem;" title="copy board html">&#9986;</button>
       </form>
     </p>
+
+    <go-move-viewer for="board"></go-move-viewer>
     
     <sgf-viewer>
       <go-game>
-        <go-board></go-board>
+        <go-board id="board">
+          <go-stone slot="Q16" color="black"></go-stone>
+          <go-stone slot="D3" color="white"></go-stone>
+          <go-stone slot="R4" color="black"></go-stone>
+          <go-stone slot="D16" color="white"></go-stone>
+        </go-board>
       </go-game>
     </sgf-viewer>
 
