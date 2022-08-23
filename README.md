@@ -4,6 +4,8 @@ Go Board WebComponent.
 
 ## All you need to get started is some markup and a script tag
 
+[DEMO](https://stackblitz.com/edit/go-board-demo?file=index.html)
+
 ```HTML
 <go-game>
   <go-board>
