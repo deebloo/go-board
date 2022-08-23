@@ -51,6 +51,7 @@ export class GoGameElement extends HTMLElement {
     debug.log("black:", this.black.length);
     debug.log("white:", this.white.length);
 
+    // START: Clears board and replays all moves in order
     const nodes = Array.from(this.board.children);
 
     this.board.clear();
@@ -62,6 +63,7 @@ export class GoGameElement extends HTMLElement {
         this.board.append(node);
       }
     });
+    // END: Clears board and replays all moves in order
   }
 
   queryRoot() {
@@ -93,7 +95,9 @@ export class GoGameElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         group.stones.forEach((stone) => {
-          stone.removeAttribute("slot"); // stones are removed by removing it's assinged slot
+          // stones are removed by removing it's assinged slot
+          // this allows the game to use stones to track game progress
+          stone.removeAttribute("slot");
 
           removedStones.push(stone);
         });
@@ -105,16 +109,12 @@ export class GoGameElement extends HTMLElement {
     if (this.#pastStates.has(key)) {
       // If the current board state has already existed the move is not allowed
 
-      debug.group("Move not allowed!");
-      debug.log(key.toString());
-      debug.log(this.#pastStates);
-      debug.groupEnd();
-
       // Add the removed stones back
       removedStones.forEach((stone) => {
-        stone.slot = stone.space!;
+        stone.slot = stone.space;
       });
 
+      // remove the previously placed stone
       stone.remove();
 
       game.alert("Move not allowed!");
