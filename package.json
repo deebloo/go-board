@@ -29,7 +29,9 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "run-s build:*",
+    "build:tsc": "tsc -p tsconfig.build.json",
+    "build:vite": "vite build",
     "build-lib": "tsc -p tsconfig.build.json",
     "test": "run-s test:*",
     "test:build": "tsc -p tsconfig.spec.json",
