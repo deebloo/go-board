@@ -181,7 +181,6 @@ export class GoBoardElement extends HTMLElement {
 
   @observe @num rows = 19;
   @observe @num cols = 19;
-  @observe @attr static = true;
   @observe @attr showCoords = true;
   @observe @attr turn: StoneColor = "black";
   @observe @arr columnLabels = [
@@ -221,9 +220,7 @@ export class GoBoardElement extends HTMLElement {
 
     root.appendChild(template.content.cloneNode(true));
 
-    root.addEventListener("slotchange", this.onSlotChange.bind(this));
     root.addEventListener("click", this.onClick.bind(this));
-    root.addEventListener("drop", this.onDrop.bind(this));
   }
 
   connectedCallback() {
@@ -235,9 +232,6 @@ export class GoBoardElement extends HTMLElement {
     this.createColumnLetters();
   }
 
-  /**
-   * Creates a unique key based on the current stones on the board
-   */
   key() {
     const stones = this.querySelectorAll<GoStoneElement>("go-stone[slot]");
 
@@ -254,39 +248,9 @@ export class GoBoardElement extends HTMLElement {
     return navigator.clipboard.writeText(this.outerHTML);
   }
 
-  private onSlotChange(e: Event) {
-    const target = e.target as HTMLSlotElement;
-
-    if (!this.static) {
-      target.assignedElements().forEach((stone) => {
-        if (stone instanceof GoStoneElement) {
-          stone.draggable = true;
-        }
-      });
-    }
-  }
-
   private onClick(e: Event) {
     if (e.target instanceof HTMLButtonElement) {
       this.dispatchEvent(new BoardEvent(e.target.id));
-    }
-  }
-
-  private onDrop(evt: Event) {
-    const e = evt as DragEvent;
-    const currentLocation = e.dataTransfer!.getData("stone");
-    const debug = this.debug();
-    const btn = e.target as HTMLButtonElement;
-    const stone = this.querySelector<HTMLSlotElement>(
-      `[slot="${currentLocation}"]`
-    );
-
-    if (stone) {
-      debug.log(`stone ${stone!.slot} moved to ${btn.id}`);
-
-      stone.slot = btn.id;
-    } else {
-      debug.log(`Could not find stone`);
     }
   }
 
@@ -337,10 +301,6 @@ export class GoBoardElement extends HTMLElement {
 
     const btn = document.createElement("button");
     btn.id = slot.name;
-
-    if (!this.static) {
-      btn.ondragover = (e) => e.preventDefault();
-    }
 
     debug.eval(() => {
       btn.style.opacity = ".2";

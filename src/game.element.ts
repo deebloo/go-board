@@ -36,10 +36,9 @@ export class GoGameElement extends HTMLElement {
     super();
 
     const root = this.attachShadow({ mode: "open" });
-    root.innerHTML = "<slot></slot>";
+    root.innerHTML = /*html*/ `<slot></slot>`;
 
     this.addEventListener("goboard", this.onGoBoardEvent.bind(this));
-    this.addEventListener("contextmenu", this.onRightClick.bind(this));
   }
 
   connectedCallback() {
@@ -147,19 +146,5 @@ export class GoGameElement extends HTMLElement {
     const stone = GoStoneElement.create(this.board.turn, evt.space);
 
     this.placeStone(stone);
-  }
-
-  private onRightClick(e: Event) {
-    if (
-      e.target instanceof GoStoneElement &&
-      e.target.slot &&
-      !this.board.static
-    ) {
-      e.preventDefault();
-
-      this.board.removeChild(e.target);
-
-      this.debug().log("Stone removed: ", e.target);
-    }
   }
 }

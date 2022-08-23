@@ -49,17 +49,12 @@ export class GoStoneElement extends HTMLElement {
   ];
 
   @observe @attr color: StoneColor = "black";
-  @observe @attr space?: string;
+  @observe @attr space: string = "";
 
   constructor() {
     super();
 
     this.attachShadow({ mode: "open" });
-
-    this.addEventListener("dragstart", (e) => {
-      e.dataTransfer!.setData("stone", this.slot);
-      e.dataTransfer!.effectAllowed = "move";
-    });
   }
 
   connectedCallback() {
