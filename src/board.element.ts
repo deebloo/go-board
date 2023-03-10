@@ -210,20 +210,19 @@ export class GoBoardElement extends HTMLElement {
 
   #pastStates = new Set<string>();
 
-  constructor(
-    private debug: Injected<Debug>,
-    private game: Injected<GoGameService>
-  ) {
+  constructor(private debug: Injected<Debug>, private game: Injected<GoGameService>) {
     super();
 
     const root = this.attachShadow({ mode: "open" });
-
     root.appendChild(template.content.cloneNode(true));
-
     root.addEventListener("click", this.#onClick.bind(this));
   }
 
   onStoneAdded(stone: GoStoneElement) {
+    this.turn = stone.color;
+
+    stone.slot = stone.space;
+
     this.#validateStonePlacement(stone);
   }
 
@@ -296,8 +295,6 @@ export class GoBoardElement extends HTMLElement {
 
       // remove the previously placed stone
       stone.remove();
-
-      game.alert("Move not allowed!");
     } else {
       // keep track of previous board states
       this.#pastStates.add(key);
@@ -310,10 +307,11 @@ export class GoBoardElement extends HTMLElement {
       // if the current group has no liberties remove it. not allowed
       if (!group.liberties.size) {
         stone.remove();
+        // game.alert("Move is suicidal!");
 
-        game.alert("Move is suicidal!");
+        console.log("AHHH");
       } else {
-        this.turn = this.turn === "black" ? "white" : "black";
+        this.turn = stone.color === "black" ? "white" : "black";
       }
     }
 

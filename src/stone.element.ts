@@ -11,7 +11,7 @@ export class GoStoneElement extends HTMLElement {
     const stone = new GoStoneElement();
 
     stone.color = color;
-    stone.slot = slot;
+    stone.space = slot;
 
     return stone;
   }
@@ -28,26 +28,25 @@ export class GoStoneElement extends HTMLElement {
 
       :host([color="black"]) {
         background: black;
-        background-image: radial-gradient(
-          circle at center,
-          rgba(255, 255, 255, 0.2),
-          rgba(0, 0, 0, 0) 45%
-        );
+        background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0) 45%);
       }
 
       :host([color="white"]) {
         background: #fff;
-        background-image: radial-gradient(
-          circle at center,
-          rgba(0, 0, 0, 0),
-          rgba(0, 0, 0, 0.15)
-        );
+        background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
       }
     `,
   ];
 
   @observe @attr color: StoneColor = "black";
-  @observe @attr space: string = "";
+
+  get space() {
+    return this.getAttribute("space") || "";
+  }
+
+  set space(val: string) {
+    this.setAttribute("space", val);
+  }
 
   #parent: GoBoardElement | null = null;
 
@@ -58,20 +57,10 @@ export class GoStoneElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.space) {
-      this.space = this.slot;
-    }
-
     if (this.parentElement instanceof GoBoardElement) {
       this.#parent = this.parentElement;
 
       this.#parent.onStoneAdded(this);
-    }
-  }
-
-  attributeChangedCallback(key: string) {
-    if (key === "slot") {
-      this.space = this.slot;
     }
   }
 }
