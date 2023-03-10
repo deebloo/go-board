@@ -307,9 +307,8 @@ export class GoBoardElement extends HTMLElement {
       // if the current group has no liberties remove it. not allowed
       if (!group.liberties.size) {
         stone.remove();
-        // game.alert("Move is suicidal!");
 
-        console.log("AHHH");
+        game.alert("Move is suicidal!");
       } else {
         this.turn = stone.color === "black" ? "white" : "black";
       }
