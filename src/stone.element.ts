@@ -1,19 +1,17 @@
 import { css, styled } from "@joist/styled";
 import { observable, observe, attr } from "@joist/observable";
+import { GoBoardElement } from "./board.element";
 
 export type StoneColor = "black" | "white";
 
 @observable
 @styled
 export class GoStoneElement extends HTMLElement {
-  static create(color: StoneColor, slot?: string) {
+  static create(color: StoneColor, slot: string = "") {
     const stone = new GoStoneElement();
 
     stone.color = color;
-
-    if (slot) {
-      stone.slot = slot;
-    }
+    stone.slot = slot;
 
     return stone;
   }
@@ -51,6 +49,8 @@ export class GoStoneElement extends HTMLElement {
   @observe @attr color: StoneColor = "black";
   @observe @attr space: string = "";
 
+  #parent: GoBoardElement | null = null;
+
   constructor() {
     super();
 
@@ -60,6 +60,12 @@ export class GoStoneElement extends HTMLElement {
   connectedCallback() {
     if (!this.space) {
       this.space = this.slot;
+    }
+
+    if (this.parentElement instanceof GoBoardElement) {
+      this.#parent = this.parentElement;
+
+      this.#parent.onStoneAdded(this);
     }
   }
 

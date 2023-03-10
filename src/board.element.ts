@@ -6,6 +6,7 @@ import { query } from "@joist/query";
 import { Debug } from "./go.ctx.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { arr, num } from "./attributes.js";
+import { GoGameService } from "./game.service.js";
 
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
@@ -14,17 +15,11 @@ template.innerHTML = /*html*/ `
   </div>
 `;
 
-export class BoardEvent extends Event {
-  constructor(public space: string) {
-    super("goboard", { bubbles: true });
-  }
-}
-
 @observable
 @styled
 @injectable
 export class GoBoardElement extends HTMLElement {
-  static inject = [Debug];
+  static inject = [Debug, GoGameService];
 
   static styles = [
     css`
@@ -213,14 +208,23 @@ export class GoBoardElement extends HTMLElement {
 
   @query("#header") header!: HTMLDivElement;
 
-  constructor(private debug: Injected<Debug>) {
+  #pastStates = new Set<string>();
+
+  constructor(
+    private debug: Injected<Debug>,
+    private game: Injected<GoGameService>
+  ) {
     super();
 
     const root = this.attachShadow({ mode: "open" });
 
     root.appendChild(template.content.cloneNode(true));
 
-    root.addEventListener("click", this.onClick.bind(this));
+    root.addEventListener("click", this.#onClick.bind(this));
+  }
+
+  onStoneAdded(stone: GoStoneElement) {
+    this.#validateStonePlacement(stone);
   }
 
   connectedCallback() {
@@ -228,8 +232,8 @@ export class GoBoardElement extends HTMLElement {
       throw new Error("Cannot create a board size greater then 19");
     }
 
-    this.createBoard();
-    this.createColumnLetters();
+    this.#createBoard();
+    this.#createColumnLetters();
   }
 
   key() {
@@ -248,13 +252,83 @@ export class GoBoardElement extends HTMLElement {
     return navigator.clipboard.writeText(this.outerHTML);
   }
 
-  private onClick(e: Event) {
+  #validateStonePlacement(stone: GoStoneElement) {
+    const debug = this.debug();
+    const game = this.game();
+
+    debug.group("Checking stone:", stone);
+
+    // find all attached enemies
+    const enemies = game.findAttachedEnemyStones(this, stone);
+
+    debug.log("Finding enemy stones:", enemies);
+
+    // keep track of removed stones
+    const removedStones: GoStoneElement[] = [];
+
+    // for each enemy stone check its group and liberties.
+    enemies.forEach((stone) => {
+      const group = game.findGroup(this, stone);
+
+      // if a group has no liberties remove all of its stones
+      if (!group.liberties.size) {
+        debug.log("Removing Stones:\n", ...group.stones);
+
+        group.stones.forEach((stone) => {
+          // stones are removed by removing it's assinged slot
+          // this allows the game to use stones to track game progress
+          stone.removeAttribute("slot");
+
+          removedStones.push(stone);
+        });
+      }
+    });
+
+    const key = this.key();
+
+    if (this.#pastStates.has(key)) {
+      // If the current board state has already existed the move is not allowed
+
+      // Add the removed stones back
+      removedStones.forEach((stone) => {
+        stone.slot = stone.space;
+      });
+
+      // remove the previously placed stone
+      stone.remove();
+
+      game.alert("Move not allowed!");
+    } else {
+      // keep track of previous board states
+      this.#pastStates.add(key);
+
+      // find added stones group
+      const group = game.findGroup(this, stone);
+
+      debug.log("Stone part of following group:", group);
+
+      // if the current group has no liberties remove it. not allowed
+      if (!group.liberties.size) {
+        stone.remove();
+
+        game.alert("Move is suicidal!");
+      } else {
+        this.turn = this.turn === "black" ? "white" : "black";
+      }
+    }
+
+    debug.groupEnd();
+  }
+
+  #onClick(e: Event) {
     if (e.target instanceof HTMLButtonElement) {
-      this.dispatchEvent(new BoardEvent(e.target.id));
+      const stone = GoStoneElement.create(this.turn, e.target.id);
+
+      this.append(stone);
     }
   }
 
-  private createBoard() {
+  #createBoard() {
     for (let r = 0; r < this.rows; r++) {
       const row = document.createElement("div");
       row.className = "row";
@@ -265,14 +339,14 @@ export class GoBoardElement extends HTMLElement {
       spacer.innerHTML = `<span>${(this.rows - r).toString()}</span>`;
 
       for (let c = 0; c < this.cols; c++) {
-        row.appendChild(this.createSlot(r, c));
+        row.appendChild(this.#createSlot(r, c));
       }
 
       this.shadowRoot!.appendChild(row);
     }
   }
 
-  private createColumnLetters() {
+  #createColumnLetters() {
     for (let r = 0; r < this.rows; r++) {
       const col = document.createElement("div");
       const letter = document.createElement("span");
@@ -284,7 +358,7 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
-  private createSlot(r: number, c: number) {
+  #createSlot(r: number, c: number) {
     const debug = this.debug();
 
     const slot = document.createElement("slot");

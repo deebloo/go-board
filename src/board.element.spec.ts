@@ -1,6 +1,7 @@
 import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element.js";
+import { GoGameService } from "./game.service.js";
 import { Debug, GoConfig } from "./go.ctx.js";
 import { GoStoneElement } from "./stone.element.js";
 
@@ -57,7 +58,10 @@ describe(GoBoardElement.name, () => {
   });
 
   it("should throw an error if board size is greater then 19", () => {
-    const board = new GoBoardElement(() => new Debug(() => new GoConfig()));
+    const board = new GoBoardElement(
+      () => new Debug(() => new GoConfig()),
+      () => new GoGameService()
+    );
     board.rows = 20;
     board.cols = 19;
 

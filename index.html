@@ -56,9 +56,7 @@
     </p>
     
     <sgf-viewer>
-      <go-game>
-        <go-board></go-board>
-      </go-game>
+      <go-board></go-board>
     </sgf-viewer>
 
     <script src="./src/register.ts" type="module"></script>
@@ -69,7 +67,9 @@
       const input = form?.querySelector("input#pathOrId");
       const copyBtn = document.querySelector("button#copy");
 
-      input.value = new URLSearchParams(window.location.search).get("ogsIdOrPath") || "";
+      const url = new URL(window.location)
+
+      input.value = url.searchParams.get("ogsIdOrPath") || "";
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
