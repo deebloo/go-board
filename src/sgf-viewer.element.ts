@@ -1,11 +1,8 @@
 import { injectable, Injected, service } from "@joist/di";
-import { attr, observable, observe } from "@joist/observable";
-import { css, styled } from "@joist/styled";
 
-import { num } from "./attributes.js";
 import { GoBoardElement } from "./board.element.js";
-import { board } from "./queries.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
+import { css, html, shadow, ShadowTemplate } from "./templating.js";
 
 const alpha = Array.from(Array(26)).map((_, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
@@ -23,39 +20,36 @@ export class SGFService {
   }
 }
 
-@observable
-@styled
+const template: ShadowTemplate = {
+  css: css`
+    :host {
+      display: contents;
+    }
+  `,
+  html: html`<slot></slot>`,
+};
+
 @injectable
 export class SGFViewerElement extends HTMLElement {
   static inject = [SGFService];
 
-  static styles = [
-    css`
-      :host {
-        display: contents;
-      }
-    `,
-  ];
+  path?: string;
+  ogsId?: string;
+  isRunning = false;
+  delay = 100;
 
-  @observe @attr path?: string;
-  @observe @attr ogsId?: string;
-  @observe @attr isRunning = false;
-  @observe @num delay = 100;
-
-  @board board!: GoBoardElement;
-
+  #board = this.querySelector<GoBoardElement>("go-board")!;
   #data: ParseSGF[] = [];
   #step = 0;
 
   constructor(private sgf: Injected<SGFService>) {
     super();
 
-    const root = this.attachShadow({ mode: "open" });
-    root.innerHTML = /*html*/ `<slot></slot>`;
+    shadow(this, template);
   }
 
   connectedCallback() {
-    if (!this.board) {
+    if (!this.#board) {
       throw new Error("SGFViewerElement requires a child of GoGameElement");
     }
 
@@ -64,17 +58,13 @@ export class SGFViewerElement extends HTMLElement {
     }
   }
 
-  queryRoot() {
-    return this;
-  }
-
   async go() {
     const sgf = this.sgf();
 
     this.isRunning = true;
 
     if (!this.#data.length) {
-      this.board.clear();
+      this.#board.clear();
     }
 
     if (this.#data.length) {
@@ -97,7 +87,7 @@ export class SGFViewerElement extends HTMLElement {
   async play() {
     if (this.isRunning) {
       if (this.#step >= this.#data.length) {
-        this.board.clear();
+        this.#board.clear();
       }
 
       const move = this.#data[this.#step];
@@ -108,14 +98,14 @@ export class SGFViewerElement extends HTMLElement {
 
       if (this.delay > 0 && this.#step > 0) {
         setTimeout(() => {
-          this.board.append(stone);
+          this.#board.append(stone);
 
-          this.board;
+          this.#board;
 
           this.play();
         }, this.delay);
       } else {
-        this.board.append(stone);
+        this.#board.append(stone);
 
         this.play();
       }
@@ -135,7 +125,7 @@ export class SGFViewerElement extends HTMLElement {
   parseSGF(value: string): ParseSGF[] {
     const moves: ParseSGF[] = [];
     const lines = value.split("\n");
-    const { columnLabels, rows } = this.board;
+    const { columnLabels, rows } = this.#board;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];

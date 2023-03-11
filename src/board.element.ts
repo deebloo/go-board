@@ -1,184 +1,184 @@
 import { Injected, injectable } from "@joist/di";
-import { css, styled } from "@joist/styled";
-import { observable, attr, observe } from "@joist/observable";
-import { query } from "@joist/query";
 
+import { css, html, shadow, ShadowTemplate } from "./templating.js";
 import { Debug } from "./go.ctx.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
-import { arr, num } from "./attributes.js";
 import { GoGameService } from "./game.service.js";
 
-const template = document.createElement("template");
-template.innerHTML = /*html*/ `
-  <div id="header" class="row">
-    <board-spacer></board-spacer>
-  </div>
-`;
+const template: ShadowTemplate = {
+  css: css`
+    :host {
+      box-sizing: border-box;
+      background: #caa472;
+      display: block;
+      padding: 1rem;
+      position: relative;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+      aspect-ratio: 1/1;
+      font-size: clamp(2.5vh, 2.5vw);
+    }
 
-@observable
-@styled
+    :host([show-coords="false"]) #header > * {
+      visibility: hidden;
+    }
+
+    :host([show-coords="false"]) .row > *:first-child {
+      visibility: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .row {
+      display: flex;
+      width: 100%;
+    }
+
+    .row > * {
+      align-items: center;
+      justify-content: center;
+      border-top: solid 1px #000;
+      border-left: solid 1px #000;
+      display: flex;
+      flex-grow: 1;
+      aspect-ratio: 1/1;
+      position: relative;
+    }
+
+    .row > * > * {
+      position: absolute;
+    }
+
+    #header > * {
+      border-color: transparent;
+      transform: translate(-50%, -20%);
+    }
+
+    .row board-spacer {
+      border-color: transparent;
+      transform: translate(-20%, -50%);
+    }
+
+    .row:last-child slot {
+      border-color: transparent;
+      border-top: solid 1px #000;
+    }
+
+    .row slot:last-child {
+      border-color: transparent;
+      border-left: solid 1px #000;
+    }
+
+    .row:last-child slot:last-child {
+      border-color: transparent;
+    }
+
+    .row slot::slotted(go-stone),
+    .row slot button {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      padding: 0;
+      height: 98%;
+      width: 98%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .row slot::slotted(go-stone) {
+      z-index: 1000;
+    }
+
+    .row slot.starpoint:after {
+      content: "";
+      display: block;
+      height: 25%;
+      width: 25%;
+      background: #000;
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
+    }
+
+    .row slot::slotted(go-stone:last-child)::after {
+      content: "";
+      height: 50%;
+      width: 50%;
+      border-radius: 50%;
+      border: solid 2px;
+    }
+
+    .row slot::slotted(go-stone[color="white"]:last-child)::after {
+      border-color: #000;
+    }
+
+    .row slot::slotted(go-stone[color="black"]:last-child)::after {
+      border-color: #fff;
+    }
+
+    .row slot::slotted(go-stone[draggable="true"]) {
+      cursor: grab;
+    }
+
+    .row slot::slotted(go-stone[draggable="true"]:active) {
+      cursor: grabbing;
+    }
+
+    .row slot button {
+      border: none;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    :host .row slot button:hover {
+      background: none;
+      opacity: 0.85 !important;
+    }
+
+    :host .row slot button:after {
+      content: "";
+      display: block;
+      border-radius: 50%;
+      height: 100%;
+      width: 100%;
+    }
+
+    :host([turn="black"]) .row slot button:hover:after {
+      background: #000;
+    }
+
+    :host([turn="white"]) .row slot button:hover:after {
+      background: #fff;
+    }
+  `,
+  html: html`
+    <div id="header" class="row">
+      <board-spacer></board-spacer>
+    </div>
+  `,
+};
+
 @injectable
 export class GoBoardElement extends HTMLElement {
   static inject = [Debug, GoGameService];
 
-  static styles = [
-    css`
-      :host {
-        box-sizing: border-box;
-        background: #caa472;
-        display: block;
-        padding: 1rem;
-        position: relative;
-        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-        aspect-ratio: 1/1;
-        font-size: clamp(2.5vh, 2.5vw);
-      }
+  get turn() {
+    return (this.getAttribute("turn") as StoneColor) || "black";
+  }
 
-      :host([show-coords="false"]) #header > * {
-        visibility: hidden;
-      }
+  set turn(value: StoneColor) {
+    this.setAttribute("turn", value);
+  }
 
-      :host([show-coords="false"]) .row > *:first-child {
-        visibility: hidden;
-      }
-
-      * {
-        box-sizing: border-box;
-        font-family: inherit;
-      }
-
-      .row {
-        display: flex;
-        width: 100%;
-      }
-
-      .row > * {
-        align-items: center;
-        justify-content: center;
-        border-top: solid 1px #000;
-        border-left: solid 1px #000;
-        display: flex;
-        flex-grow: 1;
-        aspect-ratio: 1/1;
-        position: relative;
-      }
-
-      .row > * > * {
-        position: absolute;
-      }
-
-      #header > * {
-        border-color: transparent;
-        transform: translate(-50%, -20%);
-      }
-
-      .row board-spacer {
-        border-color: transparent;
-        transform: translate(-20%, -50%);
-      }
-
-      .row:last-child slot {
-        border-color: transparent;
-        border-top: solid 1px #000;
-      }
-
-      .row slot:last-child {
-        border-color: transparent;
-        border-left: solid 1px #000;
-      }
-
-      .row:last-child slot:last-child {
-        border-color: transparent;
-      }
-
-      .row slot::slotted(go-stone),
-      .row slot button {
-        position: absolute;
-        transform: translate(-50%, -50%);
-        padding: 0;
-        height: 98%;
-        width: 98%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .row slot::slotted(go-stone) {
-        z-index: 1000;
-      }
-
-      .row slot.starpoint:after {
-        content: "";
-        display: block;
-        height: 25%;
-        width: 25%;
-        background: #000;
-        border-radius: 50%;
-        position: absolute;
-        transform: translate(-50%, -50%);
-        top: 0;
-        left: 0;
-      }
-
-      .row slot::slotted(go-stone:last-child)::after {
-        content: "";
-        height: 50%;
-        width: 50%;
-        border-radius: 50%;
-        border: solid 2px;
-      }
-
-      .row slot::slotted(go-stone[color="white"]:last-child)::after {
-        border-color: #000;
-      }
-
-      .row slot::slotted(go-stone[color="black"]:last-child)::after {
-        border-color: #fff;
-      }
-
-      .row slot::slotted(go-stone[draggable="true"]) {
-        cursor: grab;
-      }
-
-      .row slot::slotted(go-stone[draggable="true"]:active) {
-        cursor: grabbing;
-      }
-
-      .row slot button {
-        border: none;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 1;
-      }
-
-      :host .row slot button:hover {
-        background: none;
-        opacity: 0.85 !important;
-      }
-
-      :host .row slot button:after {
-        content: "";
-        display: block;
-        border-radius: 50%;
-        height: 100%;
-        width: 100%;
-      }
-
-      :host([turn="black"]) .row slot button:hover:after {
-        background: #000;
-      }
-
-      :host([turn="white"]) .row slot button:hover:after {
-        background: #fff;
-      }
-    `,
-  ];
-
-  @observe @num rows = 19;
-  @observe @num cols = 19;
-  @observe @attr showCoords = true;
-  @observe @attr turn: StoneColor = "black";
-  @observe @arr columnLabels = [
+  rows = 19;
+  cols = 19;
+  showCoords = true;
+  columnLabels = [
     "A",
     "B",
     "C",
@@ -206,16 +206,17 @@ export class GoBoardElement extends HTMLElement {
     "Z",
   ];
 
-  @query("#header") header!: HTMLDivElement;
-
+  #shadow = shadow(this, template);
+  #header = this.#shadow.getElementById("#header")!;
   #pastStates = new Set<string>();
 
-  constructor(private debug: Injected<Debug>, private game: Injected<GoGameService>) {
+  constructor(
+    private debug: Injected<Debug>,
+    private game: Injected<GoGameService>
+  ) {
     super();
 
-    const root = this.attachShadow({ mode: "open" });
-    root.appendChild(template.content.cloneNode(true));
-    root.addEventListener("click", this.#onClick.bind(this));
+    this.#shadow.addEventListener("click", this.#onClick.bind(this));
   }
 
   onStoneAdded(stone: GoStoneElement) {
@@ -351,7 +352,7 @@ export class GoBoardElement extends HTMLElement {
 
       col.appendChild(letter);
 
-      this.header.appendChild(col);
+      this.#header.appendChild(col);
     }
   }
 
