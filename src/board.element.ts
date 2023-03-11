@@ -1,9 +1,7 @@
-import { Injected } from "@joist/di";
-
 import { css, html, shadow, ShadowTemplate } from "./templating.js";
-import { Debug } from "./go.ctx.js";
+import { debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
-import { findAttachedEnemyStones, findGroup } from "./game.service.js";
+import { findAttachedEnemyStones, findGroup } from "./game.js";
 
 const template: ShadowTemplate = {
   css: css`
@@ -164,8 +162,6 @@ const template: ShadowTemplate = {
 };
 
 export class GoBoardElement extends HTMLElement {
-  static inject = [Debug];
-
   get turn() {
     return (this.getAttribute("turn") as StoneColor) || "black";
   }
@@ -207,12 +203,9 @@ export class GoBoardElement extends HTMLElement {
   #shadow = shadow(this, template);
   #header = this.#shadow.getElementById("header")!;
   #pastStates = new Set<string>();
-  #debug: Injected<Debug>;
 
-  constructor(debug: Injected<Debug>) {
+  constructor() {
     super();
-
-    this.#debug = debug;
 
     this.#shadow.addEventListener("click", this.#onClick.bind(this));
   }
@@ -246,8 +239,9 @@ export class GoBoardElement extends HTMLElement {
       .reduce((key, s) => `${key}${s.slot}${s.color}`, "");
   }
 
-  clear() {
+  reset() {
     this.innerHTML = "";
+    this.#pastStates.clear();
   }
 
   copyToClipboard() {
@@ -255,8 +249,6 @@ export class GoBoardElement extends HTMLElement {
   }
 
   #validateStonePlacement(stone: GoStoneElement) {
-    const debug = this.#debug();
-
     debug.group("Checking stone:", stone);
 
     // find all attached enemies
@@ -310,6 +302,8 @@ export class GoBoardElement extends HTMLElement {
       if (!group.liberties.size) {
         stone.remove();
 
+        debug.log("Move is suicidal!");
+
         alert("Move is suicidal!");
       } else {
         this.turn = stone.color === "black" ? "white" : "black";
@@ -358,8 +352,6 @@ export class GoBoardElement extends HTMLElement {
   }
 
   #createSlot(r: number, c: number) {
-    const debug = this.#debug();
-
     const slot = document.createElement("slot");
     slot.name = `${this.columnLabels[c]}${this.rows - r}`;
 

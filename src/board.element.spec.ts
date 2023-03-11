@@ -1,13 +1,9 @@
-import { injectable } from "@joist/di";
 import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element.js";
-import { Debug, GoConfig } from "./go.ctx.js";
 import { GoStoneElement } from "./stone.element.js";
 
-const Element = injectable(GoBoardElement);
-
-customElements.define("go-board", Element);
+customElements.define("go-board", GoBoardElement);
 customElements.define("go-stone", GoStoneElement);
 
 describe(GoBoardElement.name, () => {
@@ -60,7 +56,7 @@ describe(GoBoardElement.name, () => {
   });
 
   it("should throw an error if board size is greater then 19", () => {
-    const board = new Element(() => new Debug(() => new GoConfig()));
+    const board = new GoBoardElement();
 
     board.rows = 20;
     board.cols = 19;

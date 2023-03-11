@@ -1,6 +1,5 @@
-import { Injected } from "@joist/di";
-
 import { GoBoardElement } from "./board.element.js";
+import { debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { css, html, shadow, ShadowTemplate } from "./templating.js";
 
@@ -13,14 +12,6 @@ interface ParseSGF {
   space: string;
 }
 
-export class SGFService {
-  static provideInRoot = true;
-
-  fetchSGF(path: string) {
-    return fetch(path).then((res) => res.text());
-  }
-}
-
 const template: ShadowTemplate = {
   css: css`
     :host {
@@ -31,8 +22,6 @@ const template: ShadowTemplate = {
 };
 
 export class SGFViewerElement extends HTMLElement {
-  static inject = [SGFService];
-
   path?: string;
   ogsId?: string;
   isRunning = false;
@@ -42,7 +31,7 @@ export class SGFViewerElement extends HTMLElement {
   #data: ParseSGF[] = [];
   #step = 0;
 
-  constructor(private sgf: Injected<SGFService>) {
+  constructor() {
     super();
 
     shadow(this, template);
@@ -59,12 +48,11 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async go() {
-    const sgf = this.sgf();
-
     this.isRunning = true;
 
     if (!this.#data.length) {
-      this.#board.clear();
+      debug.log("clearning board");
+      this.#board.reset();
     }
 
     if (this.#data.length) {
@@ -76,7 +64,7 @@ export class SGFViewerElement extends HTMLElement {
       : this.path;
 
     if (path) {
-      const raw = await sgf.fetchSGF(path);
+      const raw = await fetch(path).then((res) => res.text());
 
       this.#data = this.parseSGF(raw);
 
@@ -87,7 +75,7 @@ export class SGFViewerElement extends HTMLElement {
   async play() {
     if (this.isRunning) {
       if (this.#step >= this.#data.length) {
-        this.#board.clear();
+        this.#board.reset();
       }
 
       const move = this.#data[this.#step];
