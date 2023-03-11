@@ -17,14 +17,20 @@ export class GoGameService {
   /**
    * Find all of the stones that are a part of a given stones group
    */
-  findGroup(board: GoBoardElement, stone: GoStoneElement, state: GroupState = new GroupState()): GroupState {
+  findGroup(
+    board: GoBoardElement,
+    stone: GoStoneElement,
+    state: GroupState = new GroupState()
+  ): GroupState {
     state.stones.add(stone);
 
     const surroundingSpaces = this.findSurroundingSpaces(board, stone);
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
       const slot = surroundingSpaces[i];
-      const next = board.querySelector<GoStoneElement>(`[slot="${surroundingSpaces[i]}"]`);
+      const next = board.querySelector<GoStoneElement>(
+        `[slot="${surroundingSpaces[i]}"]`
+      );
 
       if (!next) {
         state.liberties.add(slot);
@@ -43,7 +49,7 @@ export class GoGameService {
    */
   findSurroundingSpaces(board: GoBoardElement, stone: GoStoneElement) {
     const { columnLabels } = board;
-    const coords = this.parseCoords(stone);
+    const coords = this.#parseCoords(stone);
     const row = Number(coords.row);
     const col = columnLabels.indexOf(coords.col);
 
@@ -65,12 +71,17 @@ export class GoGameService {
   /**
    * Find all enemy stones that are orthogonally connected to a given stone
    */
-  findAttachedEnemyStones(board: GoBoardElement, stone: GoStoneElement): GoStoneElement[] {
+  findAttachedEnemyStones(
+    board: GoBoardElement,
+    stone: GoStoneElement
+  ): GoStoneElement[] {
     const surroundingSpaces = this.findSurroundingSpaces(board, stone);
     const stones: GoStoneElement[] = [];
 
     for (let i = 0; i < surroundingSpaces.length; i++) {
-      const next = board.querySelector<GoStoneElement>(`[slot="${surroundingSpaces[i]}"]`);
+      const next = board.querySelector<GoStoneElement>(
+        `[slot="${surroundingSpaces[i]}"]`
+      );
 
       if (next && next.color !== stone.color) {
         stones.push(next);
@@ -80,7 +91,7 @@ export class GoGameService {
     return stones;
   }
 
-  private parseCoords(stone: GoStoneElement) {
+  #parseCoords(stone: GoStoneElement) {
     const array = stone.space.split("");
 
     return {

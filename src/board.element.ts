@@ -208,12 +208,14 @@ export class GoBoardElement extends HTMLElement {
   #shadow = shadow(this, template);
   #header = this.#shadow.getElementById("header")!;
   #pastStates = new Set<string>();
+  #debug: Injected<Debug>;
+  #game: Injected<GoGameService>;
 
-  constructor(
-    private debug: Injected<Debug>,
-    private game: Injected<GoGameService>
-  ) {
+  constructor(debug: Injected<Debug>, game: Injected<GoGameService>) {
     super();
+
+    this.#debug = debug;
+    this.#game = game;
 
     this.#shadow.addEventListener("click", this.#onClick.bind(this));
   }
@@ -252,8 +254,8 @@ export class GoBoardElement extends HTMLElement {
   }
 
   #validateStonePlacement(stone: GoStoneElement) {
-    const debug = this.debug();
-    const game = this.game();
+    const debug = this.#debug();
+    const game = this.#game();
 
     debug.group("Checking stone:", stone);
 
@@ -356,7 +358,7 @@ export class GoBoardElement extends HTMLElement {
   }
 
   #createSlot(r: number, c: number) {
-    const debug = this.debug();
+    const debug = this.#debug();
 
     const slot = document.createElement("slot");
     slot.name = `${this.columnLabels[c]}${this.rows - r}`;
@@ -371,6 +373,7 @@ export class GoBoardElement extends HTMLElement {
     }
 
     const btn = document.createElement("button");
+    btn.title = slot.name;
     btn.id = slot.name;
 
     debug.eval(() => {

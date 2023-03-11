@@ -22,18 +22,15 @@
         display: block;
       }
 
-      form {
-        display: flex;
-        align-items: center;
-      }
-
       form > * {
-        margin-right: 1rem;
+        margin-right: 0.25rem;
       }
 
       form button {
         cursor: pointer;
         padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: solid 1px gray;
       }
 
       form input {
@@ -47,6 +44,10 @@
 
     <form>
       <label for="pathOrId">OGS ID or SFG Path:</label>
+
+      <br />
+      <br />
+
       <input id="pathOrId" name="pathOrId" />
 
       <button type="submit" title="play/pause">RUN</button>
