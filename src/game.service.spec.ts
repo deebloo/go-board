@@ -2,13 +2,13 @@ import { injectable } from "@joist/di";
 import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element.js";
-import { GoGameService } from "./game.service.js";
+import { findGroup } from "./game.service.js";
 import { GoStoneElement } from "./stone.element.js";
 
 customElements.define("go-board", injectable(GoBoardElement));
 customElements.define("go-stone", GoStoneElement);
 
-describe(GoGameService.name, () => {
+describe("game", () => {
   it("should could 4 liberties for a single stone", async () => {
     const board = await fixture<GoBoardElement>(html`
       <go-board>
@@ -16,7 +16,7 @@ describe(GoGameService.name, () => {
       </go-board>
     `);
 
-    const blackGroup = new GoGameService().findGroup(
+    const blackGroup = findGroup(
       board,
       board.querySelector("go-stone[slot='E16']")!
     );
@@ -42,7 +42,7 @@ describe(GoGameService.name, () => {
       </go-board>
     `);
 
-    const blackGroup = new GoGameService().findGroup(
+    const blackGroup = findGroup(
       board,
       board.querySelector("go-stone[slot='E16']")!
     );
@@ -65,7 +65,7 @@ describe(GoGameService.name, () => {
       </go-board>
     `);
 
-    const blackGroup = new GoGameService().findGroup(
+    const blackGroup = findGroup(
       board,
       board.querySelector("go-stone[slot='E16']")!
     );
@@ -95,7 +95,7 @@ describe(GoGameService.name, () => {
       </go-board>
     `);
 
-    const blackGroup = new GoGameService().findGroup(
+    const blackGroup = findGroup(
       board,
       board.querySelector("go-stone[slot='E16']")!
     );

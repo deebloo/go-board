@@ -3,7 +3,7 @@ import { Injected } from "@joist/di";
 import { css, html, shadow, ShadowTemplate } from "./templating.js";
 import { Debug } from "./go.ctx.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
-import { GoGameService } from "./game.service.js";
+import { findAttachedEnemyStones, findGroup } from "./game.service.js";
 
 const template: ShadowTemplate = {
   css: css`
@@ -164,7 +164,7 @@ const template: ShadowTemplate = {
 };
 
 export class GoBoardElement extends HTMLElement {
-  static inject = [Debug, GoGameService];
+  static inject = [Debug];
 
   get turn() {
     return (this.getAttribute("turn") as StoneColor) || "black";
@@ -208,13 +208,11 @@ export class GoBoardElement extends HTMLElement {
   #header = this.#shadow.getElementById("header")!;
   #pastStates = new Set<string>();
   #debug: Injected<Debug>;
-  #game: Injected<GoGameService>;
 
-  constructor(debug: Injected<Debug>, game: Injected<GoGameService>) {
+  constructor(debug: Injected<Debug>) {
     super();
 
     this.#debug = debug;
-    this.#game = game;
 
     this.#shadow.addEventListener("click", this.#onClick.bind(this));
   }
@@ -258,12 +256,11 @@ export class GoBoardElement extends HTMLElement {
 
   #validateStonePlacement(stone: GoStoneElement) {
     const debug = this.#debug();
-    const game = this.#game();
 
     debug.group("Checking stone:", stone);
 
     // find all attached enemies
-    const enemies = game.findAttachedEnemyStones(this, stone);
+    const enemies = findAttachedEnemyStones(this, stone);
 
     debug.log("Finding enemy stones:", enemies);
 
@@ -272,7 +269,7 @@ export class GoBoardElement extends HTMLElement {
 
     // for each enemy stone check its group and liberties.
     enemies.forEach((stone) => {
-      const group = game.findGroup(this, stone);
+      const group = findGroup(this, stone);
 
       // if a group has no liberties remove all of its stones
       if (!group.liberties.size) {
@@ -305,7 +302,7 @@ export class GoBoardElement extends HTMLElement {
       this.#pastStates.add(key);
 
       // find added stones group
-      const group = game.findGroup(this, stone);
+      const group = findGroup(this, stone);
 
       debug.log("Stone part of following group:", group);
 
@@ -313,7 +310,7 @@ export class GoBoardElement extends HTMLElement {
       if (!group.liberties.size) {
         stone.remove();
 
-        game.alert("Move is suicidal!");
+        alert("Move is suicidal!");
       } else {
         this.turn = stone.color === "black" ? "white" : "black";
       }
