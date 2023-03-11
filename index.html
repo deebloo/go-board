@@ -33,9 +33,7 @@
 
       form button {
         cursor: pointer;
-        border: none;
-        background: none;
-        font-size: 1.5rem;
+        padding: 0.5rem 1rem;
       }
 
       form input {
@@ -45,22 +43,16 @@
       }
     </style>
 
-    <h1>Enter an OGS game id or a path to an SFG file</h1>
+    <h1>Go Viewer</h1>
 
     <form>
       <label for="pathOrId">OGS ID or SFG Path:</label>
       <input id="pathOrId" name="pathOrId" />
 
-      <button type="submit" title="play/pause">&#9658;&#10074;</button>
-      <button
-        type="button"
-        id="copy"
-        style="font-size: 2rem"
-        title="copy board html"
-      >
-        &#9986;
-      </button>
+      <button type="submit" title="play/pause">RUN</button>
     </form>
+
+    <br />
 
     <sgf-viewer>
       <go-debug>
@@ -88,8 +80,6 @@
       const viewer = document.querySelector("sgf-viewer");
       const form = document.querySelector("form");
       const input = form?.querySelector("input#pathOrId");
-      const copyBtn = document.querySelector("button#copy");
-
       const url = new URL(window.location);
 
       input.value = url.searchParams.get("ogsIdOrPath") || "";
@@ -123,12 +113,6 @@
 
           history.pushState(null, "", url);
         }
-      });
-
-      copyBtn.addEventListener("click", () => {
-        viewer.game.board.copyToClipboard();
-
-        alert("Board HTML copied to clipboard");
       });
     </script>
   </body>
