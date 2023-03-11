@@ -24,26 +24,35 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "run-s build:*",
-    "build:tsc": "tsc",
+    "build": "wireit",
+    "build:tsc": "wireit",
     "build:vite": "vite build",
-    "build-lib": "tsc",
-    "test": "run-s test:*",
-    "test:build": "tsc",
-    "test:wtr": "wtr \"target/**/**.spec.js\" --node-resolve --puppeteer"
+    "test": "wireit"
   },
-  "dependencies": {
-    "@joist/di": "2.0.1"
+  "wireit": {
+    "build": {
+      "dependencies": ["build:tsc", "build:vite"]
+    },
+    "build:tsc": {
+      "command": "tsc --build --pretty",
+      "clean": "if-file-deleted",
+      "files": ["src/**/*.ts", "tsconfig.json"],
+      "output": ["lib/**", ".tsbuildinfo"]
+    },
+    "test": {
+      "command": "wtr \"target/**/**.spec.js\" --node-resolve --puppeteer",
+      "dependencies": ["build:tsc"]
+    }
   },
   "devDependencies": {
     "@open-wc/testing": "^3.1.2",
     "@web/test-runner": "^0.15.1",
     "@web/test-runner-puppeteer": "^0.11.0",
     "firebase-tools": "^11.7.0",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.4",
     "rollup-plugin-minify-html-literals": "^1.2.6",
     "typescript": "^4.9.5",
-    "vite": "^4.1.4"
+    "vite": "^4.1.4",
+    "wireit": "^0.9.5"
   }
 }

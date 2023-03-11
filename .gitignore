@@ -6,3 +6,4 @@
 /src/**/*.d.ts
 /website/dist
 .firebase
+.wireit

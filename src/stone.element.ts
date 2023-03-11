@@ -34,11 +34,11 @@ const template: ShadowTemplate = {
 };
 
 export class GoStoneElement extends HTMLElement {
-  static create(color: StoneColor, slot: string = "") {
+  static create(color: StoneColor, space: string = "") {
     const stone = new GoStoneElement();
 
     stone.color = color;
-    stone.space = slot;
+    stone.space = space;
 
     return stone;
   }

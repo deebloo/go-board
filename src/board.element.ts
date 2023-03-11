@@ -170,6 +170,14 @@ export class GoBoardElement extends HTMLElement {
     this.setAttribute("turn", value);
   }
 
+  get mode() {
+    return this.getAttribute("mode") || "game";
+  }
+
+  set mode(value) {
+    this.setAttribute("mode", value);
+  }
+
   rows = 19;
   cols = 19;
   columnLabels = [
@@ -215,7 +223,9 @@ export class GoBoardElement extends HTMLElement {
 
     stone.slot = stone.space;
 
-    this.#validateStonePlacement(stone);
+    if (this.mode === "game") {
+      this.#validateStonePlacement(stone);
+    }
   }
 
   connectedCallback() {

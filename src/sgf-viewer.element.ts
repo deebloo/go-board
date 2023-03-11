@@ -38,10 +38,6 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.#board) {
-      throw new Error("SGFViewerElement requires a child of GoGameElement");
-    }
-
     if (this.path || this.ogsId) {
       this.go();
     }
@@ -108,6 +104,11 @@ export class SGFViewerElement extends HTMLElement {
 
   pause() {
     this.isRunning = false;
+  }
+
+  reset() {
+    this.isRunning = false;
+    this.#step = 0;
   }
 
   parseSGF(value: string): ParseSGF[] {
