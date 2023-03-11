@@ -55,7 +55,7 @@ export class GoStoneElement extends HTMLElement {
     return this.getAttribute("space") || "";
   }
 
-  set space(val: string) {
+  set space(val) {
     this.setAttribute("space", val);
   }
 
