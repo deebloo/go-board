@@ -10,7 +10,7 @@
     }
   },
   "files": [
-    "target/build"
+    "target"
   ],
   "repository": {
     "type": "git",
