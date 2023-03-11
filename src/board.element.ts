@@ -242,6 +242,7 @@ export class GoBoardElement extends HTMLElement {
   reset() {
     this.innerHTML = "";
     this.#pastStates.clear();
+    this.turn = "black";
   }
 
   copyToClipboard() {

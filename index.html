@@ -51,12 +51,13 @@
       <input id="pathOrId" name="pathOrId" />
 
       <button type="submit" title="play/pause">RUN</button>
+      <button id="reset" type="button" title="reset">RESET</button>
     </form>
 
     <br />
 
     <sgf-viewer>
-      <go-board>
+      <go-board id="board">
         <go-stone color="black" space="R17"></go-stone>
         <go-stone color="white" space="R18"></go-stone>
         <go-stone color="black" space="Q18"></go-stone>
@@ -76,7 +77,7 @@
     <script type="module">
       import { debug } from "./src/lib.ts";
 
-      debug.enable();
+      // debug.enable();
     </script>
 
     <script src="./src/register.ts" type="module"></script>
@@ -85,9 +86,16 @@
       const viewer = document.querySelector("sgf-viewer");
       const form = document.querySelector("form");
       const input = form?.querySelector("input#pathOrId");
+      const reset = document.getElementById("reset");
+      const board = document.getElementById("board");
+
       const url = new URL(window.location);
 
       input.value = url.searchParams.get("ogsIdOrPath") || "";
+
+      reset.addEventListener("click", () => {
+        board.reset();
+      });
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
