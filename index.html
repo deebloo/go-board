@@ -12,7 +12,9 @@
     <style>
       * {
         box-sizing: border-box;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
       }
 
       go-board {
@@ -37,7 +39,7 @@
       }
 
       form input {
-        padding: .5rem 1rem;
+        padding: 0.5rem 1rem;
         border: solid 1px gray;
         border-radius: 4px;
       }
@@ -45,20 +47,25 @@
 
     <h1>Enter an OGS game id or a path to an SFG file</h1>
 
-    <p>
-      <form>
-        <label for="pathOrId">OGS ID or SFG Path:</label>
-        <input id="pathOrId" name="pathOrId"/>
+    <form>
+      <label for="pathOrId">OGS ID or SFG Path:</label>
+      <input id="pathOrId" name="pathOrId" />
 
-        <button type="submit" title="play/pause">&#9658;&#10074;</button>
-        <button type="button" id="copy" style="font-size: 2rem;" title="copy board html">&#9986;</button>
-      </form>
-    </p>
-    
+      <button type="submit" title="play/pause">&#9658;&#10074;</button>
+      <button
+        type="button"
+        id="copy"
+        style="font-size: 2rem"
+        title="copy board html"
+      >
+        &#9986;
+      </button>
+    </form>
+
     <sgf-viewer>
       <go-debug>
         <go-board>
-          <go-stone color="black" space="R17" ></go-stone>
+          <go-stone color="black" space="R17"></go-stone>
           <go-stone color="white" space="R18"></go-stone>
           <go-stone color="black" space="Q18"></go-stone>
           <go-stone color="white" space="S18"></go-stone>
@@ -83,7 +90,7 @@
       const input = form?.querySelector("input#pathOrId");
       const copyBtn = document.querySelector("button#copy");
 
-      const url = new URL(window.location)
+      const url = new URL(window.location);
 
       input.value = url.searchParams.get("ogsIdOrPath") || "";
 
