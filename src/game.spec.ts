@@ -1,11 +1,9 @@
+import "./register.js";
+
 import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element.js";
 import { findGroup } from "./game.js";
-import { GoStoneElement } from "./stone.element.js";
-
-customElements.define("go-board", GoBoardElement);
-customElements.define("go-stone", GoStoneElement);
 
 describe("game", () => {
   it("should could 4 liberties for a single stone", async () => {
