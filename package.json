@@ -37,7 +37,7 @@
       "command": "tsc --build --pretty",
       "clean": "if-file-deleted",
       "files": ["src/**/*.ts", "tsconfig.json"],
-      "output": ["lib/**", ".tsbuildinfo"]
+      "output": ["target/**"]
     },
     "test": {
       "command": "wtr \"target/**/**.spec.js\" --node-resolve --puppeteer",

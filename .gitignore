@@ -7,3 +7,4 @@
 /website/dist
 .firebase
 .wireit
+*.tsbuildinfo
