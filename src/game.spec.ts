@@ -1,11 +1,10 @@
-import { injectable } from "@joist/di";
 import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element.js";
 import { findGroup } from "./game.js";
 import { GoStoneElement } from "./stone.element.js";
 
-customElements.define("go-board", injectable(GoBoardElement));
+customElements.define("go-board", GoBoardElement);
 customElements.define("go-stone", GoStoneElement);
 
 describe("game", () => {
