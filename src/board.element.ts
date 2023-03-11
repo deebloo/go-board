@@ -177,7 +177,6 @@ export class GoBoardElement extends HTMLElement {
 
   rows = 19;
   cols = 19;
-  showCoords = true;
   columnLabels = [
     "A",
     "B",
@@ -207,7 +206,7 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   #shadow = shadow(this, template);
-  #header = this.#shadow.getElementById("#header")!;
+  #header = this.#shadow.getElementById("header")!;
   #pastStates = new Set<string>();
 
   constructor(
