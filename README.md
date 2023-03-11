@@ -8,10 +8,10 @@ Go Board WebComponent.
 
 ```HTML
 <go-board>
-  <go-stone slot="Q16" color="black"></go-stone>
-  <go-stone slot="D3" color="white"></go-stone>
-  <go-stone slot="R4" color="black"></go-stone>
-  <go-stone slot="D16" color="white"></go-stone>
+  <go-stone space="Q16" color="black"></go-stone>
+  <go-stone space="D3" color="white"></go-stone>
+  <go-stone space="R4" color="black"></go-stone>
+  <go-stone space="D16" color="white"></go-stone>
 </go-board>
 
 <script
