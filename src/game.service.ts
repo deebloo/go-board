@@ -1,5 +1,3 @@
-import { service } from "@joist/di";
-
 import { GoBoardElement } from "./board.element.js";
 import { GoStoneElement } from "./stone.element.js";
 
@@ -8,8 +6,9 @@ export class GroupState {
   liberties = new Set<string>();
 }
 
-@service
 export class GoGameService {
+  static provideInRoot = true;
+
   alert(message: string) {
     window.alert(message);
   }

@@ -1,4 +1,4 @@
-import { Injected, injectable } from "@joist/di";
+import { Injected } from "@joist/di";
 
 import { css, html, shadow, ShadowTemplate } from "./templating.js";
 import { Debug } from "./go.ctx.js";
@@ -163,7 +163,6 @@ const template: ShadowTemplate = {
   `,
 };
 
-@injectable
 export class GoBoardElement extends HTMLElement {
   static inject = [Debug, GoGameService];
 
@@ -231,6 +230,10 @@ export class GoBoardElement extends HTMLElement {
   connectedCallback() {
     if (this.rows > 19 || this.cols > 19) {
       throw new Error("Cannot create a board size greater then 19");
+    }
+
+    if (!this.hasAttribute("turn")) {
+      this.turn = "black";
     }
 
     this.#createBoard();

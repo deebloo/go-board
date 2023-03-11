@@ -1,4 +1,4 @@
-import { injectable, Injected, service } from "@joist/di";
+import { Injected } from "@joist/di";
 
 import { GoBoardElement } from "./board.element.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
@@ -13,8 +13,9 @@ interface ParseSGF {
   space: string;
 }
 
-@service
 export class SGFService {
+  static provideInRoot = true;
+
   fetchSGF(path: string) {
     return fetch(path).then((res) => res.text());
   }
@@ -29,7 +30,6 @@ const template: ShadowTemplate = {
   html: html`<slot></slot>`,
 };
 
-@injectable
 export class SGFViewerElement extends HTMLElement {
   static inject = [SGFService];
 

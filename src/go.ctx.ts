@@ -1,12 +1,13 @@
-import { Injected, service, injectable } from "@joist/di";
+import { Injected } from "@joist/di";
 
-@service
 export class GoConfig {
+  static provideInRoot = true;
+
   debug = false;
 }
 
-@service
 export class Debug {
+  static provideInRoot = true;
   static inject = [GoConfig];
 
   constructor(private config: Injected<GoConfig>) {}
@@ -36,7 +37,6 @@ export class Debug {
   }
 }
 
-@injectable
 export class DebugCtxElement extends HTMLElement {
   static providers = [
     Debug,
