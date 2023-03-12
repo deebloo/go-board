@@ -25,7 +25,7 @@ export class SGFViewerElement extends HTMLElement {
   path?: string;
   ogsId?: string;
   isRunning = false;
-  delay = 100;
+  delay = 5;
 
   #board = this.querySelector<GoBoardElement>("go-board")!;
   #data: ParseSGF[] = [];
@@ -37,13 +37,7 @@ export class SGFViewerElement extends HTMLElement {
     shadow(this, template);
   }
 
-  connectedCallback() {
-    if (this.path || this.ogsId) {
-      this.go();
-    }
-  }
-
-  async go() {
+  async go(cb: () => void) {
     this.isRunning = true;
 
     if (!this.#data.length) {
@@ -52,7 +46,7 @@ export class SGFViewerElement extends HTMLElement {
     }
 
     if (this.#data.length) {
-      return this.play();
+      return this.play(cb);
     }
 
     const path = this.ogsId
@@ -64,11 +58,11 @@ export class SGFViewerElement extends HTMLElement {
 
       this.#data = this.parseSGF(raw);
 
-      this.play();
+      this.play(cb);
     }
   }
 
-  async play() {
+  async play(cb: () => void) {
     if (this.isRunning) {
       if (this.#step >= this.#data.length) {
         this.#board.reset();
@@ -86,12 +80,12 @@ export class SGFViewerElement extends HTMLElement {
 
           this.#board;
 
-          this.play();
+          this.play(cb);
         }, this.delay);
       } else {
         this.#board.append(stone);
 
-        this.play();
+        this.play(cb);
       }
     }
 
@@ -99,6 +93,8 @@ export class SGFViewerElement extends HTMLElement {
       this.#step = 0;
       this.#data = [];
       this.isRunning = false;
+
+      cb();
     }
   }
 
@@ -109,6 +105,7 @@ export class SGFViewerElement extends HTMLElement {
   reset() {
     this.isRunning = false;
     this.#step = 0;
+    this.#data = [];
   }
 
   parseSGF(value: string): ParseSGF[] {

@@ -242,11 +242,23 @@ export class GoBoardElement extends HTMLElement {
   }
 
   key() {
-    const stones = this.querySelectorAll<GoStoneElement>("go-stone[slot]");
+    const stones: GoStoneElement[] = [];
 
-    return Array.from(stones)
-      .sort(stoneSort)
-      .reduce((key, s) => `${key}${s.slot}${s.color}`, "");
+    for (let stone of this.children) {
+      if (stone instanceof GoStoneElement && stone.slot) {
+        stones.push(stone);
+      }
+    }
+
+    stones.sort(stoneSort);
+
+    let key = "";
+
+    for (let stone of stones) {
+      key += stone.slot + stone.color;
+    }
+
+    return key;
   }
 
   reset() {
@@ -271,22 +283,23 @@ export class GoBoardElement extends HTMLElement {
     const removedStones: GoStoneElement[] = [];
 
     // for each enemy stone check its group and liberties.
-    enemies.forEach((stone) => {
-      const group = findGroup(this, stone);
+    for (let enemy of enemies) {
+      const group = findGroup(this, enemy);
 
       // if a group has no liberties remove all of its stones
       if (!group.liberties.size) {
         debug.log("Removing Stones:\n", ...group.stones);
 
-        group.stones.forEach((stone) => {
+        for (let stone of group.stones) {
           // stones are removed by removing it's assinged slot
           // this allows the game to use stones to track game progress
           stone.removeAttribute("slot");
 
+          // keep track of removed stones
           removedStones.push(stone);
-        });
+        }
       }
-    });
+    }
 
     const key = this.key();
 
@@ -294,9 +307,11 @@ export class GoBoardElement extends HTMLElement {
       // If the current board state has already existed the move is not allowed
 
       // Add the removed stones back
-      removedStones.forEach((stone) => {
+      for (let stone of removedStones) {
         stone.slot = stone.space;
-      });
+      }
+
+      alert("Move is not allowed");
 
       // remove the previously placed stone
       stone.remove();
@@ -312,8 +327,6 @@ export class GoBoardElement extends HTMLElement {
       // if the current group has no liberties remove it. not allowed
       if (!group.liberties.size) {
         stone.remove();
-
-        debug.log("Move is suicidal!");
 
         alert("Move is suicidal!");
       } else {
@@ -340,7 +353,10 @@ export class GoBoardElement extends HTMLElement {
       const spacer = document.createElement("board-spacer");
       row.appendChild(spacer);
 
-      spacer.innerHTML = `<span>${(this.rows - r).toString()}</span>`;
+      const span = document.createElement("span");
+      span.innerHTML = (this.rows - r).toString();
+
+      spacer.append(span);
 
       for (let c = 0; c < this.cols; c++) {
         row.appendChild(this.#createSlot(r, c));

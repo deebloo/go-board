@@ -31,17 +31,27 @@
   },
   "wireit": {
     "build": {
-      "dependencies": ["build:tsc", "build:vite"]
+      "dependencies": [
+        "build:tsc",
+        "build:vite"
+      ]
     },
     "build:tsc": {
       "command": "tsc --build --pretty",
       "clean": "if-file-deleted",
-      "files": ["src/**/*.ts", "tsconfig.json"],
-      "output": ["target/**"]
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "target/**"
+      ]
     },
     "test": {
       "command": "wtr \"target/**/**.spec.js\" --node-resolve --puppeteer",
-      "dependencies": ["build:tsc"]
+      "dependencies": [
+        "build:tsc"
+      ]
     }
   },
   "devDependencies": {

@@ -49,8 +49,7 @@
       <br />
 
       <input id="pathOrId" name="pathOrId" />
-
-      <button type="submit" title="play/pause">RUN</button>
+      <button id="run" type="submit" title="play/pause">RUN</button>
       <button id="reset" type="button" title="reset">RESET</button>
     </form>
 
@@ -86,6 +85,7 @@
       const viewer = document.querySelector("sgf-viewer");
       const form = document.querySelector("form");
       const input = form?.querySelector("input#pathOrId");
+      const run = document.getElementById("run");
       const reset = document.getElementById("reset");
       const board = document.getElementById("board");
 
@@ -106,7 +106,9 @@
 
         if (viewer && pathOrId) {
           if (viewer.isRunning) {
-            viewer.isRunning = false;
+            viewer.pause();
+            run.innerHTML = "RUN";
+            reset.disabled = false;
 
             return;
           }
@@ -114,13 +116,22 @@
           if (!isNaN(parseInt(pathOrId.toString()))) {
             viewer.ogsId = pathOrId.toString();
 
-            viewer.go();
+            viewer.go(() => {
+              run.innerHTML = "RUN";
+              reset.disabled = false;
+            });
+
+            run.innerHTML = "PAUSE";
+            reset.disabled = true;
 
             url.searchParams.set("ogsIdOrPath", viewer.ogsId);
           } else {
             viewer.path = pathOrId.toString();
 
-            viewer.go();
+            viewer.go(() => {
+              run.innerHTML = "RUN";
+              reset.disabled = false;
+            });
 
             url.searchParams.set("ogsIdOrPath", viewer.path);
           }
