@@ -1,6 +1,6 @@
 # go-board
 
-Go Board WebComponent.
+Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself. 
 
 ## All you need to get started is some markup and a script tag
 
