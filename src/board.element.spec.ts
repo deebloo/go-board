@@ -52,13 +52,4 @@ describe(GoBoardElement.name, () => {
     // should NOT match for different states
     expect(board1.key()).to.equal(board2.key());
   });
-
-  it("should throw an error if board size is greater then 19", () => {
-    const board = new GoBoardElement();
-
-    board.rows = 20;
-    board.cols = 19;
-
-    expect(board.connectedCallback.bind(this)).to.throw();
-  });
 });

@@ -345,7 +345,7 @@ export class GoBoardElement extends HTMLElement {
       row.className = "row";
 
       const spacer = document.createElement("board-spacer");
-      row.appendChild(spacer);
+      row.append(spacer);
 
       const span = document.createElement("span");
       span.innerHTML = (this.rows - r).toString();
@@ -353,10 +353,10 @@ export class GoBoardElement extends HTMLElement {
       spacer.append(span);
 
       for (let c = 0; c < this.cols; c++) {
-        row.appendChild(this.#createSlot(r, c));
+        row.append(this.#createSlot(r, c));
       }
 
-      this.shadowRoot!.appendChild(row);
+      this.#shadow.append(row);
     }
   }
 
@@ -366,9 +366,9 @@ export class GoBoardElement extends HTMLElement {
       const letter = document.createElement("span");
       letter.innerHTML = this.columnLabels[r];
 
-      col.appendChild(letter);
+      col.append(letter);
 
-      this.#header.appendChild(col);
+      this.#header.append(col);
     }
   }
 
@@ -393,7 +393,7 @@ export class GoBoardElement extends HTMLElement {
       btn.style.opacity = ".2";
     });
 
-    slot.appendChild(btn);
+    slot.append(btn);
 
     return slot;
   }
