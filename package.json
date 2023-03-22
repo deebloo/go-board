@@ -40,11 +40,12 @@
       "command": "tsc --build --pretty",
       "clean": "if-file-deleted",
       "files": [
-        "src/**/*.ts",
+        "src/**",
         "tsconfig.json"
       ],
       "output": [
-        "target/**"
+        "target/**",
+        "tsconfig.tsbuildinfo"
       ]
     },
     "test": {
