@@ -5,7 +5,7 @@ export default {
   input: "target/register.js",
   output: {
     file: "target/bundle/go-board.min.js",
-    format: "cjs",
+    format: "iife",
   },
   plugins: [
     {
