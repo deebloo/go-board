@@ -216,6 +216,13 @@ export class GoBoardElement extends HTMLElement {
     super();
 
     this.#shadow.addEventListener("click", this.#onClick.bind(this));
+
+    if (!this.hasAttribute("turn")) {
+      this.turn = "black";
+    }
+
+    this.#createBoard();
+    this.#createColumnLetters();
   }
 
   onStoneAdded(stone: GoStoneElement) {
@@ -226,19 +233,6 @@ export class GoBoardElement extends HTMLElement {
     if (this.mode === "game") {
       this.#validateStonePlacement(stone);
     }
-  }
-
-  connectedCallback() {
-    if (this.rows > 19 || this.cols > 19) {
-      throw new Error("Cannot create a board size greater then 19");
-    }
-
-    if (!this.hasAttribute("turn")) {
-      this.turn = "black";
-    }
-
-    this.#createBoard();
-    this.#createColumnLetters();
   }
 
   key() {
@@ -378,16 +372,16 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
-  #createSlot(r: number, c: number) {
+  #createSlot(row: number, column: number) {
     const slot = document.createElement("slot");
-    slot.name = `${this.columnLabels[c]}${this.rows - r}`;
+    slot.name = `${this.columnLabels[column]}${this.rows - row}`;
 
     const spacing = Math.floor(this.rows / 3);
     const start = Math.floor(this.rows / 4) - 1;
-
     const spaces = [start, start + spacing, start + spacing * 2];
 
-    if (spaces.includes(r) && spaces.includes(c)) {
+    // Define which spaces should be decorated as a starpoint
+    if (spaces.includes(row) && spaces.includes(column)) {
       slot.classList.add("starpoint");
     }
 
