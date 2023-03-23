@@ -10,10 +10,7 @@ Go Board WebComponent. Stones indicate the order of moved played. The board comp
 [StackBlitz](https://stackblitz.com/edit/go-board-demo?file=index.html)
 
 ```HTML
-
-<script
-  src="https://cdn.jsdelivr.net/npm/go-board@2.0.7/target/bundle/go-board.min.js"
-></script>
+<script src="https://cdn.jsdelivr.net/npm/go-board@2.1.1/target/bundle/go-board.min.js"></script>
 
 <go-board>
   <go-stone color="black" space="R17"></go-stone>
