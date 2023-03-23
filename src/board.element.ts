@@ -217,12 +217,14 @@ export class GoBoardElement extends HTMLElement {
 
     this.#shadow.addEventListener("click", this.#onClick.bind(this));
 
+    this.#createBoard();
+    this.#createColumnLetters();
+  }
+
+  connectedCallback() {
     if (!this.hasAttribute("turn")) {
       this.turn = "black";
     }
-
-    this.#createBoard();
-    this.#createColumnLetters();
   }
 
   onStoneAdded(stone: GoStoneElement) {
