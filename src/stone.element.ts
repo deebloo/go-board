@@ -73,4 +73,9 @@ export class GoStoneElement extends HTMLElement {
       this.#parent.onStoneAdded(this);
     }
   }
+
+  disconnectedCallback() {
+    this.#parent?.onStoneRemoved(this);
+    this.#parent = null;
+  }
 }

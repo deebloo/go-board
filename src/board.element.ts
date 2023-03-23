@@ -237,6 +237,8 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
+  onStoneRemoved(_: GoStoneElement) {}
+
   key() {
     const stones: GoStoneElement[] = [];
 
