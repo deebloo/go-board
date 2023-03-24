@@ -22,22 +22,61 @@ const template: ShadowTemplate = {
 };
 
 export class SGFViewerElement extends HTMLElement {
-  path?: string;
-  ogsId?: string;
+  get path() {
+    return this.getAttribute("path") || "";
+  }
+
+  set path(id: string) {
+    this.setAttribute("path", id);
+  }
+
+  get ogsId() {
+    return this.getAttribute("ogs-id") || "";
+  }
+
+  set ogsId(id: string) {
+    this.setAttribute("ogs-id", id);
+  }
+
   isRunning = false;
   delay = 5;
 
-  #board = this.querySelector<GoBoardElement>("go-board")!;
+  #shadow = shadow(this, template);
+  #board: GoBoardElement | null = null;
   #data: ParseSGF[] = [];
   #step = 0;
 
   constructor() {
     super();
 
-    shadow(this, template);
+    this.#shadow.addEventListener("slotchange", (e) => {
+      const target = e.target as HTMLSlotElement;
+
+      for (let el of target.assignedElements()) {
+        if (el instanceof GoBoardElement) {
+          this.#board = el;
+
+          break; // stop after first board found
+        }
+      }
+    });
+  }
+
+  connectedCallback() {
+    if (this.ogsId || this.path) {
+      console.log("starting game");
+
+      this.go(() => {
+        console.log("game complete");
+      });
+    }
   }
 
   async go(cb: () => void) {
+    if (!this.#board) {
+      throw new Error("Could not find board element");
+    }
+
     this.isRunning = true;
 
     if (!this.#data.length) {
@@ -53,6 +92,8 @@ export class SGFViewerElement extends HTMLElement {
       ? `https://online-go.com/api/v1/games/${this.ogsId}/sgf`
       : this.path;
 
+    console.log(path);
+
     if (path) {
       const raw = await fetch(path).then((res) => res.text());
 
@@ -63,6 +104,10 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async play(cb: () => void) {
+    if (!this.#board) {
+      throw new Error("Could not find board element");
+    }
+
     if (this.isRunning) {
       if (this.#step >= this.#data.length) {
         this.#board.reset();
@@ -76,6 +121,10 @@ export class SGFViewerElement extends HTMLElement {
 
       if (this.delay > 0 && this.#step > 0) {
         setTimeout(() => {
+          if (!this.#board) {
+            throw new Error("Could not find board element");
+          }
+
           this.#board.append(stone);
 
           this.#board;
@@ -109,6 +158,10 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   parseSGF(value: string): ParseSGF[] {
+    if (!this.#board) {
+      throw new Error("Could not find board element");
+    }
+
     const moves: ParseSGF[] = [];
     const lines = value.split("\n");
     const { columnLabels, rows } = this.#board;
