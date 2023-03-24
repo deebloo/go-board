@@ -1,11 +1,10 @@
 # go-board
 
-Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself. 
+Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself.
 
 ## All you need to get started is some markup and a script tag
 
 [Demo](https://go-viewer.web.app/)
-
 
 [StackBlitz](https://stackblitz.com/edit/go-board-demo?file=index.html)
 
@@ -27,4 +26,14 @@ Go Board WebComponent. Stones indicate the order of moved played. The board comp
   <go-stone color="white" space="T19"></go-stone>
   <go-stone color="black" space="S19"></go-stone>
 </go-board>
+```
+
+Display a game from [OGS](https://online-go.com).
+
+This library ships with an SGF viewer. If you pass in a game id from OGS it will play out automatically. There is also an imperative API if you want to pause and resume play/
+
+```html
+<sgf-viewer ogs-id="50728274">
+  <go-board></go-board>
+</sgf-viewer>
 ```

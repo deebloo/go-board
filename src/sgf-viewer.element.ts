@@ -56,20 +56,18 @@ export class SGFViewerElement extends HTMLElement {
         if (el instanceof GoBoardElement) {
           this.#board = el;
 
+          if (this.ogsId || this.path) {
+            console.log("starting game");
+
+            this.go(() => {
+              console.log("game complete");
+            });
+          }
+
           break; // stop after first board found
         }
       }
     });
-  }
-
-  connectedCallback() {
-    if (this.ogsId || this.path) {
-      console.log("starting game");
-
-      this.go(() => {
-        console.log("game complete");
-      });
-    }
   }
 
   async go(cb: () => void) {
