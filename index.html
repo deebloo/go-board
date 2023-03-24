@@ -56,28 +56,8 @@
     <br />
 
     <sgf-viewer>
-      <go-board id="board">
-        <go-stone color="black" space="R17"></go-stone>
-        <go-stone color="white" space="R18"></go-stone>
-        <go-stone color="black" space="Q18"></go-stone>
-        <go-stone color="white" space="S18"></go-stone>
-        <go-stone color="black" space="S17"></go-stone>
-        <go-stone color="white" space="R19"></go-stone>
-        <go-stone color="black" space="Q19"></go-stone>
-        <go-stone color="white" space="T18"></go-stone>
-        <go-stone color="black" space="T17"></go-stone>
-        <go-stone color="white" space="Q16"></go-stone>
-        <go-stone color="black" space="S19"></go-stone>
-        <go-stone color="white" space="T19"></go-stone>
-        <go-stone color="black" space="S19"></go-stone>
-      </go-board>
+      <go-board id="board" debug> </go-board>
     </sgf-viewer>
-
-    <script type="module">
-      import { debug } from "./src/lib.ts";
-
-      debug.enable();
-    </script>
 
     <script src="./src/register.ts" type="module"></script>
 

@@ -153,6 +153,10 @@ const template: ShadowTemplate = {
     :host([turn="white"]) .row slot button:hover:after {
       background: #fff;
     }
+
+    :host([debug]) button {
+      opacity: 0.2;
+    }
   `,
   html: html`
     <div id="header" class="row">
@@ -162,6 +166,8 @@ const template: ShadowTemplate = {
 };
 
 export class GoBoardElement extends HTMLElement {
+  static observedAttributes = ["debug"];
+
   get turn() {
     return (this.getAttribute("turn") as StoneColor) || "black";
   }
@@ -219,6 +225,14 @@ export class GoBoardElement extends HTMLElement {
 
     this.#createBoard();
     this.#createColumnLetters();
+  }
+
+  attributeChangedCallback() {
+    if (this.hasAttribute("debug")) {
+      debug.enable();
+    } else {
+      debug.disable();
+    }
   }
 
   connectedCallback() {
@@ -392,10 +406,6 @@ export class GoBoardElement extends HTMLElement {
     const btn = document.createElement("button");
     btn.title = slot.name;
     btn.id = slot.name;
-
-    debug.eval(() => {
-      btn.style.opacity = ".2";
-    });
 
     slot.append(btn);
 
