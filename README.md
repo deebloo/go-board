@@ -1,6 +1,6 @@
 # go-board
 
-Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself. The entire library weights less then 5kb (gzipped) which makes it performant to embed into existing web pages. If you want to see exactly what the board is calculating you can enable debugging by adding the "debug" attribute to go-board. (`<go-board debug></go-board>`)
+Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself. The entire library weights less than 5kb gzip and less than 4k brotli which makes it performant to embed into existing web pages. If you want to see exactly what the board is calculating you can enable debugging by adding the "debug" attribute to go-board. (`<go-board debug></go-board>`)
 
 [Demo](https://go-viewer.web.app/)
 
