@@ -1,6 +1,6 @@
 # go-board
 
-Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself.
+Go Board WebComponent. Stones indicate the order of moved played. The board component will make sure the correct game state is reflected on the board itself. The entire library weights less then 5kb (gzipped).
 
 [Demo](https://go-viewer.web.app/)
 
