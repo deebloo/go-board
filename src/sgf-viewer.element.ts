@@ -38,8 +38,21 @@ export class SGFViewerElement extends HTMLElement {
     this.setAttribute("ogs-id", id);
   }
 
+  get delay() {
+    const value = this.getAttribute("delay");
+
+    if (value) {
+      return Number(value);
+    }
+
+    return 5;
+  }
+
+  set delay(value: number) {
+    this.setAttribute("delay", value.toString());
+  }
+
   isRunning = false;
-  delay = 5;
 
   #shadow = shadow(this, template);
   #board: GoBoardElement | null = null;

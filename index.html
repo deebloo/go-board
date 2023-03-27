@@ -18,12 +18,13 @@
       }
 
       go-board {
-        max-height: calc(100vh - 200px);
+        max-height: calc(100vh - 70px);
         display: block;
       }
 
       form > * {
         margin-right: 0.25rem;
+        margin-bottom: 0.5rem;
       }
 
       form button {
@@ -38,25 +39,25 @@
         border: solid 1px gray;
         border-radius: 4px;
       }
+
+      label {
+        height: 0;
+        width: 0;
+        position: fixed;
+        opacity: 0;
+      }
     </style>
 
-    <h1>Go Viewer</h1>
-
     <form>
-      <label for="pathOrId">OGS ID or SFG Path:</label>
+      <label for="pathOrId">OGS ID or SGF Path:</label>
 
-      <br />
-      <br />
-
-      <input id="pathOrId" name="pathOrId" />
+      <input id="pathOrId" name="pathOrId" placeholder="ogs id or sgf" />
       <button id="run" type="submit" title="play/pause">RUN</button>
       <button id="reset" type="button" title="reset">RESET</button>
     </form>
 
-    <br />
-
-    <sgf-viewer>
-      <go-board id="board" debug></go-board>
+    <sgf-viewer delay="10">
+      <go-board id="board"></go-board>
     </sgf-viewer>
 
     <script src="./src/register.ts" type="module"></script>
@@ -72,6 +73,10 @@
       const url = new URL(window.location);
 
       input.value = url.searchParams.get("ogsIdOrPath") || "";
+
+      if (url.searchParams.has("debug")) {
+        board.setAttribute("debug", "");
+      }
 
       reset.addEventListener("click", () => {
         board.reset();
