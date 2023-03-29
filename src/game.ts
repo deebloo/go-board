@@ -20,13 +20,12 @@ export function findGroup(
 
   for (let i = 0; i < surroundingSpaces.length; i++) {
     const slot = surroundingSpaces[i];
-    const next = board.querySelector<GoStoneElement>(
-      `[slot="${surroundingSpaces[i]}"]`
-    );
+    const next = board.getSpace(slot);
 
     if (!next) {
       state.liberties.add(slot);
     } else if (next.color === stone.color && !state.stones.has(next)) {
+      // stone is the same color as previous and is not already part of the group
       state.stones.add(next);
 
       findGroup(board, next, state);
@@ -74,9 +73,7 @@ export function findAttachedEnemyStones(
   const stones: GoStoneElement[] = [];
 
   for (let i = 0; i < surroundingSpaces.length; i++) {
-    const next = board.querySelector<GoStoneElement>(
-      `[slot="${surroundingSpaces[i]}"]`
-    );
+    const next = board.getSpace(surroundingSpaces[i]);
 
     if (next && next.color !== stone.color) {
       stones.push(next);

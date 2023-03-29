@@ -7,7 +7,7 @@ const template: ShadowTemplate = {
   css: css`
     :host {
       box-sizing: border-box;
-      background: #caa472;
+      background: #dcb35c;
       display: block;
       padding: 1rem;
       position: relative;
@@ -52,11 +52,13 @@ const template: ShadowTemplate = {
     #header > * {
       border-color: transparent;
       transform: translate(-50%, -20%);
+      margin-bottom: 10px;
     }
 
     .row board-spacer {
       border-color: transparent;
       transform: translate(-20%, -50%);
+      margin-right: 10px;
     }
 
     .row:last-child slot {
@@ -116,14 +118,6 @@ const template: ShadowTemplate = {
 
     .row slot::slotted(go-stone[color="black"]:last-child)::after {
       border-color: #fff;
-    }
-
-    .row slot::slotted(go-stone[draggable="true"]) {
-      cursor: grab;
-    }
-
-    .row slot::slotted(go-stone[draggable="true"]:active) {
-      cursor: grabbing;
     }
 
     .row slot button {
@@ -215,6 +209,7 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   #shadow = shadow(this, template);
+  #stones = new Map<string, GoStoneElement>();
   #header = this.#shadow.getElementById("header")!;
   #pastStates = new Set<string>();
 
@@ -246,12 +241,16 @@ export class GoBoardElement extends HTMLElement {
 
     stone.slot = stone.space;
 
+    this.#stones.set(stone.space, stone);
+
     if (this.mode === "game") {
       this.#validateStonePlacement(stone);
     }
   }
 
-  onStoneRemoved(_: GoStoneElement) {}
+  onStoneRemoved(stone: GoStoneElement) {
+    this.#stones.delete(stone.space);
+  }
 
   key() {
     const stones: GoStoneElement[] = [];
@@ -276,7 +275,12 @@ export class GoBoardElement extends HTMLElement {
   reset() {
     this.innerHTML = "";
     this.#pastStates.clear();
+    this.#stones.clear();
     this.turn = "black";
+  }
+
+  getSpace(space: string): GoStoneElement | undefined {
+    return this.#stones.get(space);
   }
 
   copyToClipboard() {
@@ -304,8 +308,8 @@ export class GoBoardElement extends HTMLElement {
 
         for (let stone of group.stones) {
           // stones are removed by removing it's assinged slot
-          // this allows the game to use stones to track game progress
           stone.removeAttribute("slot");
+          this.#stones.delete(stone.space);
 
           // keep track of removed stones
           removedStones.push(stone);
@@ -321,6 +325,7 @@ export class GoBoardElement extends HTMLElement {
       // Add the removed stones back
       for (let stone of removedStones) {
         stone.slot = stone.space;
+        this.#stones.set(stone.space, stone);
       }
 
       alert("Move is not allowed");

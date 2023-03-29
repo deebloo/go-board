@@ -1,5 +1,4 @@
 import { GoBoardElement } from "./board.element.js";
-import { debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { css, html, shadow, ShadowTemplate } from "./templating.js";
 
@@ -17,8 +16,53 @@ const template: ShadowTemplate = {
     :host {
       display: contents;
     }
+
+    #controls {
+      display: none;
+    }
+
+    :host([controls]) #controls {
+      display: flex;
+    }
+
+    form {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    form button {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      border: solid 1px gray;
+    }
+
+    form input {
+      padding: 0.5rem 1rem;
+      border: solid 1px gray;
+      border-radius: 4px;
+    }
+
+    label {
+      height: 0;
+      width: 0;
+      position: fixed;
+      opacity: 0;
+    }
   `,
-  html: html`<slot></slot>`,
+  html: html`
+    <form id="controls">
+      <label for="pathOrId">OGS ID or SGF Path:</label>
+      <input id="pathOrId" name="pathOrId" placeholder="ogs id or sgf" />
+
+      <button id="run" type="submit" title="play/pause">RUN</button>
+      <button id="reset" type="button" title="reset">RESET</button>
+    </form>
+
+    <slot></slot>
+  `,
 };
 
 export class SGFViewerElement extends HTMLElement {
@@ -28,6 +72,8 @@ export class SGFViewerElement extends HTMLElement {
 
   set path(id: string) {
     this.setAttribute("path", id);
+
+    this.dispatchEvent(new Event("sgf:change::path"));
   }
 
   get ogsId() {
@@ -36,6 +82,8 @@ export class SGFViewerElement extends HTMLElement {
 
   set ogsId(id: string) {
     this.setAttribute("ogs-id", id);
+
+    this.dispatchEvent(new Event("sgf:change::ogs-id"));
   }
 
   get delay() {
@@ -57,11 +105,15 @@ export class SGFViewerElement extends HTMLElement {
   #shadow = shadow(this, template);
   #board: GoBoardElement | null = null;
   #data: ParseSGF[] = [];
+  #form = this.#shadow.getElementById("controls") as HTMLFormElement;
+  #run = this.#shadow.getElementById("run") as HTMLButtonElement;
+  #reset = this.#shadow.getElementById("reset") as HTMLButtonElement;
   #step = 0;
 
   constructor() {
     super();
 
+    // init board
     this.#shadow.addEventListener("slotchange", (e) => {
       const target = e.target as HTMLSlotElement;
 
@@ -81,19 +133,47 @@ export class SGFViewerElement extends HTMLElement {
         }
       }
     });
+
+    this.#form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (this.isRunning) {
+        this.pause();
+
+        this.#run.innerHTML = "RUN";
+        this.#reset.disabled = false;
+
+        return;
+      }
+
+      const data = new FormData(this.#form);
+      const pathOrId = data.get("pathOrId");
+
+      if (pathOrId) {
+        this.#run.innerHTML = "PAUSE";
+        this.#reset.disabled = true;
+
+        if (!isNaN(parseInt(pathOrId.toString()))) {
+          this.ogsId = pathOrId.toString();
+        } else {
+          this.path = pathOrId.toString();
+        }
+
+        this.go(() => {
+          this.#run.innerHTML = "RUN";
+          this.#run.disabled = true;
+          this.#reset.disabled = false;
+        });
+      }
+    });
+
+    this.#reset.addEventListener("click", () => {
+      this.reset();
+    });
   }
 
   async go(cb: () => void) {
-    if (!this.#board) {
-      throw new Error("Could not find board element");
-    }
-
     this.isRunning = true;
-
-    if (!this.#data.length) {
-      debug.log("clearning board");
-      this.#board.reset();
-    }
 
     if (this.#data.length) {
       return this.play(cb);
@@ -102,8 +182,6 @@ export class SGFViewerElement extends HTMLElement {
     const path = this.ogsId
       ? `https://online-go.com/api/v1/games/${this.ogsId}/sgf`
       : this.path;
-
-    console.log(path);
 
     if (path) {
       const raw = await fetch(path).then((res) => res.text());
@@ -115,36 +193,14 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   async play(cb: () => void) {
-    if (!this.#board) {
-      throw new Error("Could not find board element");
-    }
-
     if (this.isRunning) {
-      if (this.#step >= this.#data.length) {
-        this.#board.reset();
-      }
-
-      const move = this.#data[this.#step];
-
-      this.#step += 1;
-
-      const stone = GoStoneElement.create(move.color, move.space);
-
-      if (this.delay > 0 && this.#step > 0) {
+      if (this.delay > 0 && this.#step + 1 > 0) {
         setTimeout(() => {
-          if (!this.#board) {
-            throw new Error("Could not find board element");
-          }
-
-          this.#board.append(stone);
-
-          this.#board;
-
+          this.next();
           this.play(cb);
         }, this.delay);
       } else {
-        this.#board.append(stone);
-
+        this.next();
         this.play(cb);
       }
     }
@@ -158,6 +214,22 @@ export class SGFViewerElement extends HTMLElement {
     }
   }
 
+  next() {
+    if (!this.#board) {
+      throw new Error("Could not find board element");
+    }
+
+    const move = this.#data[this.#step];
+
+    if (move) {
+      this.#step += 1;
+
+      const stone = GoStoneElement.create(move.color, move.space);
+
+      this.#board.append(stone);
+    }
+  }
+
   pause() {
     this.isRunning = false;
   }
@@ -166,6 +238,9 @@ export class SGFViewerElement extends HTMLElement {
     this.isRunning = false;
     this.#step = 0;
     this.#data = [];
+    this.#run.disabled = false;
+
+    this.#board?.reset();
   }
 
   parseSGF(value: string): ParseSGF[] {

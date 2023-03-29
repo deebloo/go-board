@@ -35,19 +35,12 @@ export class TemplatResult extends Result<HTMLTemplateElement> {
   }
 }
 
-export class CSSResult extends Result<CSSStyleSheet | HTMLStyleElement> {
-  createValue(str: string): CSSStyleSheet | HTMLStyleElement {
-    if (document.adoptedStyleSheets) {
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(str);
+export class CSSResult extends Result<CSSStyleSheet> {
+  createValue(str: string): CSSStyleSheet {
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(str);
 
-      return sheet;
-    }
-
-    const style = document.createElement("style");
-    style.innerHTML = str;
-
-    return style;
+    return sheet;
   }
 }
 
@@ -73,11 +66,9 @@ export function shadow(el: HTMLElement, template?: ShadowTemplate) {
 
   if (template?.css) {
     if (Array.isArray(template.css)) {
-      template.css.forEach((css) => {
-        appendSheet(shadow, css);
-      });
+      shadow.adoptedStyleSheets = template.css.map((css) => css.toValue());
     } else {
-      appendSheet(shadow, template.css);
+      shadow.adoptedStyleSheets = [template.css.toValue()];
     }
   }
 
@@ -86,14 +77,4 @@ export function shadow(el: HTMLElement, template?: ShadowTemplate) {
   }
 
   return shadow;
-}
-
-function appendSheet(root: ShadowRoot, css: CSSResult) {
-  const value = css.toValue();
-
-  if (value instanceof CSSStyleSheet) {
-    root.adoptedStyleSheets = [...root.adoptedStyleSheets, value];
-  } else if (value instanceof HTMLStyleElement) {
-    root.append(value);
-  }
 }

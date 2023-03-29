@@ -21,109 +21,22 @@
         max-height: calc(100vh - 70px);
         display: block;
       }
-
-      form > * {
-        margin-right: 0.25rem;
-        margin-bottom: 0.5rem;
-      }
-
-      form button {
-        cursor: pointer;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        border: solid 1px gray;
-      }
-
-      form input {
-        padding: 0.5rem 1rem;
-        border: solid 1px gray;
-        border-radius: 4px;
-      }
-
-      label {
-        height: 0;
-        width: 0;
-        position: fixed;
-        opacity: 0;
-      }
     </style>
 
-    <form>
-      <label for="pathOrId">OGS ID or SGF Path:</label>
-
-      <input id="pathOrId" name="pathOrId" placeholder="ogs id or sgf" />
-      <button id="run" type="submit" title="play/pause">RUN</button>
-      <button id="reset" type="button" title="reset">RESET</button>
-    </form>
-
-    <sgf-viewer delay="10">
+    <sgf-viewer controls delay="100">
       <go-board id="board"></go-board>
     </sgf-viewer>
 
     <script src="./src/register.ts" type="module"></script>
 
     <script type="module">
-      const viewer = document.querySelector("sgf-viewer");
-      const form = document.querySelector("form");
-      const input = form?.querySelector("input#pathOrId");
-      const run = document.getElementById("run");
-      const reset = document.getElementById("reset");
       const board = document.getElementById("board");
 
       const url = new URL(window.location);
 
-      input.value = url.searchParams.get("ogsIdOrPath") || "";
-
       if (url.searchParams.has("debug")) {
         board.setAttribute("debug", "");
       }
-
-      reset.addEventListener("click", () => {
-        board.reset();
-        viewer.reset();
-      });
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const data = new FormData(form);
-        const pathOrId = data.get("pathOrId");
-
-        if (viewer && pathOrId) {
-          if (viewer.isRunning) {
-            viewer.pause();
-            run.innerHTML = "RUN";
-            reset.disabled = false;
-
-            return;
-          }
-
-          if (!isNaN(parseInt(pathOrId.toString()))) {
-            viewer.ogsId = pathOrId.toString();
-
-            viewer.go(() => {
-              run.innerHTML = "RUN";
-              reset.disabled = false;
-            });
-
-            run.innerHTML = "PAUSE";
-            reset.disabled = true;
-
-            url.searchParams.set("ogsIdOrPath", viewer.ogsId);
-          } else {
-            viewer.path = pathOrId.toString();
-
-            viewer.go(() => {
-              run.innerHTML = "RUN";
-              reset.disabled = false;
-            });
-
-            url.searchParams.set("ogsIdOrPath", viewer.path);
-          }
-
-          history.pushState(null, "", url);
-        }
-      });
     </script>
   </body>
 </html>
