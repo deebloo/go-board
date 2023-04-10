@@ -23,7 +23,7 @@
       }
     </style>
 
-    <sgf-viewer controls delay="100">
+    <sgf-viewer id="viewer" controls>
       <go-board id="board"></go-board>
     </sgf-viewer>
 
@@ -31,11 +31,20 @@
 
     <script type="module">
       const board = document.getElementById("board");
+      const viewer = document.getElementById("viewer");
 
       const url = new URL(window.location);
 
+      if (url.searchParams.has("ogsId")) {
+        viewer.ogsId = url.searchParams.get("ogsId");
+      }
+
       if (url.searchParams.has("debug")) {
         board.setAttribute("debug", "");
+      }
+
+      if (url.searchParams.has("delay")) {
+        viewer.setAttribute("delay", url.searchParams.get("delay"));
       }
     </script>
   </body>

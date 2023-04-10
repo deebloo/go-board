@@ -38,7 +38,7 @@ describe(GoBoardElement.name, () => {
   it("should create the same board state even with moves in a different order", async () => {
     const board1 = await fixture<GoBoardElement>(html`
       <go-board>
-        <go-stone space="C18" color="white"></go-stone>
+        <go-stone space="C18" color="black"></go-stone>
         <go-stone space="D18" color="white"></go-stone>
       </go-board>
     `);
@@ -46,11 +46,10 @@ describe(GoBoardElement.name, () => {
     const board2 = await fixture<GoBoardElement>(html`
       <go-board>
         <go-stone space="D18" color="white"></go-stone>
-        <go-stone space="C18" color="white"></go-stone>
+        <go-stone space="C18" color="black"></go-stone>
       </go-board>
     `);
 
-    // should NOT match for different states
     expect(board1.key()).to.equal(board2.key());
   });
 
@@ -79,6 +78,6 @@ describe(GoBoardElement.name, () => {
 
     stone.remove();
 
-    expect(board.getSpace("C18")).to.be.undefined;
+    expect(board.getSpace("C18")).to.be.null;
   });
 });

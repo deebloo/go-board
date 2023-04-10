@@ -209,9 +209,12 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   #shadow = shadow(this, template);
-  #stones = new Map<string, GoStoneElement>();
+  #spaces = new Map<string, GoStoneElement | null>();
   #header = this.#shadow.getElementById("header")!;
   #pastStates = new Set<string>();
+
+  prevKey = "";
+  currentKey = "";
 
   constructor() {
     super();
@@ -241,7 +244,7 @@ export class GoBoardElement extends HTMLElement {
 
     stone.slot = stone.space;
 
-    this.#stones.set(stone.space, stone);
+    this.#spaces.set(stone.space, stone);
 
     if (this.mode === "game") {
       this.#validateStonePlacement(stone);
@@ -249,38 +252,36 @@ export class GoBoardElement extends HTMLElement {
   }
 
   onStoneRemoved(stone: GoStoneElement) {
-    this.#stones.delete(stone.space);
+    this.#spaces.set(stone.space, null);
   }
 
   key() {
-    const stones: GoStoneElement[] = [];
+    let key = "";
 
-    for (let stone of this.children) {
-      if (stone instanceof GoStoneElement && stone.slot) {
-        stones.push(stone);
+    for (let [space, stone] of this.#spaces) {
+      if (stone !== null) {
+        key += space + stone.color[0].toUpperCase();
+      } else {
+        key += "*";
       }
     }
 
-    stones.sort(stoneSort);
-
-    let key = "";
-
-    for (let stone of stones) {
-      key += stone.slot + stone.color;
-    }
-
-    return key;
+    return btoa(key);
   }
 
   reset() {
     this.innerHTML = "";
     this.#pastStates.clear();
-    this.#stones.clear();
+
+    for (let [key] of this.#spaces) {
+      this.#spaces.set(key, null);
+    }
+
     this.turn = "black";
   }
 
-  getSpace(space: string): GoStoneElement | undefined {
-    return this.#stones.get(space);
+  getSpace(space: string) {
+    return this.#spaces.get(space);
   }
 
   copyToClipboard() {
@@ -307,34 +308,38 @@ export class GoBoardElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         for (let stone of group.stones) {
-          // stones are removed by removing it's assinged slot
-          stone.removeAttribute("slot");
-          this.#stones.delete(stone.space);
-
-          // keep track of removed stones
-          removedStones.push(stone);
+          this.#spaces.set(stone.space, null); // clear out stone
+          removedStones.push(stone); // keep track of removed stones
         }
       }
     }
 
     const key = this.key();
 
-    if (this.#pastStates.has(key)) {
+    if (this.currentKey === key || this.prevKey === key) {
       // If the current board state has already existed the move is not allowed
 
-      // Add the removed stones back
+      // reset the board state by adding removed stones back
       for (let stone of removedStones) {
-        stone.slot = stone.space;
-        this.#stones.set(stone.space, stone);
+        this.#spaces.set(stone.space, stone);
       }
 
-      alert("Move is not allowed");
+      console.log(atob(this.prevKey));
+      console.log(atob(this.currentKey));
+      console.log(atob(key));
 
       // remove the previously placed stone
       stone.remove();
+
+      // notify the user
+      alert("Move is not allowed: " + stone.space + stone.color);
     } else {
-      // keep track of previous board states
-      this.#pastStates.add(key);
+      // board state is valid and we can proceed
+
+      // remove captured stones from dom
+      for (let stone of removedStones) {
+        stone.remove();
+      }
 
       // find added stones group
       const group = findGroup(this, stone);
@@ -348,6 +353,10 @@ export class GoBoardElement extends HTMLElement {
         alert("Move is suicidal!");
       } else {
         this.turn = stone.color === "black" ? "white" : "black";
+
+        // track current and previous board key
+        this.prevKey = this.currentKey;
+        this.currentKey = key;
       }
     }
 
@@ -399,6 +408,8 @@ export class GoBoardElement extends HTMLElement {
     const slot = document.createElement("slot");
     slot.name = `${this.columnLabels[column]}${this.rows - row}`;
 
+    this.#spaces.set(slot.name, null);
+
     const spacing = Math.floor(this.rows / 3);
     const start = Math.floor(this.rows / 4) - 1;
     const spaces = [start, start + spacing, start + spacing * 2];
@@ -418,24 +429,5 @@ export class GoBoardElement extends HTMLElement {
   }
 }
 
-function stoneSort(a: GoStoneElement, b: GoStoneElement) {
-  const coordsA = parseCoords(a.slot);
-  const coordsB = parseCoords(b.slot);
-
-  const colComparrison = coordsA.col.localeCompare(coordsB.col);
-
-  if (colComparrison !== 0) {
-    return colComparrison;
-  }
-
-  return Number(coordsA.row) - Number(coordsB.row);
-}
-
-function parseCoords(space: string) {
-  const array = space.split("");
-
-  return {
-    col: array.shift() as string,
-    row: array.join(""),
-  };
-}
+//*****F19WG19WH19B*K19W***O19B*********E18WF18WG18B*J18BK18BL18WM18WN18B*P18B*R18B**A17WB17WC17WD17WE17WF17BG17BH17BJ17BK17BL17W*N17WO17B*Q17B*S17BT17BA16WB16BC16BD16B*F16B*H16BJ16WK16BL16W*N16WO16WP16BQ16WR16BS16BT16BA15B*C15B**F15BG15WH15BJ15WK15W*M15BN15WO15BP15BQ15WR15WS15WT15BA14BB14BC14BD14BE14B*G14WH14W**L14WM14WN14WO14WP14BQ14W*S14WT14BA13BB13WC13WD13WE13BF13BG13W**K13WL13BM13WN13BO13BP13BQ13WR13WS13WT13BA12W*C12WD12BE12BF12W***K12WL12BM12BN12B**Q12BR12W*T12W**C11WD11WE11BF11WG11WH11W*K11WL11WM11B*O11BP11BQ11BR11BS11W***C10BD10WE10BF10WG10BH10WJ10BK10WL10BM10B*O10BP10WQ10BR10W****C9WD9WE9BF9BG9BH9BJ9WK9W*M9BN9BO9WP9WQ9WR9W****C8WD8BE8B*G8BH8BJ8BK8WL8WM8BN8W******A7WB7WC7WD7WE7WF7B***K7B*M7W**P7W*R7WS7WT7WA6BB6WC6BD6WE6B*G6BH6BJ6WK6BL6BM6BN6WO6WP6WQ6WR6BS6WT6BA5BB5B*D5BE5BF5B*H5BJ5BK5WL5WM5WN5BO5W*Q5WR5BS5BT5B****E4BF4WG4BH4WJ4WK4W*M4BN4BO4BP4W*R4B******E3WF3WG3W**K3WL3BM3B*O3BP3B*******D2BE2W*G2W*J2W*L2WM2BN2B*********D1BE1BF1W****L1WM1WN1B******
+//*****F19WG19WH19B*K19W***O19B*********E18WF18WG18B*J18BK18BL18WM18WN18B*P18B*R18B**A17WB17WC17WD17WE17WF17BG17BH17BJ17BK17BL17W*N17WO17B*Q17B*S17BT17BA16WB16BC16BD16B*F16B*H16BJ16WK16BL16W*N16WO16WP16BQ16WR16BS16BT16BA15B*C15B**F15BG15WH15BJ15WK15W*M15BN15WO15BP15BQ15WR15WS15WT15BA14BB14BC14BD14BE14B*G14WH14W**L14WM14WN14WO14WP14BQ14W*S14WT14BA13BB13WC13WD13WE13BF13BG13W**K13WL13BM13WN13BO13BP13BQ13WR13WS13WT13BA12W*C12WD12BE12BF12W***K12WL12BM12BN12B**Q12BR12W*T12W**C11WD11WE11BF11WG11WH11W*K11WL11WM11B*O11BP11BQ11BR11BS11W***C10BD10WE10BF10WG10BH10WJ10BK10WL10BM10B*O10BP10WQ10BR10W****C9WD9WE9BF9BG9BH9BJ9WK9W*M9BN9BO9WP9WQ9WR9W****C8WD8BE8B*G8BH8BJ8BK8WL8WM8BN8W******A7WB7WC7WD7WE7WF7B***K7B*M7W**P7W*R7WS7WT7WA6BB6WC6BD6WE6B*G6BH6BJ6WK6BL6BM6BN6WO6WP6WQ6WR6BS6WT6BA5BB5B*D5BE5BF5B*H5BJ5BK5WL5WM5WN5BO5W*Q5WR5BS5BT5B****E4BF4WG4BH4WJ4WK4W*M4BN4BO4BP4W*R4B******E3WF3WG3W**K3WL3BM3B*O3BP3B*******D2BE2W*G2W*J2W*L2WM2BN2B*********D1BE1BF1W****L1WM1WN1B******

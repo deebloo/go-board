@@ -6,7 +6,7 @@ const alpha = Array.from(Array(26)).map((_, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 const regex = /([A-Z])\[([a-z]{2})\]/;
 
-interface ParseSGF {
+interface Move {
   color: StoneColor;
   space: string;
 }
@@ -66,14 +66,14 @@ const template: ShadowTemplate = {
 };
 
 export class SGFViewerElement extends HTMLElement {
+  static observedAttributes = ["ogs-id"];
+
   get path() {
     return this.getAttribute("path") || "";
   }
 
   set path(id: string) {
     this.setAttribute("path", id);
-
-    this.dispatchEvent(new Event("sgf:change::path"));
   }
 
   get ogsId() {
@@ -82,8 +82,6 @@ export class SGFViewerElement extends HTMLElement {
 
   set ogsId(id: string) {
     this.setAttribute("ogs-id", id);
-
-    this.dispatchEvent(new Event("sgf:change::ogs-id"));
   }
 
   get delay() {
@@ -100,12 +98,21 @@ export class SGFViewerElement extends HTMLElement {
     this.setAttribute("delay", value.toString());
   }
 
-  isRunning = false;
+  get isRunning() {
+    return this.#isRunning;
+  }
 
+  get currentStep() {
+    return this.#step;
+  }
+
+  moves: Move[] = [];
+
+  #isRunning = false;
   #shadow = shadow(this, template);
   #board: GoBoardElement | null = null;
-  #data: ParseSGF[] = [];
   #form = this.#shadow.getElementById("controls") as HTMLFormElement;
+  #input = this.#shadow.querySelector("input")!;
   #run = this.#shadow.getElementById("run") as HTMLButtonElement;
   #reset = this.#shadow.getElementById("reset") as HTMLButtonElement;
   #step = 0;
@@ -137,7 +144,7 @@ export class SGFViewerElement extends HTMLElement {
     this.#form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      if (this.isRunning) {
+      if (this.#isRunning) {
         this.pause();
 
         this.#run.innerHTML = "RUN";
@@ -172,10 +179,14 @@ export class SGFViewerElement extends HTMLElement {
     });
   }
 
-  async go(cb: () => void) {
-    this.isRunning = true;
+  attributeChangedCallback() {
+    this.#input.value = this.ogsId || this.path;
+  }
 
-    if (this.#data.length) {
+  async go(cb: () => void) {
+    this.#isRunning = true;
+
+    if (this.moves.length) {
       return this.play(cb);
     }
 
@@ -186,14 +197,14 @@ export class SGFViewerElement extends HTMLElement {
     if (path) {
       const raw = await fetch(path).then((res) => res.text());
 
-      this.#data = this.parseSGF(raw);
+      this.moves = this.parseSGF(raw);
 
       this.play(cb);
     }
   }
 
   async play(cb: () => void) {
-    if (this.isRunning) {
+    if (this.#isRunning) {
       if (this.delay > 0 && this.#step + 1 > 0) {
         setTimeout(() => {
           this.next();
@@ -205,10 +216,10 @@ export class SGFViewerElement extends HTMLElement {
       }
     }
 
-    if (this.#step >= this.#data.length) {
+    if (this.#step >= this.moves.length) {
       this.#step = 0;
-      this.#data = [];
-      this.isRunning = false;
+      this.moves = [];
+      this.#isRunning = false;
 
       cb();
     }
@@ -219,7 +230,7 @@ export class SGFViewerElement extends HTMLElement {
       throw new Error("Could not find board element");
     }
 
-    const move = this.#data[this.#step];
+    const move = this.moves[this.#step];
 
     if (move) {
       this.#step += 1;
@@ -231,24 +242,24 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   pause() {
-    this.isRunning = false;
+    this.#isRunning = false;
   }
 
   reset() {
-    this.isRunning = false;
+    this.#isRunning = false;
     this.#step = 0;
-    this.#data = [];
+    this.moves = [];
     this.#run.disabled = false;
 
     this.#board?.reset();
   }
 
-  parseSGF(value: string): ParseSGF[] {
+  parseSGF(value: string): Move[] {
     if (!this.#board) {
       throw new Error("Could not find board element");
     }
 
-    const moves: ParseSGF[] = [];
+    const moves: Move[] = [];
     const lines = value.split("\n");
     const { columnLabels, rows } = this.#board;
 
