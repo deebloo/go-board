@@ -6,6 +6,7 @@ import { findAttachedEnemyStones, findGroup } from "./game.js";
 const template: ShadowTemplate = {
   css: css`
     :host {
+      font-family: system-ui;
       box-sizing: border-box;
       background: #dcb35c;
       display: block;
