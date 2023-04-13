@@ -16,47 +16,12 @@ const template: ShadowTemplate = {
     :host {
       display: contents;
     }
-
-    #controls {
-      display: none;
-    }
-
-    :host([controls]) #controls {
-      display: flex;
-    }
-
-    form {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    form button {
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      border: solid 1px gray;
-    }
-
-    form input {
-      padding: 0.5rem 1rem;
-      border: solid 1px gray;
-      border-radius: 4px;
-    }
-
-    label {
-      height: 0;
-      width: 0;
-      position: fixed;
-      opacity: 0;
-    }
   `,
   html: html`<slot></slot>`,
 };
 
 export class SGFViewerElement extends HTMLElement {
-  static observedAttributes = ["ogs-id"];
+  static observedAttributes = ["ogsid"];
 
   get path() {
     return this.getAttribute("path") || "";
@@ -67,11 +32,11 @@ export class SGFViewerElement extends HTMLElement {
   }
 
   get ogsId() {
-    return this.getAttribute("ogs-id") || "";
+    return this.getAttribute("ogsid") || "";
   }
 
   set ogsId(id: string) {
-    this.setAttribute("ogs-id", id);
+    this.setAttribute("ogsid", id);
   }
 
   get delay() {
@@ -111,8 +76,6 @@ export class SGFViewerElement extends HTMLElement {
       const target = e.target as HTMLSlotElement;
 
       for (let el of target.assignedElements()) {
-        console.log(el);
-
         if (el instanceof GoBoardElement) {
           this.#board = el;
 
@@ -136,6 +99,7 @@ export class SGFViewerElement extends HTMLElement {
     this.#isRunning = true;
 
     if (this.moves.length) {
+      this.next();
       return this.play(cb);
     }
 
@@ -148,29 +112,25 @@ export class SGFViewerElement extends HTMLElement {
 
       this.moves = this.parseSGF(raw);
 
+      this.next();
       this.play(cb);
     }
   }
 
   async play(cb: () => void) {
     if (this.#isRunning) {
-      if (this.delay > 0 && this.#step + 1 > 0) {
-        setTimeout(() => {
+      setTimeout(() => {
+        if (this.#step >= this.moves.length) {
+          this.#isRunning = false;
+          this.#step = 0;
+          this.moves = [];
+
+          cb();
+        } else {
           this.next();
           this.play(cb);
-        }, this.delay);
-      } else {
-        this.next();
-        this.play(cb);
-      }
-    }
-
-    if (this.#step >= this.moves.length) {
-      this.#step = 0;
-      this.moves = [];
-      this.#isRunning = false;
-
-      cb();
+        }
+      }, this.delay);
     }
   }
 

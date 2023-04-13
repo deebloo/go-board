@@ -9,19 +9,23 @@ const template: ShadowTemplate = {
       box-sizing: border-box;
       background: #dcb35c;
       display: block;
-      padding: 1rem;
+      padding: 0;
       position: relative;
       box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
       aspect-ratio: 1/1;
       font-size: clamp(2.5vh, 2.5vw);
     }
 
-    :host([show-coords="false"]) #header > * {
+    :is(#header > *, .row > :first-child) {
       visibility: hidden;
     }
 
-    :host([show-coords="false"]) .row > *:first-child {
-      visibility: hidden;
+    :host([coords]) {
+      padding: 1rem 0 0 1rem;
+    }
+
+    :host([coords]) :is(#header > *, .row > *:first-child) {
+      visibility: visible;
     }
 
     * {
@@ -51,12 +55,12 @@ const template: ShadowTemplate = {
 
     #header > * {
       border-color: transparent;
-      transform: translate(-50%, -30%);
+      transform: translate(-50%, -10px);
     }
 
     .row board-spacer {
       border-color: transparent;
-      transform: translate(-30%, -50%);
+      transform: translate(-10px, -50%);
     }
 
     .row:last-child slot {

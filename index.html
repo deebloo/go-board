@@ -35,8 +35,8 @@
 
       const url = new URL(window.location);
 
-      if (url.searchParams.has("ogsId")) {
-        viewer.ogsId = url.searchParams.get("ogsId");
+      if (url.searchParams.has("coords")) {
+        board.setAttribute("coords", "");
       }
 
       if (url.searchParams.has("debug")) {
@@ -45,6 +45,10 @@
 
       if (url.searchParams.has("delay")) {
         viewer.setAttribute("delay", url.searchParams.get("delay"));
+      }
+
+      if (url.searchParams.has("ogsid")) {
+        viewer.ogsId = url.searchParams.get("ogsid");
       }
     </script>
   </body>
