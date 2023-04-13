@@ -52,17 +52,7 @@ const template: ShadowTemplate = {
       opacity: 0;
     }
   `,
-  html: html`
-    <form id="controls">
-      <label for="pathOrId">OGS ID or SGF Path:</label>
-      <input id="pathOrId" name="pathOrId" placeholder="ogs id or sgf" />
-
-      <button id="run" type="submit" title="play/pause">RUN</button>
-      <button id="reset" type="button" title="reset">RESET</button>
-    </form>
-
-    <slot></slot>
-  `,
+  html: html`<slot></slot>`,
 };
 
 export class SGFViewerElement extends HTMLElement {
@@ -111,10 +101,6 @@ export class SGFViewerElement extends HTMLElement {
   #isRunning = false;
   #shadow = shadow(this, template);
   #board: GoBoardElement | null = null;
-  #form = this.#shadow.getElementById("controls") as HTMLFormElement;
-  #input = this.#shadow.querySelector("input")!;
-  #run = this.#shadow.getElementById("run") as HTMLButtonElement;
-  #reset = this.#shadow.getElementById("reset") as HTMLButtonElement;
   #step = 0;
 
   constructor() {
@@ -125,62 +111,25 @@ export class SGFViewerElement extends HTMLElement {
       const target = e.target as HTMLSlotElement;
 
       for (let el of target.assignedElements()) {
+        console.log(el);
+
         if (el instanceof GoBoardElement) {
           this.#board = el;
-
-          if (this.ogsId || this.path) {
-            console.log("starting game");
-
-            this.go(() => {
-              console.log("game complete");
-            });
-          }
 
           break; // stop after first board found
         }
       }
     });
-
-    this.#form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      if (this.#isRunning) {
-        this.pause();
-
-        this.#run.innerHTML = "RUN";
-        this.#reset.disabled = false;
-
-        return;
-      }
-
-      const data = new FormData(this.#form);
-      const pathOrId = data.get("pathOrId");
-
-      if (pathOrId) {
-        this.#run.innerHTML = "PAUSE";
-        this.#reset.disabled = true;
-
-        if (!isNaN(parseInt(pathOrId.toString()))) {
-          this.ogsId = pathOrId.toString();
-        } else {
-          this.path = pathOrId.toString();
-        }
-
-        this.go(() => {
-          this.#run.innerHTML = "RUN";
-          this.#run.disabled = true;
-          this.#reset.disabled = false;
-        });
-      }
-    });
-
-    this.#reset.addEventListener("click", () => {
-      this.reset();
-    });
   }
 
   attributeChangedCallback() {
-    this.#input.value = this.ogsId || this.path;
+    if (!this.#isRunning && (this.ogsId || this.path)) {
+      console.log("starting game");
+
+      this.go(() => {
+        console.log("game complete");
+      });
+    }
   }
 
   async go(cb: () => void) {
@@ -249,7 +198,6 @@ export class SGFViewerElement extends HTMLElement {
     this.#isRunning = false;
     this.#step = 0;
     this.moves = [];
-    this.#run.disabled = false;
 
     this.#board?.reset();
   }

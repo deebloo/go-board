@@ -9,7 +9,7 @@ describe("game", () => {
   it("should could 4 liberties for a single stone", async () => {
     const board = await fixture<GoBoardElement>(html`
       <go-board>
-        <go-stone space="E16" color="black"></go-stone>
+        <go-stone slot="E16" color="black"></go-stone>
       </go-board>
     `);
 
@@ -33,9 +33,9 @@ describe("game", () => {
   it("should have 8 liberties for column", async () => {
     const board = await fixture<GoBoardElement>(html`
       <go-board>
-        <go-stone space="E16" color="black"></go-stone>
-        <go-stone space="E15" color="black"></go-stone>
-        <go-stone space="E14" color="black"></go-stone>
+        <go-stone slot="E16" color="black"></go-stone>
+        <go-stone slot="E15" color="black"></go-stone>
+        <go-stone slot="E14" color="black"></go-stone>
       </go-board>
     `);
 
@@ -56,9 +56,9 @@ describe("game", () => {
   it("should have 8 liberties for row", async () => {
     const board = await fixture<GoBoardElement>(html`
       <go-board>
-        <go-stone space="E16" color="black"></go-stone>
-        <go-stone space="F16" color="black"></go-stone>
-        <go-stone space="G16" color="black"></go-stone>
+        <go-stone slot="E16" color="black"></go-stone>
+        <go-stone slot="F16" color="black"></go-stone>
+        <go-stone slot="G16" color="black"></go-stone>
       </go-board>
     `);
 
@@ -79,16 +79,16 @@ describe("game", () => {
   it("should could 11 liberties for row and col", async () => {
     const board = await fixture<GoBoardElement>(html`
       <go-board>
-        <go-stone space="C18" color="white"></go-stone>
-        <go-stone space="D18" color="white"></go-stone>
-        <go-stone space="C17" color="white"></go-stone>
+        <go-stone slot="C18" color="white"></go-stone>
+        <go-stone slot="D18" color="white"></go-stone>
+        <go-stone slot="C17" color="white"></go-stone>
 
-        <go-stone space="E18" color="black"></go-stone>
-        <go-stone space="D17" color="black"></go-stone>
-        <go-stone space="D16" color="black"></go-stone>
-        <go-stone space="E16" color="black"></go-stone>
-        <go-stone space="F16" color="black"></go-stone>
-        <go-stone space="F15" color="black"></go-stone>
+        <go-stone slot="E18" color="black"></go-stone>
+        <go-stone slot="D17" color="black"></go-stone>
+        <go-stone slot="D16" color="black"></go-stone>
+        <go-stone slot="E16" color="black"></go-stone>
+        <go-stone slot="F16" color="black"></go-stone>
+        <go-stone slot="F15" color="black"></go-stone>
       </go-board>
     `);
 

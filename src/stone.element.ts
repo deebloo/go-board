@@ -38,7 +38,7 @@ export class GoStoneElement extends HTMLElement {
     const stone = new GoStoneElement();
 
     stone.color = color;
-    stone.space = space;
+    stone.slot = space;
 
     return stone;
   }
@@ -49,14 +49,6 @@ export class GoStoneElement extends HTMLElement {
 
   set color(value) {
     this.setAttribute("color", value);
-  }
-
-  get space() {
-    return this.getAttribute("space") || "";
-  }
-
-  set space(val) {
-    this.setAttribute("space", val);
   }
 
   #parent: GoBoardElement | null = null;

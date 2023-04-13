@@ -209,12 +209,12 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   #shadow = shadow(this, template);
+  // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
+  // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #spaces = new Map<string, GoStoneElement | null>();
   #header = this.#shadow.getElementById("header")!;
-  #pastStates = new Set<string>();
-
-  prevKey = "";
-  currentKey = "";
+  #prevKey = "";
+  #currentKey = this.key();
 
   constructor() {
     super();
@@ -242,9 +242,7 @@ export class GoBoardElement extends HTMLElement {
   onStoneAdded(stone: GoStoneElement) {
     this.turn = stone.color;
 
-    stone.slot = stone.space;
-
-    this.#spaces.set(stone.space, stone);
+    this.#spaces.set(stone.slot, stone);
 
     if (this.mode === "game") {
       this.#validateStonePlacement(stone);
@@ -252,7 +250,7 @@ export class GoBoardElement extends HTMLElement {
   }
 
   onStoneRemoved(stone: GoStoneElement) {
-    this.#spaces.set(stone.space, null);
+    this.#spaces.set(stone.slot, null);
   }
 
   key() {
@@ -271,12 +269,13 @@ export class GoBoardElement extends HTMLElement {
 
   reset() {
     this.innerHTML = "";
-    this.#pastStates.clear();
 
     for (let [key] of this.#spaces) {
       this.#spaces.set(key, null);
     }
 
+    this.#currentKey = this.key();
+    this.#prevKey = "";
     this.turn = "black";
   }
 
@@ -308,7 +307,7 @@ export class GoBoardElement extends HTMLElement {
         debug.log("Removing Stones:\n", ...group.stones);
 
         for (let stone of group.stones) {
-          this.#spaces.set(stone.space, null); // clear out stone
+          this.#spaces.set(stone.slot, null); // clear out stone
           removedStones.push(stone); // keep track of removed stones
         }
       }
@@ -316,23 +315,19 @@ export class GoBoardElement extends HTMLElement {
 
     const key = this.key();
 
-    if (this.currentKey === key || this.prevKey === key) {
+    if (this.#currentKey === key || this.#prevKey === key) {
       // If the current board state has already existed the move is not allowed
 
       // reset the board state by adding removed stones back
       for (let stone of removedStones) {
-        this.#spaces.set(stone.space, stone);
+        this.#spaces.set(stone.slot, stone);
       }
-
-      console.log(atob(this.prevKey));
-      console.log(atob(this.currentKey));
-      console.log(atob(key));
 
       // remove the previously placed stone
       stone.remove();
 
       // notify the user
-      alert("Move is not allowed: " + stone.space + stone.color);
+      alert("Move is not allowed: " + stone.slot + stone.color);
     } else {
       // board state is valid and we can proceed
 
@@ -355,8 +350,8 @@ export class GoBoardElement extends HTMLElement {
         this.turn = stone.color === "black" ? "white" : "black";
 
         // track current and previous board key
-        this.prevKey = this.currentKey;
-        this.currentKey = key;
+        this.#prevKey = this.#currentKey;
+        this.#currentKey = key;
       }
     }
 
@@ -428,6 +423,3 @@ export class GoBoardElement extends HTMLElement {
     return slot;
   }
 }
-
-//*****F19WG19WH19B*K19W***O19B*********E18WF18WG18B*J18BK18BL18WM18WN18B*P18B*R18B**A17WB17WC17WD17WE17WF17BG17BH17BJ17BK17BL17W*N17WO17B*Q17B*S17BT17BA16WB16BC16BD16B*F16B*H16BJ16WK16BL16W*N16WO16WP16BQ16WR16BS16BT16BA15B*C15B**F15BG15WH15BJ15WK15W*M15BN15WO15BP15BQ15WR15WS15WT15BA14BB14BC14BD14BE14B*G14WH14W**L14WM14WN14WO14WP14BQ14W*S14WT14BA13BB13WC13WD13WE13BF13BG13W**K13WL13BM13WN13BO13BP13BQ13WR13WS13WT13BA12W*C12WD12BE12BF12W***K12WL12BM12BN12B**Q12BR12W*T12W**C11WD11WE11BF11WG11WH11W*K11WL11WM11B*O11BP11BQ11BR11BS11W***C10BD10WE10BF10WG10BH10WJ10BK10WL10BM10B*O10BP10WQ10BR10W****C9WD9WE9BF9BG9BH9BJ9WK9W*M9BN9BO9WP9WQ9WR9W****C8WD8BE8B*G8BH8BJ8BK8WL8WM8BN8W******A7WB7WC7WD7WE7WF7B***K7B*M7W**P7W*R7WS7WT7WA6BB6WC6BD6WE6B*G6BH6BJ6WK6BL6BM6BN6WO6WP6WQ6WR6BS6WT6BA5BB5B*D5BE5BF5B*H5BJ5BK5WL5WM5WN5BO5W*Q5WR5BS5BT5B****E4BF4WG4BH4WJ4WK4W*M4BN4BO4BP4W*R4B******E3WF3WG3W**K3WL3BM3B*O3BP3B*******D2BE2W*G2W*J2W*L2WM2BN2B*********D1BE1BF1W****L1WM1WN1B******
-//*****F19WG19WH19B*K19W***O19B*********E18WF18WG18B*J18BK18BL18WM18WN18B*P18B*R18B**A17WB17WC17WD17WE17WF17BG17BH17BJ17BK17BL17W*N17WO17B*Q17B*S17BT17BA16WB16BC16BD16B*F16B*H16BJ16WK16BL16W*N16WO16WP16BQ16WR16BS16BT16BA15B*C15B**F15BG15WH15BJ15WK15W*M15BN15WO15BP15BQ15WR15WS15WT15BA14BB14BC14BD14BE14B*G14WH14W**L14WM14WN14WO14WP14BQ14W*S14WT14BA13BB13WC13WD13WE13BF13BG13W**K13WL13BM13WN13BO13BP13BQ13WR13WS13WT13BA12W*C12WD12BE12BF12W***K12WL12BM12BN12B**Q12BR12W*T12W**C11WD11WE11BF11WG11WH11W*K11WL11WM11B*O11BP11BQ11BR11BS11W***C10BD10WE10BF10WG10BH10WJ10BK10WL10BM10B*O10BP10WQ10BR10W****C9WD9WE9BF9BG9BH9BJ9WK9W*M9BN9BO9WP9WQ9WR9W****C8WD8BE8B*G8BH8BJ8BK8WL8WM8BN8W******A7WB7WC7WD7WE7WF7B***K7B*M7W**P7W*R7WS7WT7WA6BB6WC6BD6WE6B*G6BH6BJ6WK6BL6BM6BN6WO6WP6WQ6WR6BS6WT6BA5BB5B*D5BE5BF5B*H5BJ5BK5WL5WM5WN5BO5W*Q5WR5BS5BT5B****E4BF4WG4BH4WJ4WK4W*M4BN4BO4BP4W*R4B******E3WF3WG3W**K3WL3BM3B*O3BP3B*******D2BE2W*G2W*J2W*L2WM2BN2B*********D1BE1BF1W****L1WM1WN1B******

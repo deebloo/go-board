@@ -84,7 +84,7 @@ export function findAttachedEnemyStones(
 }
 
 function parseCoords(stone: GoStoneElement) {
-  const array = stone.space.split("");
+  const array = stone.slot.split("");
 
   return {
     col: array.shift() as string,
