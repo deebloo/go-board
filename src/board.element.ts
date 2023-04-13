@@ -51,14 +51,12 @@ const template: ShadowTemplate = {
 
     #header > * {
       border-color: transparent;
-      transform: translate(-50%, -20%);
-      margin-bottom: 10px;
+      transform: translate(-50%, -30%);
     }
 
     .row board-spacer {
       border-color: transparent;
-      transform: translate(-20%, -50%);
-      margin-right: 10px;
+      transform: translate(-30%, -50%);
     }
 
     .row:last-child slot {
