@@ -4,6 +4,7 @@
   "private": false,
   "description": "Go board",
   "type": "module",
+  "main": "./target/libs.js",
   "module": "./target/libs.js",
   "exports": {
     "./*": {
