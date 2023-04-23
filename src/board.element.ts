@@ -2,6 +2,7 @@ import { css, html, shadow, ShadowTemplate } from "./templating.js";
 import { debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
+import { Move, parseSGF } from "./sgf.js";
 
 const template: ShadowTemplate = {
   css: css`
@@ -130,12 +131,12 @@ const template: ShadowTemplate = {
       z-index: 1;
     }
 
-    :host .row slot button:hover {
+    .row slot button:hover {
       background: none;
       opacity: 0.85 !important;
     }
 
-    :host .row slot button:after {
+    .row slot button:after {
       content: "";
       display: block;
       border-radius: 50%;
@@ -163,7 +164,8 @@ const template: ShadowTemplate = {
 };
 
 export class GoBoardElement extends HTMLElement {
-  static observedAttributes = ["debug"];
+  static formAssociated = true;
+  static observedAttributes = ["debug", "src"];
 
   get turn() {
     return (this.getAttribute("turn") as StoneColor) || "black";
@@ -173,14 +175,19 @@ export class GoBoardElement extends HTMLElement {
     this.setAttribute("turn", value);
   }
 
-  get mode() {
-    return this.getAttribute("mode") || "game";
+  get src() {
+    return this.getAttribute("src") || "";
   }
 
-  set mode(value) {
-    this.setAttribute("mode", value);
+  set src(value) {
+    this.setAttribute("src", value);
   }
 
+  get sgf() {
+    return this.#sgf;
+  }
+
+  moves: Move[] = [];
   rows = 19;
   cols = 19;
   columnLabels = [
@@ -212,12 +219,15 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   #shadow = shadow(this, template);
+  #internals = this.attachInternals();
+
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #spaces = new Map<string, GoStoneElement | null>();
   #header = this.#shadow.getElementById("header")!;
   #prevKey = "";
   #currentKey = this.key();
+  #sgf: string | null = null;
 
   constructor() {
     super();
@@ -234,6 +244,10 @@ export class GoBoardElement extends HTMLElement {
     } else {
       debug.disable();
     }
+
+    if (this.src) {
+      this.import();
+    }
   }
 
   connectedCallback() {
@@ -247,9 +261,7 @@ export class GoBoardElement extends HTMLElement {
 
     this.#spaces.set(stone.slot, stone);
 
-    if (this.mode === "game") {
-      this.#validateStonePlacement(stone);
-    }
+    this.#validateStonePlacement(stone);
   }
 
   onStoneRemoved(stone: GoStoneElement) {
@@ -288,6 +300,30 @@ export class GoBoardElement extends HTMLElement {
 
   copyToClipboard() {
     return navigator.clipboard.writeText(this.outerHTML);
+  }
+
+  async import() {
+    if (this.src) {
+      const raw = await fetch(this.src).then((res) => res.text());
+
+      if (raw) {
+        this.#sgf = raw;
+
+        this.moves = parseSGF(raw, this.columnLabels, this.rows);
+
+        return this.#play();
+      }
+    }
+  }
+
+  #play() {
+    for (const move of this.moves) {
+      const stone = GoStoneElement.create(move.color, move.space);
+
+      this.append(stone);
+    }
+
+    return "DONE";
   }
 
   #validateStonePlacement(stone: GoStoneElement) {
@@ -355,6 +391,8 @@ export class GoBoardElement extends HTMLElement {
         // track current and previous board key
         this.#prevKey = this.#currentKey;
         this.#currentKey = key;
+
+        this.#internals.setFormValue(this.#currentKey);
       }
     }
 

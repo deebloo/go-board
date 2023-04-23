@@ -19,16 +19,14 @@
       }
     </style>
 
-    <sgf-viewer id="viewer">
-      <go-board id="board"></go-board>
-    </sgf-viewer>
+    <form>
+      <go-board name="board"></go-board>
+    </form>
 
     <script src="./src/register.ts" type="module"></script>
 
     <script type="module">
-      const board = document.getElementById("board");
-      const viewer = document.getElementById("viewer");
-
+      const board = document.querySelector("go-board");
       const url = new URL(window.location);
 
       if (url.searchParams.has("coords")) {
@@ -39,12 +37,10 @@
         board.setAttribute("debug", "");
       }
 
-      if (url.searchParams.has("delay")) {
-        viewer.setAttribute("delay", url.searchParams.get("delay"));
-      }
-
       if (url.searchParams.has("ogsid")) {
-        viewer.ogsId = url.searchParams.get("ogsid");
+        const ogsid = url.searchParams.get("ogsid");
+
+        board.src = `https://online-go.com/api/v1/games/${ogsid}/sgf`;
       }
     </script>
   </body>

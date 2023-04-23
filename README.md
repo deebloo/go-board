@@ -28,12 +28,11 @@ Go Board WebComponent. Stones indicate the order of moved played. The board comp
 </go-board>
 ```
 
-## Display a game from [OGS](https://online-go.com).
-
-This library ships with an SGF viewer. If you pass in a game id from OGS it will play out automatically. There is also an imperative API if you want to pause and resume play/
+The go-board element can display a game from a sgf file. You can display a game from [OGS](https://online-go.com).
 
 ```html
-<sgf-viewer ogsid="50728274">
-  <go-board></go-board>
-</sgf-viewer>
+<go-board
+  coords
+  src="https://online-go.com/api/v1/games/53010116/sgf"
+></go-board>
 ```
