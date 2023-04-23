@@ -238,14 +238,16 @@ export class GoBoardElement extends HTMLElement {
     this.#createColumnLetters();
   }
 
-  attributeChangedCallback() {
+  attributeChangedCallback(attr: string, old: string, val: string) {
     if (this.hasAttribute("debug")) {
       debug.enable();
     } else {
       debug.disable();
     }
 
-    if (this.src) {
+    if (attr === "src" && old !== val) {
+      // reset imported state if the src value changes
+      this.reset();
       this.import();
     }
   }
