@@ -36,3 +36,11 @@ The go-board element can display a game from a sgf file. You can display a game 
   src="https://online-go.com/api/v1/games/53010116/sgf"
 ></go-board>
 ```
+
+Attributes
+
+| Item   | description                                                           |
+| ------ | --------------------------------------------------------------------- |
+| coords | determines if the column and row lables are displayed                 |
+| src    | path to a sgf file. sfg files describe the steps in a game of go      |
+| debug  | enables debug out put. will highlight hitboxes and log out game logic |
