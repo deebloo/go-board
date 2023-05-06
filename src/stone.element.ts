@@ -1,10 +1,19 @@
 import { GoBoardElement } from "./board.element.js";
-import { css, shadow, ShadowTemplate } from "./templating.js";
+import { css, styles } from "./templating.js";
 
 export type StoneColor = "black" | "white";
 
-const template: ShadowTemplate = {
-  css: css`
+export class GoStoneElement extends HTMLElement {
+  static create(color: StoneColor, space: string = "") {
+    const stone = new GoStoneElement();
+
+    stone.color = color;
+    stone.slot = space;
+
+    return stone;
+  }
+
+  @styles styles = css`
     :host {
       box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
       display: inline-flex;
@@ -30,18 +39,7 @@ const template: ShadowTemplate = {
         rgba(0, 0, 0, 0.15)
       );
     }
-  `,
-};
-
-export class GoStoneElement extends HTMLElement {
-  static create(color: StoneColor, space: string = "") {
-    const stone = new GoStoneElement();
-
-    stone.color = color;
-    stone.slot = space;
-
-    return stone;
-  }
+  `;
 
   get color(): StoneColor {
     return (this.getAttribute("color") as StoneColor) || "black";
@@ -52,12 +50,6 @@ export class GoStoneElement extends HTMLElement {
   }
 
   #parent: GoBoardElement | null = null;
-
-  constructor() {
-    super();
-
-    shadow(this, template);
-  }
 
   connectedCallback() {
     if (this.parentElement instanceof GoBoardElement) {

@@ -25,19 +25,24 @@
     "url": "https://github.com/deebloo/go-board/issues"
   },
   "scripts": {
-    "start": "vite",
+    "start": "wireit",
     "build": "wireit",
     "build:tsc": "wireit",
-    "build:vite": "vite build",
     "build:rollup": "wireit",
     "test": "wireit"
   },
   "wireit": {
+    "start": {
+      "command": "serve",
+      "service": true,
+      "dependencies": [
+        "build:tsc"
+      ]
+    },
     "build": {
       "dependencies": [
         "build:tsc",
-        "build:rollup",
-        "build:vite"
+        "build:rollup"
       ]
     },
     "build:tsc": {
@@ -67,6 +72,7 @@
   },
   "devDependencies": {
     "@open-wc/testing": "^3.1.2",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-terser": "^0.4.0",
     "@web/test-runner": "^0.15.1",
     "@web/test-runner-puppeteer": "^0.11.0",
@@ -74,8 +80,12 @@
     "minify-html-literals": "^1.3.5",
     "prettier": "^2.8.4",
     "rollup": "^3.20.0",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4",
+    "serve": "^14.2.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.5",
     "wireit": "^0.9.5"
+  },
+  "dependencies": {
+    "tslib": "^2.5.0"
   }
 }

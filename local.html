@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Go Viewer</title>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "tslib": "./node_modules/tslib/tslib.es6.js"
+        }
+      }
+    </script>
   </head>
 
   <body>
@@ -23,7 +31,7 @@
       <go-board></go-board>
     </form>
 
-    <script src="./target/bundle/go-board.min.js" type="module"></script>
+    <script src="./target/register.js" type="module"></script>
 
     <script type="module">
       const board = document.querySelector("go-board");

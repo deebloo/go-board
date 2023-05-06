@@ -1,11 +1,14 @@
-import { css, html, shadow, ShadowTemplate } from "./templating.js";
+import { css, html, styles, template } from "./templating.js";
 import { debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 
-const template: ShadowTemplate = {
-  css: css`
+export class GoBoardElement extends HTMLElement {
+  static formAssociated = true;
+  static observedAttributes = ["debug", "src"];
+
+  @styles styles = css`
     :host {
       font-family: system-ui;
       box-sizing: border-box;
@@ -155,17 +158,13 @@ const template: ShadowTemplate = {
     :host([debug]) button {
       opacity: 0.2;
     }
-  `,
-  html: html`
+  `;
+
+  @template template = html`
     <div id="header" class="row">
       <board-spacer></board-spacer>
     </div>
-  `,
-};
-
-export class GoBoardElement extends HTMLElement {
-  static formAssociated = true;
-  static observedAttributes = ["debug", "src"];
+  `;
 
   get turn() {
     return (this.getAttribute("turn") as StoneColor) || "black";
@@ -218,7 +217,7 @@ export class GoBoardElement extends HTMLElement {
     "Z",
   ];
 
-  #shadow = shadow(this, template);
+  #shadow = this.shadowRoot!;
   #internals = this.attachInternals();
 
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.

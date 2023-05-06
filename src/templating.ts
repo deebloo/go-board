@@ -30,7 +30,6 @@ export class TemplatResult extends Result<HTMLTemplateElement> {
   createValue(str: string): HTMLTemplateElement {
     const el = document.createElement("template");
     el.innerHTML = str;
-
     return el;
   }
 }
@@ -39,7 +38,6 @@ export class CSSResult extends Result<CSSStyleSheet> {
   createValue(str: string): CSSStyleSheet {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(str);
-
     return sheet;
   }
 }
@@ -52,29 +50,42 @@ export function css(strings: TemplateStringsArray) {
   return new CSSResult(strings);
 }
 
-export interface ShadowTemplate {
-  css?: CSSResult | CSSResult[];
-  html?: TemplatResult;
+export function template<This extends HTMLElement>(
+  _: undefined,
+  ctx: ClassFieldDecoratorContext<This, TemplatResult>
+) {
+  const shadow = applyShadow(ctx);
+
+  return (result: TemplatResult) => {
+    shadow().append(result.toValue().content.cloneNode(true));
+
+    return result;
+  };
 }
 
-export function shadow(el: HTMLElement, template?: ShadowTemplate) {
-  if (el.shadowRoot) {
-    return el.shadowRoot;
-  }
+export function styles<This extends HTMLElement>(
+  _: undefined,
+  ctx: ClassFieldDecoratorContext<This, CSSResult>
+) {
+  const shadow = applyShadow(ctx);
 
-  const shadow = el.attachShadow({ mode: "open" });
+  return (res: CSSResult) => {
+    const root = shadow();
 
-  if (template?.css) {
-    if (Array.isArray(template.css)) {
-      shadow.adoptedStyleSheets = template.css.map((css) => css.toValue());
-    } else {
-      shadow.adoptedStyleSheets = [template.css.toValue()];
-    }
-  }
+    root.adoptedStyleSheets = [...root.adoptedStyleSheets, res.toValue()];
 
-  if (template?.html) {
-    shadow.append(template.html.toValue().content.cloneNode(true));
-  }
+    return res;
+  };
+}
 
-  return shadow;
+function applyShadow<This extends HTMLElement>(
+  ctx: ClassFieldDecoratorContext<This>
+) {
+  let shadow: ShadowRoot;
+
+  ctx.addInitializer(function () {
+    shadow = this.shadowRoot || this.attachShadow({ mode: "open" });
+  });
+
+  return () => shadow;
 }
