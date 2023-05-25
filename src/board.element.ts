@@ -1,14 +1,19 @@
-import { css, html, styles, template } from "./templating.js";
-import { debug } from "./debug.js";
+import { inject, injectable } from "@joist/di";
+import { attr, css, html, listen, shadow, tagName } from "@joist/element";
+
+import { Debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 
+@injectable()
 export class GoBoardElement extends HTMLElement {
+  @tagName static tag = "go-board";
+
   static formAssociated = true;
   static observedAttributes = ["debug", "src"];
 
-  @styles styles = css`
+  @shadow styles = css`
     :host {
       font-family: system-ui;
       box-sizing: border-box;
@@ -160,35 +165,24 @@ export class GoBoardElement extends HTMLElement {
     }
   `;
 
-  @template template = html`
+  @shadow dom = html`
     <div id="header" class="row">
       <board-spacer></board-spacer>
     </div>
   `;
 
-  get turn() {
-    return (this.getAttribute("turn") as StoneColor) || "black";
-  }
-
-  set turn(value: StoneColor) {
-    this.setAttribute("turn", value);
-  }
-
-  get src() {
-    return this.getAttribute("src") || "";
-  }
-
-  set src(value) {
-    this.setAttribute("src", value);
-  }
+  @attr accessor turn: StoneColor = "black";
+  @attr accessor src: string = "";
+  @attr accessor debug = false;
+  @attr accessor rows = 19;
+  @attr accessor cols = 19;
+  @attr accessor coords = false;
 
   get sgf() {
     return this.#sgf;
   }
 
   moves: Move[] = [];
-  rows = 19;
-  cols = 19;
   columnLabels = [
     "A",
     "B",
@@ -217,34 +211,25 @@ export class GoBoardElement extends HTMLElement {
     "Z",
   ];
 
-  #shadow = this.shadowRoot!;
+  #debug = inject(Debug);
   #internals = this.attachInternals();
 
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #spaces = new Map<string, GoStoneElement | null>();
-  #header = this.#shadow.getElementById("header")!;
+  #header = this.dom.query("#header")!;
   #prevKey = "";
   #currentKey = this.key();
   #sgf: string | null = null;
 
-  constructor() {
-    super();
-
-    this.#shadow.addEventListener("click", this.#onClick.bind(this));
-
-    this.#createBoard();
-    this.#createColumnLetters();
-  }
-
   attributeChangedCallback(attr: string, old: string, val: string) {
-    if (this.hasAttribute("debug")) {
-      debug.enable();
+    if (this.debug) {
+      this.#debug().enable();
     } else {
-      debug.disable();
+      this.#debug().disable();
     }
 
-    if (attr === "src" && old !== val) {
+    if (attr === "src" && val && old !== val) {
       // reset imported state if the src value changes
       this.reset();
       this.import();
@@ -252,9 +237,8 @@ export class GoBoardElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.hasAttribute("turn")) {
-      this.turn = "black";
-    }
+    this.#createBoard();
+    this.#createColumnLetters();
   }
 
   onStoneAdded(stone: GoStoneElement) {
@@ -267,6 +251,14 @@ export class GoBoardElement extends HTMLElement {
 
   onStoneRemoved(stone: GoStoneElement) {
     this.#spaces.set(stone.slot, null);
+  }
+
+  @listen("click") onClick(e: Event) {
+    if (e.target instanceof HTMLButtonElement) {
+      const stone = GoStoneElement.create(this.turn, e.target.id);
+
+      this.append(stone);
+    }
   }
 
   key() {
@@ -328,12 +320,12 @@ export class GoBoardElement extends HTMLElement {
   }
 
   #validateStonePlacement(stone: GoStoneElement) {
-    debug.group("Checking stone:", stone);
+    this.#debug().group("Checking stone:", stone);
 
     // find all attached enemies
     const enemies = findAttachedEnemyStones(this, stone);
 
-    debug.log("Finding enemy stones:", enemies);
+    this.#debug().log("Finding enemy stones:", enemies);
 
     // keep track of removed stones
     const removedStones: GoStoneElement[] = [];
@@ -344,7 +336,7 @@ export class GoBoardElement extends HTMLElement {
 
       // if a group has no liberties remove all of its stones
       if (!group.liberties.size) {
-        debug.log("Removing Stones:\n", ...group.stones);
+        this.#debug().log("Removing Stones:\n", ...group.stones);
 
         for (let stone of group.stones) {
           this.#spaces.set(stone.slot, null); // clear out stone
@@ -379,7 +371,7 @@ export class GoBoardElement extends HTMLElement {
       // find added stones group
       const group = findGroup(this, stone);
 
-      debug.log("Stone part of following group:", group);
+      this.#debug().log("Stone part of following group:", group);
 
       // if the current group has no liberties remove it. not allowed
       if (!group.liberties.size) {
@@ -397,15 +389,7 @@ export class GoBoardElement extends HTMLElement {
       }
     }
 
-    debug.groupEnd();
-  }
-
-  #onClick(e: Event) {
-    if (e.target instanceof HTMLButtonElement) {
-      const stone = GoStoneElement.create(this.turn, e.target.id);
-
-      this.append(stone);
-    }
+    this.#debug().groupEnd();
   }
 
   #createBoard() {
@@ -425,7 +409,7 @@ export class GoBoardElement extends HTMLElement {
         row.append(this.#createSlot(r, c));
       }
 
-      this.#shadow.append(row);
+      this.dom.shadow.append(row);
     }
   }
 

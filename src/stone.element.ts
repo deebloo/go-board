@@ -1,5 +1,6 @@
+import { attr, css, tagName, shadow } from "@joist/element";
+
 import { GoBoardElement } from "./board.element.js";
-import { css, styles } from "./templating.js";
 
 export type StoneColor = "black" | "white";
 
@@ -13,7 +14,9 @@ export class GoStoneElement extends HTMLElement {
     return stone;
   }
 
-  @styles styles = css`
+  @tagName static tagName = "go-stone";
+
+  @shadow styles = css`
     :host {
       box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
       display: inline-flex;
@@ -41,13 +44,7 @@ export class GoStoneElement extends HTMLElement {
     }
   `;
 
-  get color(): StoneColor {
-    return (this.getAttribute("color") as StoneColor) || "black";
-  }
-
-  set color(value) {
-    this.setAttribute("color", value);
-  }
+  @attr accessor color: StoneColor = "black";
 
   #parent: GoBoardElement | null = null;
 

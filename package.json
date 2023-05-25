@@ -27,8 +27,6 @@
   "scripts": {
     "start": "wireit",
     "build": "wireit",
-    "build:tsc": "wireit",
-    "build:rollup": "wireit",
     "test": "wireit"
   },
   "wireit": {
@@ -36,7 +34,10 @@
       "command": "serve",
       "service": true,
       "dependencies": [
-        "build:tsc"
+        {
+          "script": "build:tsc",
+          "cascade": false
+        }
       ]
     },
     "build": {
@@ -70,6 +71,11 @@
       ]
     }
   },
+  "dependencies": {
+    "@joist/di": "^3.0.0-next.12",
+    "@joist/element": "^3.0.0-next.12",
+    "tslib": "^2.5.0"
+  },
   "devDependencies": {
     "@open-wc/testing": "^3.1.2",
     "@rollup/plugin-node-resolve": "^15.0.2",
@@ -82,10 +88,6 @@
     "rollup": "^3.20.0",
     "serve": "^14.2.0",
     "typescript": "^5.0.4",
-    "vite": "^4.3.5",
     "wireit": "^0.9.5"
-  },
-  "dependencies": {
-    "tslib": "^2.5.0"
   }
 }

@@ -34,4 +34,11 @@ export class Debug {
   }
 }
 
-export const debug = new Debug();
+export class NoopDebug extends Debug {
+  group(..._: any[]) {}
+  groupEnd() {}
+  log(..._: any[]) {}
+  eval(_: () => void) {}
+  enable() {}
+  disable() {}
+}
