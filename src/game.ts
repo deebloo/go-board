@@ -47,19 +47,24 @@ export function findSurroundingSpaces(
   const row = Number(coords.row);
   const col = columnLabels.indexOf(coords.col);
 
-  return [
+  const spaces = [
     { row: row + 1, col },
     { row: row - 1, col },
     { row, col: col - 1 },
     { row, col: col + 1 },
-  ]
-    .filter(({ row, col }) => {
-      const rowIsValid = row <= board.rows && row > 0;
-      const colIsValid = col > -1 && col < board.cols;
+  ];
 
-      return rowIsValid && colIsValid;
-    })
-    .map(({ row, col }) => `${columnLabels[col]}${row}`);
+  let res = [];
+
+  for (let i = 0; i < spaces.length; i++) {
+    const { row, col } = spaces[i];
+
+    if (row <= board.rows && row > 0 && col > -1 && col < board.cols) {
+      res.push(`${columnLabels[col]}${row}`);
+    }
+  }
+
+  return res;
 }
 
 /**
