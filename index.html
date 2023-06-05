@@ -29,13 +29,8 @@
       const board = document.querySelector("go-board");
       const url = new URL(window.location);
 
-      if (url.searchParams.has("coords")) {
-        board.setAttribute("coords", "");
-      }
-
-      if (url.searchParams.has("debug")) {
-        board.setAttribute("debug", "");
-      }
+      board.coords = url.searchParams.has("coords");
+      board.debug = url.searchParams.has("debug");
 
       if (url.searchParams.has("ogsid")) {
         const ogsid = url.searchParams.get("ogsid");

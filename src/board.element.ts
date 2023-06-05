@@ -6,7 +6,7 @@ import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 
-@injectable()
+@injectable
 export class GoBoardElement extends HTMLElement {
   @tagName static tag = "go-board";
 
@@ -178,11 +178,8 @@ export class GoBoardElement extends HTMLElement {
   @attr accessor cols = 19;
   @attr accessor coords = false;
 
-  get sgf() {
-    return this.#sgf;
-  }
-
   moves: Move[] = [];
+  sgf: string | null = null;
   columnLabels = [
     "A",
     "B",
@@ -220,7 +217,6 @@ export class GoBoardElement extends HTMLElement {
   #header = this.dom.query("#header")!;
   #prevKey = "";
   #currentKey = this.key();
-  #sgf: string | null = null;
 
   attributeChangedCallback(attr: string, old: string, val: string) {
     if (this.debug) {
@@ -300,13 +296,15 @@ export class GoBoardElement extends HTMLElement {
       const raw = await fetch(this.src).then((res) => res.text());
 
       if (raw) {
-        this.#sgf = raw;
+        this.sgf = raw;
 
         this.moves = parseSGF(raw, this.columnLabels, this.rows);
 
         return this.#play();
       }
     }
+
+    return undefined;
   }
 
   #play() {
