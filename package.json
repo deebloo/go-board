@@ -72,8 +72,8 @@
     }
   },
   "dependencies": {
-    "@joist/di": "^3.0.0-next.15",
-    "@joist/element": "^3.0.0-next.15",
+    "@joist/di": "^3.0.0-next.20",
+    "@joist/element": "^3.0.0-next.20",
     "tslib": "^2.5.2"
   },
   "devDependencies": {
