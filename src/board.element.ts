@@ -187,6 +187,7 @@ export class GoBoardElement extends HTMLElement {
   @attr accessor cols = 19;
   @attr accessor coords = false;
   @attr accessor readonly = false;
+  @attr accessor sfx = false;
 
   moves: Move[] = [];
   sgf: string | null = null;
@@ -390,9 +391,13 @@ export class GoBoardElement extends HTMLElement {
           stone.remove();
         }
 
-        this.#audio.captureStones(removedStones.length);
+        if (this.sfx) {
+          this.#audio.captureStones(removedStones.length);
+        }
       } else {
-        this.#audio.placeStone();
+        if (this.sfx) {
+          this.#audio.placeStone();
+        }
       }
 
       // find added stones group
