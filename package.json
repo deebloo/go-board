@@ -76,8 +76,14 @@
     },
     "test": {
       "command": "wtr \"target/**/**.spec.js\" --node-resolve --puppeteer",
+      "files": [
+        "target/**"
+      ],
       "dependencies": [
-        "tsc"
+        {
+          "script": "tsc",
+          "cascade": false
+        }
       ]
     }
   },
