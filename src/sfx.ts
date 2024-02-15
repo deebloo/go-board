@@ -14,6 +14,9 @@ export class Sfx {
       if (script.dataset.assetPath) {
         this.#stones.src = `${script.dataset.assetPath}/stones.webm`;
         this.#effects.src = `${script.dataset.assetPath}/effects.webm`;
+
+        this.#stones.load();
+        this.#effects.load();
       }
     }
   }
