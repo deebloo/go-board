@@ -12,7 +12,8 @@
     }
   },
   "files": [
-    "target"
+    "target",
+    "bundle"
   ],
   "repository": {
     "type": "git",
@@ -35,18 +36,18 @@
       "service": true,
       "dependencies": [
         {
-          "script": "build:tsc",
+          "script": "tsc",
           "cascade": false
         }
       ]
     },
     "build": {
       "dependencies": [
-        "build:tsc",
-        "build:rollup"
+        "tsc",
+        "rollup"
       ]
     },
-    "build:tsc": {
+    "tsc": {
       "command": "tsc --build --pretty",
       "clean": "if-file-deleted",
       "files": [
@@ -58,16 +59,25 @@
         "tsconfig.tsbuildinfo"
       ]
     },
-    "build:rollup": {
+    "rollup": {
       "command": "rollup -c rollup.config.js",
+      "files": [
+        "target/**"
+      ],
+      "output": [
+        "bundle/**"
+      ],
       "dependencies": [
-        "build:tsc"
+        {
+          "script": "tsc",
+          "cascade": false
+        }
       ]
     },
     "test": {
       "command": "wtr \"target/**/**.spec.js\" --node-resolve --puppeteer",
       "dependencies": [
-        "build:tsc"
+        "tsc"
       ]
     }
   },

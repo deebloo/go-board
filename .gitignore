@@ -1,5 +1,5 @@
 /node_modules
-/bundled
+/bundle
 /dist
 /target
 /src/**/*.js
