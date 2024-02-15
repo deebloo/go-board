@@ -163,6 +163,14 @@ export class GoBoardElement extends HTMLElement {
     :host([debug]) button {
       opacity: 0.2;
     }
+
+    :host([readonly]) .row slot button {
+      cursor: default;
+    }
+
+    :host([readonly]) .row slot button:hover:after {
+      background: none !important;
+    }
   `;
 
   @shadow dom = html`
@@ -177,6 +185,7 @@ export class GoBoardElement extends HTMLElement {
   @attr accessor rows = 19;
   @attr accessor cols = 19;
   @attr accessor coords = false;
+  @attr accessor readonly = false;
 
   moves: Move[] = [];
   sgf: string | null = null;
@@ -250,6 +259,10 @@ export class GoBoardElement extends HTMLElement {
   }
 
   @listen("click") onClick(e: Event) {
+    if (this.readonly) {
+      return;
+    }
+
     if (e.target instanceof HTMLButtonElement) {
       const stone = GoStoneElement.create(this.turn, e.target.id);
 
