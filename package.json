@@ -88,8 +88,8 @@
     }
   },
   "dependencies": {
-    "@joist/di": "^3.0.0-rc.2",
-    "@joist/element": "^3.0.0-rc.2",
+    "@joist/di": "^3.0.7",
+    "@joist/element": "^3.0.7",
     "tslib": "^2.5.2"
   },
   "devDependencies": {
