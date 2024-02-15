@@ -37,6 +37,19 @@ The go-board element can display a game from a sgf file. You can display a game 
 ></go-board>
 ```
 
+`go-board` can also be used as a form element. It will submit the game key of the current board. This can can be parsed to set the board state manually.
+Being form associated also means that you can send data to your own servers without writing any JavaScript.
+
+```html
+<form action="/save-game">
+  <go-board name="game">
+    <go-stone color="black" slot="R17"></go-stone>
+    <go-stone color="white" slot="R18"></go-stone>
+    <go-stone color="black" slot="Q18"></go-stone>
+  </go-board>
+</form>
+```
+
 Attributes
 
 | Item     | description                                                           |
