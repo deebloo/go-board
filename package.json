@@ -13,7 +13,8 @@
   },
   "files": [
     "target",
-    "bundle"
+    "bundle",
+    "assets"
   ],
   "repository": {
     "type": "git",

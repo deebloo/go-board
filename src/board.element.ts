@@ -5,6 +5,7 @@ import { Debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.element.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
+import { Sfx } from "./sfx.js";
 
 @injectable
 export class GoBoardElement extends HTMLElement {
@@ -17,7 +18,7 @@ export class GoBoardElement extends HTMLElement {
     :host {
       font-family: system-ui;
       box-sizing: border-box;
-      background: #dcb35c;
+      background: url("assets/kaya.jpg") #dcb35c;
       display: block;
       padding: 0;
       position: relative;
@@ -224,6 +225,7 @@ export class GoBoardElement extends HTMLElement {
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #spaces = new Map<string, GoStoneElement | null>();
   #header = this.dom.query("#header")!;
+  #audio = new Sfx();
   #prevKey = "";
   #currentKey = Array.from({ length: this.rows * this.cols })
     .map(() => "*")
@@ -266,7 +268,7 @@ export class GoBoardElement extends HTMLElement {
     this.#spaces.set(stone.slot, null);
   }
 
-  @listen("click") onClick(e: Event) {
+  @listen("mousedown") onClick(e: Event) {
     if (this.readonly) {
       return;
     }
@@ -382,9 +384,15 @@ export class GoBoardElement extends HTMLElement {
     } else {
       // board state is valid and we can proceed
 
-      // remove captured stones from dom
-      for (let stone of removedStones) {
-        stone.remove();
+      if (removedStones.length) {
+        // remove captured stones from dom
+        for (let stone of removedStones) {
+          stone.remove();
+        }
+
+        this.#audio.captureStones(removedStones.length);
+      } else {
+        this.#audio.placeStone();
       }
 
       // find added stones group
