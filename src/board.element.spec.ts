@@ -80,4 +80,58 @@ describe(GoBoardElement.name, () => {
 
     expect(board.getSpace("C18")).to.be.null;
   });
+
+  it("should submit the default key value to a form", async () => {
+    const board = await fixture<HTMLFormElement>(html`
+      <form>
+        <go-board name="game"></go-board>
+
+        <button>submit</button>
+      </form>
+    `);
+
+    return new Promise((resolve) => {
+      board.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const form = new FormData(board);
+
+        expect(form.get("game")).to.equal(
+          "*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************"
+        );
+
+        resolve();
+      });
+
+      board.querySelector("button")?.click();
+    });
+  });
+
+  it("should submit updated key when stones are added", async () => {
+    const board = await fixture<HTMLFormElement>(html`
+      <form>
+        <go-board name="game">
+          <go-stone slot="A1" color="black"></go-stone>
+        </go-board>
+
+        <button>submit</button>
+      </form>
+    `);
+
+    return new Promise((resolve) => {
+      board.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const form = new FormData(board);
+
+        expect(form.get("game")).to.equal(
+          "******************************************************************************************************************************************************************************************************************************************************************************************************************************************************BA1******************"
+        );
+
+        resolve();
+      });
+
+      board.querySelector("button")?.click();
+    });
+  });
 });

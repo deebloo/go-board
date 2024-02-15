@@ -225,7 +225,15 @@ export class GoBoardElement extends HTMLElement {
   #spaces = new Map<string, GoStoneElement | null>();
   #header = this.dom.query("#header")!;
   #prevKey = "";
-  #currentKey = this.key();
+  #currentKey = Array.from({ length: this.rows * this.cols })
+    .map(() => "*")
+    .join("");
+
+  constructor() {
+    super();
+
+    this.#internals.setFormValue(this.#currentKey);
+  }
 
   attributeChangedCallback(attr: string, old: string, val: string) {
     if (this.debug) {
@@ -275,13 +283,13 @@ export class GoBoardElement extends HTMLElement {
 
     for (let [space, stone] of this.#spaces) {
       if (stone !== null) {
-        key += space + stone.color[0].toUpperCase();
+        key += stone.color[0].toUpperCase() + space;
       } else {
         key += "*";
       }
     }
 
-    return btoa(key);
+    return key;
   }
 
   reset() {
