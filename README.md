@@ -61,3 +61,4 @@ Being form associated also means that you can send data to your own servers with
 | src      | path to a sgf file. sfg files describe the steps in a game of go      |
 | debug    | enables debug out put. will highlight hitboxes and log out game logic |
 | readonly | disables manually placing stones                                      |
+| sfx      | enable sound effects                                                  |
