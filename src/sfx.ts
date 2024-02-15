@@ -2,8 +2,6 @@ const script = document.querySelector<HTMLScriptElement>(
   "script[data-asset-path]"
 );
 
-console.log(script);
-
 export class Sfx {
   #stones = new Audio();
   #effects = new Audio();
