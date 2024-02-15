@@ -39,8 +39,9 @@ The go-board element can display a game from a sgf file. You can display a game 
 
 Attributes
 
-| Item   | description                                                           |
-| ------ | --------------------------------------------------------------------- |
-| coords | determines if the column and row lables are displayed                 |
-| src    | path to a sgf file. sfg files describe the steps in a game of go      |
-| debug  | enables debug out put. will highlight hitboxes and log out game logic |
+| Item     | description                                                           |
+| -------- | --------------------------------------------------------------------- |
+| coords   | determines if the column and row lables are displayed                 |
+| src      | path to a sgf file. sfg files describe the steps in a game of go      |
+| debug    | enables debug out put. will highlight hitboxes and log out game logic |
+| readonly | disables manually placing stones                                      |
