@@ -50,7 +50,7 @@ Being form associated also means that you can send data to your own servers with
 </form>
 ```
 
-Attributes
+## Attributes
 
 | Item     | description                                                           |
 | -------- | --------------------------------------------------------------------- |
