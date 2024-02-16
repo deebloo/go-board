@@ -31,14 +31,10 @@
     </style>
 
     <form action="/save-game">
-      <go-board name="board"></go-board>
+      <go-board name="board" sfx></go-board>
     </form>
 
-    <script
-      src="./target/register.js"
-      type="module"
-      data-asset-path="/assets"
-    ></script>
+    <script src="./target/register.js" type="module"></script>
 
     <script type="module">
       const board = document.querySelector("go-board");
@@ -47,6 +43,7 @@
       board.coords = url.searchParams.has("coords");
       board.debug = url.searchParams.has("debug");
       board.readonly = url.searchParams.has("readonly");
+      board.sfx = url.searchParams.has("sfx");
 
       if (url.searchParams.has("ogsid")) {
         const ogsid = url.searchParams.get("ogsid");

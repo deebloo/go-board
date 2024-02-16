@@ -18,7 +18,7 @@ export class GoBoardElement extends HTMLElement {
     :host {
       font-family: system-ui;
       box-sizing: border-box;
-      background: url("assets/kaya.jpg") #dcb35c;
+      background: url("../assets/kaya.jpg") #dcb35c;
       display: block;
       padding: 0;
       position: relative;

@@ -1,24 +1,15 @@
-const script = document.querySelector<HTMLScriptElement>(
-  "script[data-asset-path]"
-);
-
 export class Sfx {
   #stones = new Audio();
   #effects = new Audio();
 
-  constructor() {
+  constructor(path: string = "assets") {
     this.#stones.volume = 0.1;
+    this.#stones.src = `${path}/stones.webm`;
+    this.#stones.load();
+
     this.#effects.volume = 0.1;
-
-    if (script) {
-      if (script.dataset.assetPath) {
-        this.#stones.src = `${script.dataset.assetPath}/stones.webm`;
-        this.#effects.src = `${script.dataset.assetPath}/effects.webm`;
-
-        this.#stones.load();
-        this.#effects.load();
-      }
-    }
+    this.#effects.src = `${path}/effects.webm`;
+    this.#effects.load();
   }
 
   placeStone() {

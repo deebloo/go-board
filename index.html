@@ -20,13 +20,13 @@
     </style>
 
     <form>
-      <go-board></go-board>
+      <go-board sfx></go-board>
     </form>
 
     <script
       src="./bundle/go-board.min.js"
       type="module"
-      data-asset-path="/assets/test"
+      data-asset-path="/assets"
     ></script>
 
     <script type="module">
@@ -36,6 +36,7 @@
       board.coords = url.searchParams.has("coords");
       board.debug = url.searchParams.has("debug");
       board.readonly = url.searchParams.has("readonly");
+      board.sfx = url.searchParams.has("sfx");
 
       if (url.searchParams.has("ogsid")) {
         const ogsid = url.searchParams.get("ogsid");
