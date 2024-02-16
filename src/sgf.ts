@@ -1,4 +1,4 @@
-import { StoneColor } from "./stone.element.js";
+import { StoneColor } from "./stone.js";
 
 const alphabet = Array(26)
   .fill(null)

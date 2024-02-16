@@ -1,9 +1,9 @@
-import "./board.element.js";
-import "./board.element.js";
-import "./stone.element.js";
+import "./board.js";
+import "./board.js";
+import "./stone.js";
 
-import { GoBoardElement } from "./board.element.js";
-import { GoStoneElement } from "./stone.element.js";
+import { GoBoardElement } from "./board.js";
+import { GoStoneElement } from "./stone.js";
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -9,12 +9,7 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 ## All you need to get started is some markup and a script tag
 
 ```HTML
-<script
-  src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"
-  data-asset-path="https://cdn.jsdelivr.net/npm/go-board@latest/assets"
-></script>
-
-<go-board coords>
+<go-board coords sfx="https://cdn.jsdelivr.net/npm/go-board@latest/assets/sfx">
   <go-stone color="black" slot="R17"></go-stone>
   <go-stone color="white" slot="R18"></go-stone>
   <go-stone color="black" slot="Q18"></go-stone>
@@ -29,6 +24,10 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
   <go-stone color="white" slot="T19"></go-stone>
   <go-stone color="black" slot="S19"></go-stone>
 </go-board>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"
+></script>
 ```
 
 The go-board element can display a game from a sgf file. You can display a game from [OGS](https://online-go.com).
@@ -61,4 +60,4 @@ Being form associated also means that you can send data to your own servers with
 | src      | path to a sgf file. sfg files describe the steps in a game of go      |
 | debug    | enables debug out put. will highlight hitboxes and log out game logic |
 | readonly | disables manually placing stones                                      |
-| sfx      | enable sound effects                                                  |
+| sfx      | enable sound effects. Point to a directory with sound files           |

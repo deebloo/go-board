@@ -2,7 +2,7 @@ export class Sfx {
   #stones = new Audio();
   #effects = new Audio();
 
-  constructor(path: string = "assets") {
+  constructor(path: string) {
     this.#stones.volume = 0.1;
     this.#stones.src = `${path}/stones.webm`;
     this.#stones.load();

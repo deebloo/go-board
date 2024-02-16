@@ -2,7 +2,7 @@ import "./register.js";
 
 import { expect, fixture, html } from "@open-wc/testing";
 
-import { GoBoardElement } from "./board.element.js";
+import { GoBoardElement } from "./board.js";
 import { findGroup } from "./game.js";
 
 describe("game", () => {

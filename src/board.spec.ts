@@ -2,8 +2,8 @@ import "./register.js";
 
 import { expect, fixture, html } from "@open-wc/testing";
 
-import { GoBoardElement } from "./board.element.js";
-import { GoStoneElement } from "./stone.element.js";
+import { GoBoardElement } from "./board.js";
+import { GoStoneElement } from "./stone.js";
 
 describe(GoBoardElement.name, () => {
   it("should create an accurate key of gamestate", async () => {

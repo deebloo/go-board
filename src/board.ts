@@ -2,7 +2,7 @@ import { inject, injectable } from "@joist/di";
 import { attr, css, html, listen, shadow, tagName } from "@joist/element";
 
 import { Debug } from "./debug.js";
-import { GoStoneElement, StoneColor } from "./stone.element.js";
+import { GoStoneElement, StoneColor } from "./stone.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 import { Sfx } from "./sfx.js";
@@ -12,7 +12,7 @@ export class GoBoardElement extends HTMLElement {
   @tagName static tag = "go-board";
 
   static formAssociated = true;
-  static observedAttributes = ["debug", "src"];
+  static observedAttributes = ["debug", "src", "sfx"];
 
   @shadow styles = css`
     :host {
@@ -187,7 +187,7 @@ export class GoBoardElement extends HTMLElement {
   @attr accessor cols = 19;
   @attr accessor coords = false;
   @attr accessor readonly = false;
-  @attr accessor sfx = false;
+  @attr accessor sfx = "";
 
   moves: Move[] = [];
   sgf: string | null = null;
@@ -226,7 +226,7 @@ export class GoBoardElement extends HTMLElement {
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #spaces = new Map<string, GoStoneElement | null>();
   #header = this.dom.query("#header")!;
-  #audio = new Sfx();
+  #audio: Sfx | null = null;
   #prevKey = "";
   #currentKey = Array.from({ length: this.rows * this.cols })
     .map(() => "*")
@@ -243,6 +243,10 @@ export class GoBoardElement extends HTMLElement {
       this.#debug().enable();
     } else {
       this.#debug().disable();
+    }
+
+    if (this.sfx && this.#audio === null) {
+      this.#audio = new Sfx(this.sfx);
     }
 
     if (attr === "src" && val && old !== val) {
@@ -391,11 +395,11 @@ export class GoBoardElement extends HTMLElement {
           stone.remove();
         }
 
-        if (this.sfx) {
+        if (this.#audio) {
           this.#audio.captureStones(removedStones.length);
         }
       } else {
-        if (this.sfx) {
+        if (this.#audio) {
           this.#audio.placeStone();
         }
       }

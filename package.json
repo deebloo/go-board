@@ -63,7 +63,8 @@
     "rollup": {
       "command": "rollup -c rollup.config.js",
       "files": [
-        "target/**"
+        "target/**",
+        "rollup.config.js"
       ],
       "output": [
         "bundle/**"

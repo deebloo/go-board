@@ -1,5 +1,5 @@
-import { GoBoardElement } from "./board.element.js";
-import { GoStoneElement } from "./stone.element.js";
+import { GoBoardElement } from "./board.js";
+import { GoStoneElement } from "./stone.js";
 
 export class GroupState {
   stones = new Set<GoStoneElement>();

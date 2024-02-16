@@ -1,6 +1,6 @@
 import { attr, css, tagName, shadow } from "@joist/element";
 
-import { GoBoardElement } from "./board.element.js";
+import { GoBoardElement } from "./board.js";
 
 export type StoneColor = "black" | "white";
 
