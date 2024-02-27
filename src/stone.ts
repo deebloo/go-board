@@ -1,9 +1,10 @@
-import { attr, css, tagName, shadow } from "@joist/element";
+import { attr, css, tagName, shadow, element } from "@joist/element";
 
 import { GoBoardElement } from "./board.js";
 
 export type StoneColor = "black" | "white";
 
+@element
 export class GoStoneElement extends HTMLElement {
   static create(color: StoneColor, space: string = "") {
     const stone = new GoStoneElement();

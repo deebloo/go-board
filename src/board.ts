@@ -1,5 +1,13 @@
 import { inject, injectable } from "@joist/di";
-import { attr, css, html, listen, shadow, tagName } from "@joist/element";
+import {
+  attr,
+  css,
+  html,
+  listen,
+  shadow,
+  tagName,
+  element,
+} from "@joist/element";
 
 import { Debug } from "./debug.js";
 import { GoStoneElement, StoneColor } from "./stone.js";
@@ -8,11 +16,11 @@ import { Move, parseSGF } from "./sgf.js";
 import { Sfx } from "./sfx.js";
 
 @injectable
+@element
 export class GoBoardElement extends HTMLElement {
   @tagName static tag = "go-board";
 
   static formAssociated = true;
-  static observedAttributes = ["debug", "src", "sfx"];
 
   @shadow styles = css`
     :host {
