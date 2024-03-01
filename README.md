@@ -9,6 +9,10 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 ## All you need to get started is some markup and a script tag
 
 ```HTML
+<script
+  src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"
+></script>
+
 <go-board coords sfx="https://cdn.jsdelivr.net/npm/go-board@latest/assets/sfx">
   <go-stone color="black" slot="R17"></go-stone>
   <go-stone color="white" slot="R18"></go-stone>
@@ -24,10 +28,6 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
   <go-stone color="white" slot="T19"></go-stone>
   <go-stone color="black" slot="S19"></go-stone>
 </go-board>
-
-<script
-  src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"
-></script>
 ```
 
 The go-board element can display a game from a sgf file. You can display a game from [OGS](https://online-go.com).
