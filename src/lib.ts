@@ -1,2 +1,2 @@
-export { GoBoardElement } from "./board.js";
-export { GoStoneElement } from "./stone.js";
+export { GoBoardElement } from "./lib/board.js";
+export { GoStoneElement } from "./lib/stone.js";
