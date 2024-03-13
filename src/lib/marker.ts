@@ -7,6 +7,7 @@ export class GoStoneMarkerElement extends HTMLElement {
   @shadow styles = css`
     :host {
       display: flex;
+      font-size: clamp(2.5vh, 2.5vw);
       align-items: center;
       justify-content: center;
       height: 50px;
