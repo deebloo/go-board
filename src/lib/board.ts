@@ -133,6 +133,7 @@ export class GoBoardElement extends HTMLElement {
       width: 50%;
       border-radius: 50%;
       border: solid 2px;
+      position: absolute;
     }
 
     :host .row slot::slotted(go-stone[color="white"]:last-child)::after {
