@@ -135,11 +135,11 @@ export class GoBoardElement extends HTMLElement {
       border: solid 2px;
     }
 
-    .row slot::slotted(go-stone[color="white"]:last-child)::after {
+    :host .row slot::slotted(go-stone[color="white"]:last-child)::after {
       border-color: #000;
     }
 
-    .row slot::slotted(go-stone[color="black"]:last-child)::after {
+    :host .row slot::slotted(go-stone[color="black"]:last-child)::after {
       border-color: #fff;
     }
 
