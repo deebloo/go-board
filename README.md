@@ -54,10 +54,11 @@ Being form associated also means that you can send data to your own servers with
 
 ## Attributes
 
-| Item     | description                                                           |
-| -------- | --------------------------------------------------------------------- |
-| coords   | determines if the column and row lables are displayed                 |
-| src      | path to a sgf file. sfg files describe the steps in a game of go      |
-| debug    | enables debug out put. will highlight hitboxes and log out game logic |
-| readonly | disables manually placing stones                                      |
-| sfx      | enable sound effects. Point to a directory with sound files           |
+| Item              | description                                                           |
+| ----------------- | --------------------------------------------------------------------- |
+| coords            | determines if the column and row lables are displayed                 |
+| src               | path to a sgf file. sfg files describe the steps in a game of go      |
+| debug             | enables debug out put. will highlight hitboxes and log out game logic |
+| readonly          | disables manually placing stones                                      |
+| sfx               | enable sound effects. Point to a directory with sound files           |
+| disablelastmarker | disable marking the last stone placed. Useful for documenting shapes  |

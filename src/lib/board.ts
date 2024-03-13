@@ -125,7 +125,9 @@ export class GoBoardElement extends HTMLElement {
       left: 0;
     }
 
-    .row slot::slotted(go-stone:last-child)::after {
+    :host(:not([disablelastmarker]))
+      .row
+      slot::slotted(go-stone:last-child)::after {
       content: "";
       height: 50%;
       width: 50%;
