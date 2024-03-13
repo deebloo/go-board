@@ -52,6 +52,16 @@ Being form associated also means that you can send data to your own servers with
 </form>
 ```
 
+Stones can be decorated with markers. The `go-stone-marker` element can be passed as a child to `go-stone` and you can add any icon or html entity that you like.
+
+```html
+<go-board>
+  <go-stone slot="Q4" color="black">
+    <go-stone-marker>&check;</go-stone-marker>
+  </go-stone>
+</go-board>
+```
+
 ## Attributes
 
 | Item              | description                                                           |

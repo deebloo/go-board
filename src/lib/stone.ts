@@ -1,4 +1,4 @@
-import { attr, css, tagName, shadow, element } from "@joist/element";
+import { attr, css, tagName, shadow, element, html } from "@joist/element";
 
 import { GoBoardElement } from "./board.js";
 
@@ -27,6 +27,7 @@ export class GoStoneElement extends HTMLElement {
     }
 
     :host([color="black"]) {
+      color: #fff;
       background: black;
       background-image: radial-gradient(
         circle at center,
@@ -36,6 +37,7 @@ export class GoStoneElement extends HTMLElement {
     }
 
     :host([color="white"]) {
+      color: #000;
       background: #fff;
       background-image: radial-gradient(
         circle at center,
@@ -44,6 +46,8 @@ export class GoStoneElement extends HTMLElement {
       );
     }
   `;
+
+  @shadow dom = html`<slot></slot>`;
 
   @attr accessor color: StoneColor = "black";
 
