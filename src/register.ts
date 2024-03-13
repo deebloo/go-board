@@ -1,5 +1,4 @@
 import "./lib/board.js";
-import "./lib/board.js";
 import "./lib/stone.js";
 import "./lib/marker.js";
 

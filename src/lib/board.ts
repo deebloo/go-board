@@ -10,7 +10,7 @@ import {
 } from "@joist/element";
 
 import { Debug } from "./debug.js";
-import { GoStoneElement, StoneColor } from "./stone.js";
+import type { GoStoneElement, StoneColor } from "./stone.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 import { Sfx } from "./sfx.js";
@@ -290,7 +290,9 @@ export class GoBoardElement extends HTMLElement {
     }
 
     if (e.target instanceof HTMLButtonElement) {
-      const stone = GoStoneElement.create(this.turn, e.target.id);
+      const stone = document.createElement("go-stone");
+      stone.color = this.turn;
+      stone.slot = e.target.id;
 
       this.append(stone);
     }
@@ -348,7 +350,9 @@ export class GoBoardElement extends HTMLElement {
 
   #play() {
     for (const move of this.moves) {
-      const stone = GoStoneElement.create(move.color, move.space);
+      const stone = document.createElement("go-stone");
+      stone.color = move.color;
+      stone.slot = move.space;
 
       this.append(stone);
     }
