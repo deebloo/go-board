@@ -8,7 +8,7 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 
 ## All you need to get started is some markup and a script tag
 
-```HTML
+```html
 <script
   src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"
 ></script>
