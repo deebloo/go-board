@@ -250,12 +250,6 @@ export class GoBoardElement extends HTMLElement {
   }
 
   attributeChangedCallback(attr: string, old: string, val: string) {
-    if (this.debug) {
-      this.#debug().enable();
-    } else {
-      this.#debug().disable();
-    }
-
     if (this.sfx && this.#audio === null) {
       this.#audio = new Sfx(this.sfx);
     }
@@ -270,6 +264,12 @@ export class GoBoardElement extends HTMLElement {
   connectedCallback() {
     this.#createBoard();
     this.#createColumnLetters();
+
+    const debug = this.#debug();
+
+    if (debug.enabled) {
+      this.setAttribute("debug", "");
+    }
   }
 
   onStoneAdded(stone: GoStoneElement) {

@@ -9,9 +9,7 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 ## All you need to get started is some markup and a script tag
 
 ```html
-<script
-  src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"
-></script>
+<script src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"></script>
 
 <go-board coords sfx="https://cdn.jsdelivr.net/npm/go-board@latest/assets/sfx">
   <go-stone color="black" slot="R17"></go-stone>
@@ -64,11 +62,10 @@ Stones can be decorated with markers. The `go-stone-marker` element can be passe
 
 ## Attributes
 
-| Item              | description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| coords            | determines if the column and row lables are displayed                 |
-| src               | path to a sgf file. sfg files describe the steps in a game of go      |
-| debug             | enables debug out put. will highlight hitboxes and log out game logic |
-| readonly          | disables manually placing stones                                      |
-| sfx               | enable sound effects. Point to a directory with sound files           |
-| disablelastmarker | disable marking the last stone placed. Useful for documenting shapes  |
+| Item              | description                                                          |
+| ----------------- | -------------------------------------------------------------------- |
+| coords            | determines if the column and row lables are displayed                |
+| src               | path to a sgf file. sfg files describe the steps in a game of go     |
+| readonly          | disables manually placing stones                                     |
+| sfx               | enable sound effects. Point to a directory with sound files          |
+| disablelastmarker | disable marking the last stone placed. Useful for documenting shapes |

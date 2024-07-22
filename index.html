@@ -251,7 +251,6 @@
       const url = new URL(window.location);
 
       board.coords = url.searchParams.has("coords");
-      board.debug = url.searchParams.has("debug");
       board.readonly = url.searchParams.has("readonly");
 
       if (url.searchParams.has("sfx")) {

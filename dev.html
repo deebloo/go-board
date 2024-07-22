@@ -16,8 +16,6 @@
         }
       }
     </script>
-
-    <script src="./target/register.js" type="module"></script>
   </head>
 
   <body>
@@ -34,10 +32,31 @@
 
     <form action="/save-game">
       <go-board name="board" sfx="/assets/sfx">
-        <go-stone slot="Q4" color="black">
-          <go-stone-marker>&#10005;</go-stone-marker>
-        </go-stone>
+        <go-stone slot="Q4" color="black"> </go-stone>
       </go-board>
     </form>
+
+    <script type="module">
+      import { defineEnvironment } from "@joist/di";
+
+      import { ConsoleDebug, Debug } from "./target/lib/debug.js";
+
+      const debug = {
+        provide: Debug,
+        factory(i) {
+          const search = new URLSearchParams(window.location.search);
+
+          if (search.has("debug")) {
+            return i.inject(ConsoleDebug);
+          }
+
+          return new Debug();
+        },
+      };
+
+      defineEnvironment([debug]);
+    </script>
+
+    <script src="./target/register.js" type="module"></script>
   </body>
 </html>
