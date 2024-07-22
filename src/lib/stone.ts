@@ -26,6 +26,11 @@ export class GoStoneElement extends HTMLElement {
       width: 50px;
     }
 
+    ::slotted(go-marker) {
+      height: 75%;
+      width: 75%;
+    }
+
     :host([color="black"]) {
       color: #fff;
       background: black;

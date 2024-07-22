@@ -1,8 +1,8 @@
 import { css, element, html, shadow, tagName } from "@joist/element";
 
 @element
-export class GoStoneMarkerElement extends HTMLElement {
-  @tagName static tag = "go-stone-marker";
+export class GoMarkerElement extends HTMLElement {
+  @tagName static tag = "go-marker";
 
   @shadow styles = css`
     :host {

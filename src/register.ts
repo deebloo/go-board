@@ -4,13 +4,13 @@ import "./lib/marker.js";
 
 import { GoBoardElement } from "./lib/board.js";
 import { GoStoneElement } from "./lib/stone.js";
-import { GoStoneMarkerElement } from "./lib/marker.js";
+import { GoMarkerElement } from "./lib/marker.js";
 
 declare global {
   interface HTMLElementTagNameMap {
     "go-board": GoBoardElement;
     "go-stone": GoStoneElement;
-    "go-marker": GoStoneMarkerElement;
+    "go-marker": GoMarkerElement;
   }
 
   namespace JSX {

@@ -28,11 +28,39 @@
         max-height: calc(100vh - 1rem);
         background-image: url(assets/textures/kaya.jpg);
       }
+
+      :not(:defined) {
+        visibility: hidden;
+      }
     </style>
 
     <form action="/save-game">
       <go-board name="board" sfx="/assets/sfx">
-        <go-stone slot="Q4" color="black"> </go-stone>
+        <go-stone slot="Q4" color="black"></go-stone>
+
+        <go-marker slot="R5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            fill="red"
+          >
+            <path
+              d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
+            />
+          </svg>
+        </go-marker>
+
+        <go-marker slot="D4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            fill="green"
+          >
+            <path
+              d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"
+            />
+          </svg>
+        </go-marker>
       </go-board>
     </form>
 

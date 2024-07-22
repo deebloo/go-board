@@ -96,6 +96,14 @@ export class GoBoardElement extends HTMLElement {
       border-color: transparent;
     }
 
+    .row slot::slotted(go-marker) {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      padding: 0;
+      height: 98%;
+      width: 98%;
+    }
+
     .row slot::slotted(go-stone),
     .row slot button {
       position: absolute;
@@ -108,7 +116,8 @@ export class GoBoardElement extends HTMLElement {
       justify-content: center;
     }
 
-    .row slot::slotted(go-stone) {
+    .row slot::slotted(go-stone),
+    .row slot::slotted(go-marker) {
       z-index: 1000;
     }
 
@@ -127,7 +136,7 @@ export class GoBoardElement extends HTMLElement {
 
     :host(:not([disablelastmarker]))
       .row
-      slot::slotted(go-stone:last-child)::after {
+      slot::slotted(go-stone:last-of-type)::after {
       content: "";
       height: 50%;
       width: 50%;
