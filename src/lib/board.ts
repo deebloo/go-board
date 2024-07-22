@@ -208,6 +208,7 @@ export class GoBoardElement extends HTMLElement {
   @attr accessor coords = false;
   @attr accessor readonly = false;
   @attr accessor sfx = "";
+  @attr accessor novalidate = false;
 
   moves: Move[] = [];
   sgf: string | null = null;
@@ -286,7 +287,9 @@ export class GoBoardElement extends HTMLElement {
 
     this.#spaces.set(stone.slot, stone);
 
-    this.#validateStonePlacement(stone);
+    if (!this.novalidate) {
+      this.#validateStonePlacement(stone);
+    }
   }
 
   onStoneRemoved(stone: GoStoneElement) {
