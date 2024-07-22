@@ -36,12 +36,17 @@ export class Sfx {
     this.#effects.load();
   }
 
-  placeStone() {
+  async placeStone() {
+    if (!navigator.userActivation.hasBeenActive) {
+      return void 0;
+    }
+
     const [start, duration] =
       stone_sounds[Math.floor(Math.random() * stone_sounds.length)];
 
     return new Promise<void>((resolve) => {
       this.#stones.currentTime = start / 1000;
+
       this.#stones.play();
 
       setTimeout(() => {
@@ -53,6 +58,10 @@ export class Sfx {
   }
 
   captureStones(count: number) {
+    if (!navigator.userActivation.hasBeenActive) {
+      return void 0;
+    }
+
     return new Promise<void>((resolve) => {
       let start: number;
       let duration: number;
