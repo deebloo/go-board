@@ -19,5 +19,8 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Prepare
+        run: npx playwright install
+
       - name: Build
         run: npm run build
