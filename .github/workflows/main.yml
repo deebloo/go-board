@@ -17,7 +17,7 @@ jobs:
         run: npm ci
 
       - name: Prepare
-        run: npx playwright install
+        run: npx playwright install --with-deps
 
       - name: Test
         run: npm test
