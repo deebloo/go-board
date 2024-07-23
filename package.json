@@ -107,6 +107,6 @@
     "prettier": "^3.0.0",
     "rollup": "^4.0.0",
     "typescript": "^5.4.2",
-    "wireit": "^0.9.5"
+    "wireit": "^0.14.0"
   }
 }
