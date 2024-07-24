@@ -37,7 +37,7 @@ export class Sfx {
   }
 
   async placeStone() {
-    if (!navigator.userActivation.hasBeenActive) {
+    if (!navigator.userActivation.hasBeenActive && !navigator.userActivation.isActive) {
       return void 0;
     }
 
@@ -58,7 +58,7 @@ export class Sfx {
   }
 
   captureStones(count: number) {
-    if (!navigator.userActivation.hasBeenActive) {
+    if (!navigator.userActivation.hasBeenActive && !navigator.userActivation.isActive) {
       return void 0;
     }
 
