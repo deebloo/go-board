@@ -287,7 +287,9 @@ export class GoBoardElement extends HTMLElement {
 
     this.#spaces.set(stone.slot, stone);
 
-    if (!this.novalidate) {
+    if (this.novalidate) {
+      this.turn = stone.color === "black" ? "white" : "black";
+    } else {
       this.#validateStonePlacement(stone);
     }
   }
