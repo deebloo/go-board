@@ -298,7 +298,7 @@ export class GoBoardElement extends HTMLElement {
     this.#spaces.set(stone.slot, null);
   }
 
-  @listen("mousedown") onClick(e: Event) {
+  @listen("click") onClick(e: Event) {
     if (this.readonly) {
       return;
     }
