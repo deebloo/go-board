@@ -309,6 +309,10 @@ export class GoBoardElement extends HTMLElement {
       stone.slot = e.target.id;
 
       this.append(stone);
+
+      if (this.#audio) {
+        this.#audio.placeStone();
+      }
     }
   }
 
@@ -426,10 +430,6 @@ export class GoBoardElement extends HTMLElement {
 
         if (this.#audio) {
           this.#audio.captureStones(removedStones.length);
-        }
-      } else {
-        if (this.#audio) {
-          this.#audio.placeStone();
         }
       }
 
