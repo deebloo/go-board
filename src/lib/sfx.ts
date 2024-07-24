@@ -37,18 +37,18 @@ export class Sfx {
   }
 
   async placeStone() {
-    if (!navigator.userActivation.hasBeenActive && !navigator.userActivation.isActive) {
+    if (!this.#userActive()) {
       return void 0;
     }
 
     const [start, duration] =
       stone_sounds[Math.floor(Math.random() * stone_sounds.length)];
 
+    this.#stones.currentTime = start / 1000;
+
+    await this.#stones.play();
+
     return new Promise<void>((resolve) => {
-      this.#stones.currentTime = start / 1000;
-
-      this.#stones.play();
-
       setTimeout(() => {
         this.#stones.pause();
 
@@ -57,41 +57,46 @@ export class Sfx {
     });
   }
 
-  captureStones(count: number) {
-    if (!navigator.userActivation.hasBeenActive && !navigator.userActivation.isActive) {
+  async captureStones(count: number) {
+    if (!this.#userActive()) {
       return void 0;
     }
 
+    let start: number;
+    let duration: number;
+
+    if (count === 1) {
+      const sprite =
+        capture_stone_sounds[
+          Math.floor(Math.random() * capture_stone_sounds.length)
+        ];
+
+      start = sprite[0];
+      duration = sprite[1];
+    } else {
+      const sprite =
+        capture_pile_sounds[
+          Math.floor(Math.random() * capture_pile_sounds.length)
+        ];
+
+      start = sprite[0];
+      duration = sprite[1];
+    }
+
+    this.#effects.currentTime = start / 1000;
+    
+    await this.#effects.play();
+
     return new Promise<void>((resolve) => {
-      let start: number;
-      let duration: number;
-
-      if (count === 1) {
-        const sprite =
-          capture_stone_sounds[
-            Math.floor(Math.random() * capture_stone_sounds.length)
-          ];
-
-        start = sprite[0];
-        duration = sprite[1];
-      } else {
-        const sprite =
-          capture_pile_sounds[
-            Math.floor(Math.random() * capture_pile_sounds.length)
-          ];
-
-        start = sprite[0];
-        duration = sprite[1];
-      }
-
-      this.#effects.currentTime = start / 1000;
-      this.#effects.play();
-
       setTimeout(() => {
         this.#effects.pause();
 
         resolve();
       }, duration);
     });
+  }
+
+  #userActive() {
+    return navigator.userActivation.hasBeenActive || navigator.userActivation.isActive
   }
 }
