@@ -52,24 +52,26 @@
     </form>
 
     <script type="module">
-      import { defineEnvironment } from "@joist/di";
+      import { DOMInjector } from "@joist/di";
 
       import { ConsoleDebug, Debug } from "./target/lib/debug.js";
 
-      const debug = {
-        provide: Debug,
-        factory(i) {
-          const search = new URLSearchParams(window.location.search);
+      const app = new DOMInjector([
+        {
+          provide: Debug,
+          factory(i) {
+            const search = new URLSearchParams(window.location.search);
 
-          if (search.has("debug")) {
-            return i.inject(ConsoleDebug);
-          }
+            if (search.has("debug")) {
+              return i.inject(ConsoleDebug);
+            }
 
-          return new Debug();
-        },
-      };
+            return new Debug();
+          },
+        }
+      ]);
 
-      defineEnvironment([debug]);
+      app.attach(document.body);
     </script>
 
     <script src="./target/register.js" type="module"></script>
