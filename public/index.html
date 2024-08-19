@@ -34,7 +34,7 @@
 
       go-board {
         max-height: calc(100vh - 1rem);
-        background-image: url(assets/textures/kaya.jpg);
+        background-image: url(textures/kaya.jpg);
       }
     </style>
 
@@ -50,7 +50,7 @@
       board.readonly = url.searchParams.has("readonly");
 
       if (url.searchParams.has("sfx")) {
-        board.sfx = `/assets/sfx`;
+        board.sfx = `/sfx`;
       }
 
       if (url.searchParams.has("ogsid")) {
