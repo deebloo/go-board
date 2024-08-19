@@ -1,8 +1,26 @@
 import { attr, css, element, html } from "@joist/element";
 
-import { GoBoardElement } from "./board.js";
-
 export type StoneColor = "black" | "white";
+
+export class StoneAddedEvent extends Event {
+  stone;
+
+  constructor(stone: GoStoneElement) {
+    super("stoneadded", { bubbles: true });
+
+    this.stone = stone;
+  }
+}
+
+export class StoneRemovedEvent extends Event {
+  stone;
+
+  constructor(stone: GoStoneElement) {
+    super("stoneremoved", { bubbles: true });
+
+    this.stone = stone;
+  }
+}
 
 @element({
   tagName: "go-stone",
@@ -57,17 +75,11 @@ export class GoStoneElement extends HTMLElement {
   @attr()
   accessor color: StoneColor = "black";
 
-  #parent: GoBoardElement | null = null;
-
   connectedCallback() {
-    if (this.parentElement instanceof GoBoardElement) {
-      this.#parent = this.parentElement;
-      this.#parent.onStoneAdded(this);
-    }
+    this.dispatchEvent(new StoneAddedEvent(this));
   }
 
   disconnectedCallback() {
-    this.#parent?.onStoneRemoved(this);
-    this.#parent = null;
+    this.dispatchEvent(new StoneRemovedEvent(this));
   }
 }

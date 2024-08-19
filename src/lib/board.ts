@@ -254,7 +254,7 @@ export class GoBoardElement extends HTMLElement {
   columnLabels = [...DEFAULT_COLUMN_LABELS];
 
   #debug = inject(Debug);
-  #sfx = inject(Sfx);
+  #sfx: Sfx | null = null;
   #internals = this.attachInternals();
 
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
@@ -273,8 +273,8 @@ export class GoBoardElement extends HTMLElement {
   }
 
   attributeChangedCallback(attr: string, old: string, val: string) {
-    if (this.sfx) {
-      this.#sfx().init(this.sfx);
+    if (this.sfx && !this.#sfx) {
+      this.#sfx = new Sfx(this.sfx);
     }
 
     if (attr === "src" && val && old !== val) {
@@ -295,7 +295,10 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
-  onStoneAdded(stone: GoStoneElement) {
+  @listen("stoneadded")
+  onStoneAdded(e: Event) {
+    const stone = e.target as GoStoneElement;
+
     this.turn = stone.color;
 
     this.#spaces.set(stone.slot, stone);
@@ -307,7 +310,10 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
-  onStoneRemoved(stone: GoStoneElement) {
+  @listen("stoneremoved")
+  onStoneRemoved(e: Event) {
+    const stone = e.target as GoStoneElement;
+
     this.#spaces.set(stone.slot, null);
   }
 
@@ -324,8 +330,8 @@ export class GoBoardElement extends HTMLElement {
 
       this.append(stone);
 
-      if (this.sfx) {
-        this.#sfx().placeStone();
+      if (this.#sfx) {
+        this.#sfx.placeStone();
       }
     }
   }
@@ -442,8 +448,8 @@ export class GoBoardElement extends HTMLElement {
           stone.remove();
         }
 
-        if (this.sfx) {
-          this.#sfx().captureStones(removedStones.length);
+        if (this.#sfx) {
+          this.#sfx.captureStones(removedStones.length);
         }
       }
 

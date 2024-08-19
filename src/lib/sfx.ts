@@ -1,5 +1,3 @@
-import { injectable, StaticToken } from "@joist/di";
-
 const stone_sounds = [
   [1000.0, 137.20833333333331],
   [2137.208333333333, 58.854166666666664],
@@ -24,14 +22,11 @@ const capture_pile_sounds = [
   [18298.5, 1145.3333333333333],
 ] as const;
 
-export const SFX_PATH = new StaticToken<string>("sfx path");
-
-@injectable()
 export class Sfx {
   #stones = new Audio();
   #effects = new Audio();
 
-  init(path: string) {
+  constructor(path: string) {
     this.#stones.volume = 0.1;
     this.#stones.src = `${path}/stones.webm`;
     this.#stones.load();
