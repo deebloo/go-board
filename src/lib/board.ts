@@ -1,5 +1,5 @@
 import { inject, injectable } from "@joist/di";
-import { attr, css, html, listen, element } from "@joist/element";
+import { attr, css, html, listen, element, query } from "@joist/element";
 
 import { Debug } from "./debug.js";
 import type { GoStoneElement, StoneColor } from "./stone.js";
@@ -7,7 +7,9 @@ import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 import { Sfx } from "./sfx.js";
 
-@injectable()
+@injectable({
+  providers: [{ provide: Sfx, use: Sfx }],
+})
 @element({
   tagName: "go-board",
   shadow: [
@@ -250,13 +252,13 @@ export class GoBoardElement extends HTMLElement {
   ];
 
   #debug = inject(Debug);
+  #sfx = inject(Sfx);
   #internals = this.attachInternals();
 
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #spaces = new Map<string, GoStoneElement | null>();
-  #header = this.shadowRoot!.querySelector("#header")!;
-  #audio: Sfx | null = null;
+  #header = query("#header");
   #prevKey = "";
   #currentKey = Array.from({ length: this.rows * this.cols })
     .map(() => "*")
@@ -269,8 +271,8 @@ export class GoBoardElement extends HTMLElement {
   }
 
   attributeChangedCallback(attr: string, old: string, val: string) {
-    if (this.sfx && this.#audio === null) {
-      this.#audio = new Sfx(this.sfx);
+    if (this.sfx) {
+      this.#sfx().init(this.sfx);
     }
 
     if (attr === "src" && val && old !== val) {
@@ -320,8 +322,8 @@ export class GoBoardElement extends HTMLElement {
 
       this.append(stone);
 
-      if (this.#audio) {
-        this.#audio.placeStone();
+      if (this.sfx) {
+        this.#sfx().placeStone();
       }
     }
   }
@@ -438,8 +440,8 @@ export class GoBoardElement extends HTMLElement {
           stone.remove();
         }
 
-        if (this.#audio) {
-          this.#audio.captureStones(removedStones.length);
+        if (this.sfx) {
+          this.#sfx().captureStones(removedStones.length);
         }
       }
 
@@ -496,7 +498,7 @@ export class GoBoardElement extends HTMLElement {
 
       col.append(letter);
 
-      this.#header.append(col);
+      this.#header().append(col);
     }
   }
 

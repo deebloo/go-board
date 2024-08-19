@@ -1,3 +1,5 @@
+import { injectable, StaticToken } from "@joist/di";
+
 const stone_sounds = [
   [1000.0, 137.20833333333331],
   [2137.208333333333, 58.854166666666664],
@@ -22,11 +24,14 @@ const capture_pile_sounds = [
   [18298.5, 1145.3333333333333],
 ] as const;
 
+export const SFX_PATH = new StaticToken<string>("sfx path");
+
+@injectable()
 export class Sfx {
   #stones = new Audio();
   #effects = new Audio();
 
-  constructor(path: string) {
+  init(path: string) {
     this.#stones.volume = 0.1;
     this.#stones.src = `${path}/stones.webm`;
     this.#stones.load();
@@ -84,7 +89,7 @@ export class Sfx {
     }
 
     this.#effects.currentTime = start / 1000;
-    
+
     await this.#effects.play();
 
     return new Promise<void>((resolve) => {
@@ -97,6 +102,9 @@ export class Sfx {
   }
 
   #userActive() {
-    return navigator.userActivation.hasBeenActive || navigator.userActivation.isActive
+    return (
+      navigator.userActivation.hasBeenActive ||
+      navigator.userActivation.isActive
+    );
   }
 }
