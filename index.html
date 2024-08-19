@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,16 +7,19 @@
 
     <title>Go Viewer</title>
 
-    <script src="./bundle/go-board.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "tslib": "./node_modules/tslib/tslib.es6.js",
+          "@joist/di": "./node_modules/@joist/di/target/lib.js",
+          "@joist/element": "./node_modules/@joist/element/target/lib.js"
+        }
+      }
+    </script>
   </head>
 
   <body>
     <style>
-      * {
-        box-sizing: border-box;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-
       body {
         margin: 0.5rem;
       }
@@ -25,28 +28,52 @@
         max-height: calc(100vh - 1rem);
         background-image: url(assets/textures/kaya.jpg);
       }
+
+      :not(:defined) {
+        visibility: hidden;
+      }
     </style>
 
-    <form>
-      <go-board></go-board>
+    <form action="/save-game">
+      <go-board name="board" sfx="/public/assets/sfx">
+        <!-- <go-marker slot="D4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            fill="green"
+            style="background: rgba(255, 255, 255, 0.75); border-radius: 50%"
+          >
+            <path
+              d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"
+            />
+          </svg>
+        </go-marker> -->
+      </go-board>
     </form>
 
     <script type="module">
-      const board = document.querySelector("go-board");
-      const url = new URL(window.location);
+      import { DOMInjector } from "@joist/di";
 
-      board.coords = url.searchParams.has("coords");
-      board.readonly = url.searchParams.has("readonly");
+      import { ConsoleDebug, Debug } from "./target/lib/debug.js";
 
-      if (url.searchParams.has("sfx")) {
-        board.sfx = `/assets/sfx`;
-      }
+      const app = new DOMInjector([
+        {
+          provide: Debug,
+          factory(i) {
+            const search = new URLSearchParams(window.location.search);
 
-      if (url.searchParams.has("ogsid")) {
-        const ogsid = url.searchParams.get("ogsid");
+            if (search.has("debug")) {
+              return i.inject(ConsoleDebug);
+            }
 
-        board.src = `https://online-go.com/api/v1/games/${ogsid}/sgf`;
-      }
+            return new Debug();
+          },
+        },
+      ]);
+
+      app.attach(document.body);
     </script>
+
+    <script src="./target/register.js" type="module"></script>
   </body>
 </html>

@@ -13,8 +13,8 @@
   },
   "files": [
     "target",
-    "bundle",
-    "assets"
+    "public/assets",
+    "public/go-board.min.js"
   ],
   "repository": {
     "type": "git",

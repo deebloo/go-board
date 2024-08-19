@@ -9,9 +9,9 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 ## All you need to get started is some markup and a script tag
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/go-board@latest/bundle/go-board.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/go-board@latest/public/go-board.min.js"></script>
 
-<go-board coords sfx="https://cdn.jsdelivr.net/npm/go-board@latest/assets/sfx">
+<go-board coords sfx="https://cdn.jsdelivr.net/npm/go-board@latest/public/sfx">
   <go-stone color="black" slot="R17"></go-stone>
   <go-stone color="white" slot="R18"></go-stone>
   <go-stone color="black" slot="Q18"></go-stone>
@@ -79,4 +79,14 @@ Start in dev mode
 npm start --watch
 ```
 
-Navigate to /dev.html
+Run tests
+
+```sh
+npm test
+```
+
+Prepare prod demo
+
+```sh
+npm run build
+```

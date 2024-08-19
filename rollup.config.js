@@ -5,7 +5,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 export default {
   input: "target/register.js",
   output: {
-    file: "bundle/go-board.min.js",
+    file: "public/go-board.min.js",
     format: "iife",
   },
   plugins: [

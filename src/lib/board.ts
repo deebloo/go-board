@@ -7,6 +7,34 @@ import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 import { Sfx } from "./sfx.js";
 
+const DEFAULT_COLUMN_LABELS = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
+
 @injectable({
   providers: [{ provide: Sfx, use: Sfx }],
 })
@@ -223,33 +251,7 @@ export class GoBoardElement extends HTMLElement {
 
   moves: Move[] = [];
   sgf: string | null = null;
-  columnLabels = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
+  columnLabels = [...DEFAULT_COLUMN_LABELS];
 
   #debug = inject(Debug);
   #sfx = inject(Sfx);

@@ -1,11 +1,5 @@
 {
   "hosting": {
-    "public": "./",
-    "ignore": [
-      ".*",
-      ".{git,vscode,wireit}/**",
-      "{node_modules,src}/**",
-      "*.{json,sgf,md,tsbuildinfo}"
-    ]
+    "public": "demo"
   }
 }
