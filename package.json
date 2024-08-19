@@ -13,7 +13,8 @@
   },
   "files": [
     "target",
-    "public/assets",
+    "public/sfx",
+    "public/textures",
     "public/go-board.min.js"
   ],
   "repository": {
