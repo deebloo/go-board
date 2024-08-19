@@ -68,7 +68,7 @@
         "rollup.config.js"
       ],
       "output": [
-        "bundle/**"
+        "public/go-board.mind.js"
       ],
       "dependencies": [
         {
