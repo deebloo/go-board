@@ -90,8 +90,8 @@
     }
   },
   "dependencies": {
-    "@joist/di": "^4.0.0-next.4",
-    "@joist/element": "^4.0.0-next.4",
+    "@joist/di": "^4.0.0-next.5",
+    "@joist/element": "^4.0.0-next.5",
     "tslib": "^2.5.2"
   },
   "devDependencies": {
