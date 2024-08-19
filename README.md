@@ -70,3 +70,13 @@ Stones and spaces can be decorated with markers. The `go-marker` element can be 
 | sfx               | enable sound effects. Point to a directory with sound files          |
 | disablelastmarker | disable marking the last stone placed. Useful for documenting shapes |
 | novalidate        | disables all stone placement logic                                   |
+
+## Development
+
+Start in dev mode
+
+```sh
+npm start --watch
+```
+
+Navigate to /dev.html
