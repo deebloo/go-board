@@ -2,26 +2,6 @@ import { attr, css, element, html } from "@joist/element";
 
 export type StoneColor = "black" | "white";
 
-export class StoneAddedEvent extends Event {
-  stone;
-
-  constructor(stone: GoStoneElement) {
-    super("stoneadded", { bubbles: true });
-
-    this.stone = stone;
-  }
-}
-
-export class StoneRemovedEvent extends Event {
-  stone;
-
-  constructor(stone: GoStoneElement) {
-    super("stoneremoved", { bubbles: true });
-
-    this.stone = stone;
-  }
-}
-
 @element({
   tagName: "go-stone",
   shadow: [
