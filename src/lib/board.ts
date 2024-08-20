@@ -2,7 +2,7 @@ import { inject, injectable } from "@joist/di";
 import { attr, css, html, listen, element, query } from "@joist/element";
 
 import { Debug } from "./debug.js";
-import type { GoStoneElement, StoneColor } from "./stone.js";
+import { GoStoneElement, StoneColor } from "./stone.js";
 import { findAttachedEnemyStones, findGroup } from "./game.js";
 import { Move, parseSGF } from "./sgf.js";
 import { Sfx } from "./sfx.js";
@@ -295,10 +295,7 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
-  @listen("stoneadded")
-  onStoneAdded(e: Event) {
-    const stone = e.target as GoStoneElement;
-
+  onStoneAdded(stone: GoStoneElement) {
     this.turn = stone.color;
 
     this.#spaces.set(stone.slot, stone);
@@ -310,10 +307,7 @@ export class GoBoardElement extends HTMLElement {
     }
   }
 
-  @listen("stoneremoved")
-  onStoneRemoved(e: Event) {
-    const stone = e.target as GoStoneElement;
-
+  onStoneRemoved(stone: GoStoneElement) {
     this.#spaces.set(stone.slot, null);
   }
 

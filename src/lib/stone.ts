@@ -75,11 +75,28 @@ export class GoStoneElement extends HTMLElement {
   @attr()
   accessor color: StoneColor = "black";
 
+  #parent: HTMLElement | null = null;
+
   connectedCallback() {
-    this.dispatchEvent(new StoneAddedEvent(this));
+    if (this.parentElement) {
+      if ("onStoneAdded" in this.parentElement) {
+        if (typeof this.parentElement.onStoneAdded === "function") {
+          this.parentElement.onStoneAdded(this);
+          this.#parent = this.parentElement;
+        }
+      }
+    }
   }
 
   disconnectedCallback() {
-    this.dispatchEvent(new StoneRemovedEvent(this));
+    if (this.#parent) {
+      if ("onStoneRemoved" in this.#parent) {
+        if (typeof this.#parent.onStoneRemoved === "function") {
+          this.#parent.onStoneRemoved(this);
+
+          this.#parent = null;
+        }
+      }
+    }
   }
 }
