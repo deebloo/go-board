@@ -35,9 +35,7 @@ const DEFAULT_COLUMN_LABELS = [
   "Z",
 ];
 
-@injectable({
-  providers: [{ provide: Sfx, use: Sfx }],
-})
+@injectable()
 @element({
   tagName: "go-board",
   shadow: [
