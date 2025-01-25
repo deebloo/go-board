@@ -4,7 +4,7 @@ export type StoneColor = "black" | "white";
 
 @element({
   tagName: "go-stone",
-  shadow: [
+  shadowDom: [
     css`
       :host {
         box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);

@@ -2,7 +2,7 @@ import { css, element, html } from "@joist/element";
 
 @element({
   tagName: "go-marker",
-  shadow: [
+  shadowDom: [
     css`
       :host {
         display: flex;

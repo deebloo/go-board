@@ -38,7 +38,7 @@ const DEFAULT_COLUMN_LABELS = [
 @injectable()
 @element({
   tagName: "go-board",
-  shadow: [
+  shadowDom: [
     css`
       :host {
         font-family: system-ui;
