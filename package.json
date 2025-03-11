@@ -1,6 +1,6 @@
 {
   "name": "go-board",
-  "version": "2.7.6",
+  "version": "3.0.0",
   "private": false,
   "description": "Go board",
   "type": "module",
