@@ -1,14 +1,14 @@
 export class Debug {
   enabled = false;
-  group(..._: any[]) {}
+  group(..._: unknown[]) {}
   groupEnd() {}
-  log(..._: any[]) {}
+  log(..._: unknown[]) {}
 }
 
 export class ConsoleDebug implements Debug {
   enabled = true;
 
-  group(...label: any[]) {
+  group(...label: unknown[]) {
     console.group(...label);
   }
 
@@ -16,7 +16,7 @@ export class ConsoleDebug implements Debug {
     console.groupEnd();
   }
 
-  log(...args: any[]) {
+  log(...args: unknown[]) {
     console.log("DEBUG:", ...args);
   }
 }

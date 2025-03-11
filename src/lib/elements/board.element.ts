@@ -1,11 +1,12 @@
 import { inject, injectable } from "@joist/di";
-import { attr, css, html, listen, element, query } from "@joist/element";
+import { attr, css, element, html, listen, query } from "@joist/element";
 
-import { Debug } from "./debug.js";
-import { GoStoneElement, StoneColor } from "./stone.js";
-import { findAttachedEnemyStones, findGroup } from "./game.js";
-import { Move, parseSGF } from "./sgf.js";
-import { Sfx } from "./sfx.js";
+import { Debug } from "../services/debug.js";
+import { GoGame } from "../services/game.js";
+import { type GoBoard, GoBoardContext } from "../util/context.js";
+import { StonePlacedEvent } from "../util/events.js";
+import type { Move } from "../util/sgf.js";
+import type { GoStoneElement, StoneColor } from "./stone.element.js";
 
 const DEFAULT_COLUMN_LABELS = [
   "A",
@@ -35,7 +36,10 @@ const DEFAULT_COLUMN_LABELS = [
   "Z",
 ];
 
-@injectable()
+@injectable({
+  name: "go-board-ctx",
+  provideSelfAs: [GoBoardContext],
+})
 @element({
   tagName: "go-board",
   shadowDom: [
@@ -217,14 +221,11 @@ const DEFAULT_COLUMN_LABELS = [
     `,
   ],
 })
-export class GoBoardElement extends HTMLElement {
+export class GoBoardElement extends HTMLElement implements GoBoard {
   static formAssociated = true;
 
   @attr()
   accessor turn: StoneColor = "black";
-
-  @attr()
-  accessor src = "";
 
   @attr()
   accessor debug = false;
@@ -242,44 +243,28 @@ export class GoBoardElement extends HTMLElement {
   accessor readonly = false;
 
   @attr()
-  accessor sfx = "";
-
-  @attr()
   accessor novalidate = false;
 
+  spaces = new Map<string, GoStoneElement | null>();
   moves: Move[] = [];
-  sgf: string | null = null;
   columnLabels = [...DEFAULT_COLUMN_LABELS];
+  previousKey = "";
+  currentKey = Array.from({ length: this.rows * this.cols })
+    .map(() => "*")
+    .join("");
 
   #debug = inject(Debug);
-  #sfx: Sfx | null = null;
+  #game = inject(GoGame);
   #internals = this.attachInternals();
 
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
-  #spaces = new Map<string, GoStoneElement | null>();
   #header = query("#header");
-  #prevKey = "";
-  #currentKey = Array.from({ length: this.rows * this.cols })
-    .map(() => "*")
-    .join("");
 
   constructor() {
     super();
 
-    this.#internals.setFormValue(this.#currentKey);
-  }
-
-  attributeChangedCallback(attr: string, old: string, val: string) {
-    if (this.sfx && !this.#sfx) {
-      this.#sfx = new Sfx(this.sfx);
-    }
-
-    if (attr === "src" && val && old !== val) {
-      // reset imported state if the src value changes
-      this.reset();
-      this.import();
-    }
+    this.#internals.setFormValue(this.currentKey);
   }
 
   connectedCallback() {
@@ -288,25 +273,27 @@ export class GoBoardElement extends HTMLElement {
 
     const debug = this.#debug();
 
-    if (debug.enabled) {
-      this.setAttribute("debug", "");
-    }
+    this.debug = debug.enabled;
   }
 
-  onStoneAdded(stone: GoStoneElement) {
+  registerStone(stone: GoStoneElement) {
+    const game = this.#game();
+
     this.turn = stone.color;
 
-    this.#spaces.set(stone.slot, stone);
+    this.spaces.set(stone.slot, stone);
 
     if (this.novalidate) {
       this.turn = stone.color === "black" ? "white" : "black";
     } else {
-      this.#validateStonePlacement(stone);
+      game.validateStonePlacement(this, stone, () => {
+        this.#internals.setFormValue(this.currentKey);
+      });
     }
   }
 
-  onStoneRemoved(stone: GoStoneElement) {
-    this.#spaces.set(stone.slot, null);
+  unregisterStone(stone: GoStoneElement) {
+    this.spaces.set(stone.slot, null);
   }
 
   @listen("click")
@@ -322,16 +309,14 @@ export class GoBoardElement extends HTMLElement {
 
       this.append(stone);
 
-      if (this.#sfx) {
-        this.#sfx.placeStone();
-      }
+      this.dispatchEvent(new StonePlacedEvent());
     }
   }
 
   key() {
     let key = "";
 
-    for (let [space, stone] of this.#spaces) {
+    for (const [space, stone] of this.spaces) {
       if (stone !== null) {
         key += stone.color[0].toUpperCase() + space;
       } else {
@@ -345,128 +330,13 @@ export class GoBoardElement extends HTMLElement {
   reset() {
     this.innerHTML = "";
 
-    for (let [key] of this.#spaces) {
-      this.#spaces.set(key, null);
+    for (const [key] of this.spaces) {
+      this.spaces.set(key, null);
     }
 
-    this.#currentKey = this.key();
-    this.#prevKey = "";
+    this.currentKey = this.key();
+    this.previousKey = "";
     this.turn = "black";
-  }
-
-  getSpace(space: string) {
-    return this.#spaces.get(space);
-  }
-
-  copyToClipboard() {
-    return navigator.clipboard.writeText(this.outerHTML);
-  }
-
-  async import() {
-    if (this.src) {
-      const raw = await fetch(this.src).then((res) => res.text());
-
-      if (raw) {
-        this.sgf = raw;
-
-        this.moves = parseSGF(raw, this.columnLabels, this.rows);
-
-        return this.#play();
-      }
-    }
-
-    return undefined;
-  }
-
-  #play() {
-    for (const move of this.moves) {
-      const stone = document.createElement("go-stone");
-      stone.color = move.color;
-      stone.slot = move.space;
-
-      this.append(stone);
-    }
-
-    return "DONE";
-  }
-
-  #validateStonePlacement(stone: GoStoneElement) {
-    this.#debug().group("Checking stone:", stone);
-
-    // find all attached enemies
-    const enemies = findAttachedEnemyStones(this, stone);
-
-    this.#debug().log("Finding enemy stones:", enemies);
-
-    // keep track of removed stones
-    const removedStones: GoStoneElement[] = [];
-
-    // for each enemy stone check its group and liberties.
-    for (let enemy of enemies) {
-      const group = findGroup(this, enemy);
-
-      // if a group has no liberties remove all of its stones
-      if (!group.liberties.size) {
-        this.#debug().log("Removing Stones:\n", ...group.stones);
-
-        for (let stone of group.stones) {
-          this.#spaces.set(stone.slot, null); // clear out stone
-          removedStones.push(stone); // keep track of removed stones
-        }
-      }
-    }
-
-    const key = this.key();
-
-    if (this.#currentKey === key || this.#prevKey === key) {
-      // If the current board state has already existed the move is not allowed
-
-      // reset the board state by adding removed stones back
-      for (let stone of removedStones) {
-        this.#spaces.set(stone.slot, stone);
-      }
-
-      // remove the previously placed stone
-      stone.remove();
-
-      // notify the user
-      alert("Move is not allowed: " + stone.slot + stone.color);
-    } else {
-      // board state is valid and we can proceed
-
-      if (removedStones.length) {
-        // remove captured stones from dom
-        for (let stone of removedStones) {
-          stone.remove();
-        }
-
-        if (this.#sfx) {
-          this.#sfx.captureStones(removedStones.length);
-        }
-      }
-
-      // find added stones group
-      const group = findGroup(this, stone);
-
-      this.#debug().log("Stone part of following group:", group);
-
-      // if the current group has no liberties remove it. not allowed
-      if (!group.liberties.size) {
-        stone.remove();
-
-        alert("Move is suicidal!");
-      } else {
-        this.turn = stone.color === "black" ? "white" : "black";
-
-        // track current and previous board key
-        this.#prevKey = this.#currentKey;
-        this.#currentKey = key;
-
-        this.#internals.setFormValue(this.#currentKey);
-      }
-    }
-
-    this.#debug().groupEnd();
   }
 
   #createBoard() {
@@ -486,7 +356,7 @@ export class GoBoardElement extends HTMLElement {
         row.append(this.#createSlot(r, c));
       }
 
-      this.shadowRoot!.append(row);
+      this.shadowRoot?.append(row);
     }
   }
 
@@ -506,7 +376,7 @@ export class GoBoardElement extends HTMLElement {
     const slot = document.createElement("slot");
     slot.name = `${this.columnLabels[column]}${this.rows - row}`;
 
-    this.#spaces.set(slot.name, null);
+    this.spaces.set(slot.name, null);
 
     const spacing = Math.floor(this.rows / 3);
     const start = Math.floor(this.rows / 4) - 1;

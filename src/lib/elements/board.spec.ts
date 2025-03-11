@@ -1,9 +1,10 @@
-import "../register.js";
+import "../../define.js";
 
 import { expect, fixture, html } from "@open-wc/testing";
 
-import { GoBoardElement } from "./board.js";
-import { GoStoneElement } from "./stone.js";
+import { GoBoardElement } from "./board.element.js";
+import { GoStoneElement } from "./stone.element.js";
+// import { GoStoneElement } from "./stone.js";
 
 describe(GoBoardElement.name, () => {
   it("should create an accurate key of gamestate", async () => {
@@ -61,12 +62,12 @@ describe(GoBoardElement.name, () => {
       </go-board>
     `);
 
-    expect(board.getSpace("C18")).to.be.instanceOf(GoStoneElement);
-    expect(board.getSpace("D18")).to.be.instanceOf(GoStoneElement);
+    expect(board.spaces.get("C18")).to.be.instanceOf(GoStoneElement);
+    expect(board.spaces.get("D18")).to.be.instanceOf(GoStoneElement);
   });
 
   it("should remove stones from internal map when stone elements are removed", async () => {
-    const stone = document.createElement("go-stone") as GoStoneElement;
+    const stone = document.createElement("go-stone");
     stone.color = "black";
     stone.slot = "C18";
 
@@ -74,11 +75,11 @@ describe(GoBoardElement.name, () => {
       <go-board>${stone}</go-board>
     `);
 
-    expect(board.getSpace("C18")).to.be.instanceOf(GoStoneElement);
+    expect(board.spaces.get("C18")).to.be.instanceOf(GoStoneElement);
 
     stone.remove();
 
-    expect(board.getSpace("C18")).to.be.null;
+    expect(board.spaces.get("C18")).to.equal(null);
   });
 
   it("should submit the default key value to a form", async () => {
@@ -97,7 +98,7 @@ describe(GoBoardElement.name, () => {
         const form = new FormData(board);
 
         expect(form.get("game")).to.equal(
-          "*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************"
+          "*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************",
         );
 
         resolve();
@@ -125,7 +126,7 @@ describe(GoBoardElement.name, () => {
         const form = new FormData(board);
 
         expect(form.get("game")).to.equal(
-          "******************************************************************************************************************************************************************************************************************************************************************************************************************************************************BA1******************"
+          "******************************************************************************************************************************************************************************************************************************************************************************************************************************************************BA1******************",
         );
 
         resolve();

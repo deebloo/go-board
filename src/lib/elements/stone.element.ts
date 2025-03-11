@@ -1,7 +1,13 @@
+import { inject, injectable } from "@joist/di";
 import { attr, css, element, html } from "@joist/element";
+
+import { GoBoardContext } from "../util/context.js";
 
 export type StoneColor = "black" | "white";
 
+@injectable({
+  name: "go-stone-ctx",
+})
 @element({
   tagName: "go-stone",
   shadowDom: [
@@ -43,40 +49,20 @@ export type StoneColor = "black" | "white";
   ],
 })
 export class GoStoneElement extends HTMLElement {
-  static create(color: StoneColor, space: string = "") {
-    const stone = new GoStoneElement();
-
-    stone.color = color;
-    stone.slot = space;
-
-    return stone;
-  }
-
   @attr()
   accessor color: StoneColor = "black";
 
-  #parent: HTMLElement | null = null;
+  #ctx = inject(GoBoardContext);
 
   connectedCallback() {
-    if (this.parentElement) {
-      if ("onStoneAdded" in this.parentElement) {
-        if (typeof this.parentElement.onStoneAdded === "function") {
-          this.parentElement.onStoneAdded(this);
-          this.#parent = this.parentElement;
-        }
-      }
-    }
+    const ctx = this.#ctx();
+
+    ctx.registerStone(this);
   }
 
   disconnectedCallback() {
-    if (this.#parent) {
-      if ("onStoneRemoved" in this.#parent) {
-        if (typeof this.#parent.onStoneRemoved === "function") {
-          this.#parent.onStoneRemoved(this);
+    const ctx = this.#ctx();
 
-          this.#parent = null;
-        }
-      }
-    }
+    ctx.unregisterStone(this);
   }
 }

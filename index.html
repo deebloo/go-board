@@ -1,79 +1,89 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Go Viewer</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script type="importmap">
+  <title>Go Viewer</title>
+
+  <script type="importmap">
       {
         "imports": {
-          "tslib": "./node_modules/tslib/tslib.es6.js",
-          "@joist/di": "./node_modules/@joist/di/target/lib.js",
-          "@joist/element": "./node_modules/@joist/element/target/lib.js"
+          "tslib": "/node_modules/tslib/tslib.es6.js",
+          "@joist/di": "/node_modules/@joist/di/target/lib.js",
+          "@joist/element": "/node_modules/@joist/element/target/lib.js"
         }
       }
     </script>
-  </head>
+</head>
 
-  <body>
-    <style>
-      body {
-        margin: 0.5rem;
-      }
+<body>
+  <style>
+    body {
+      margin: 0.5rem;
+    }
 
-      go-board {
-        max-height: calc(100vh - 1rem);
-        background-image: url(public/textures/kaya.jpg);
-      }
+    go-board {
+      max-height: calc(100vh - 1rem);
+      background-image: url(public/textures/kaya.jpg);
+    }
 
-      :not(:defined) {
-        visibility: hidden;
-      }
-    </style>
+    :not(:defined) {
+      visibility: hidden;
+    }
+  </style>
 
-    <form action="/save-game">
-      <go-board name="board" sfx="/public/sfx">
-        <!-- <go-marker slot="D4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
-            fill="green"
-            style="background: rgba(255, 255, 255, 0.75); border-radius: 50%"
-          >
-            <path
-              d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"
-            />
-          </svg>
-        </go-marker> -->
-      </go-board>
-    </form>
+  <form action="/save-game">
+    <go-board name="board">
+      <go-source src="https://online-go.com/api/v1/games/73076486/sgf"></go-source>
+      <go-sfx src="/public/sfx/"></go-sfx>
 
-    <script type="module">
-      import { DOMInjector } from "@joist/di";
+      <go-stone color="black" slot="R17"></go-stone>
+      <go-stone color="white" slot="R18"></go-stone>
+      <go-stone color="black" slot="Q18"></go-stone>
+      <go-stone color="white" slot="S18"></go-stone>
+      <go-stone color="black" slot="S17"></go-stone>
+      <go-stone color="white" slot="R19"></go-stone>
+      <go-stone color="black" slot="Q19"></go-stone>
+      <go-stone color="white" slot="T18"></go-stone>
+      <go-stone color="black" slot="T17"></go-stone>
+      <go-stone color="white" slot="Q16"></go-stone>
+      <go-stone color="black" slot="S19"></go-stone>
+      <go-stone color="white" slot="T19"></go-stone>
+      <go-stone color="black" slot="S19"></go-stone>
+    </go-board>
+  </form>
 
-      import { ConsoleDebug, Debug } from "./target/lib/debug.js";
+  <script type="module">
+    import { DOMInjector } from "@joist/di";
 
-      const app = new DOMInjector([
-        {
-          provide: Debug,
-          factory(i) {
-            const search = new URLSearchParams(window.location.search);
+    import { ConsoleDebug, Debug } from "./target/lib/services/debug.js";
 
-            if (search.has("debug")) {
-              return i.inject(ConsoleDebug);
+    const app = new DOMInjector({
+      providers: [
+        [
+          Debug,
+          {
+            factory(i) {
+              const search = new URLSearchParams(window.location.search);
+
+              if (search.has("debug")) {
+                return i.inject(ConsoleDebug);
+              }
+
+              return new Debug();
             }
+          }
+        ]
+      ]
+    });
 
-            return new Debug();
-          },
-        },
-      ]);
+    app.attach(document.body);
+  </script>
 
-      app.attach(document.body);
-    </script>
+  <script src="./target/define.js" type="module"></script>
+</body>
 
-    <script src="./target/register.js" type="module"></script>
-  </body>
 </html>

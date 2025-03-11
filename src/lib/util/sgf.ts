@@ -1,4 +1,4 @@
-import { StoneColor } from "./stone.js";
+import type { StoneColor } from "../elements/stone.element.js";
 
 const alphabet = Array(26)
   .fill(null)
@@ -14,12 +14,12 @@ export interface Move {
 export function parseSGF(
   value: string,
   columns: string[],
-  rows: number
+  rows: number,
 ): Move[] {
   const moves: Move[] = [];
   const lines = value.split("\n");
 
-  for (let line of lines) {
+  for (const line of lines) {
     const match = regex.exec(line.trim());
 
     if (match) {

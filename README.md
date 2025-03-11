@@ -11,7 +11,9 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 ```html
 <script src="https://cdn.jsdelivr.net/npm/go-board@latest/public/go-board.min.js"></script>
 
-<go-board coords sfx="https://cdn.jsdelivr.net/npm/go-board@latest/public/sfx">
+<go-board coords>
+  <go-sfx src="https://cdn.jsdelivr.net/npm/go-board@latest/public/sfx"></go-sfx>
+
   <go-stone color="black" slot="R17"></go-stone>
   <go-stone color="white" slot="R18"></go-stone>
   <go-stone color="black" slot="Q18"></go-stone>
@@ -31,10 +33,9 @@ Go Board WebComponent. The entire library weights less than 5kb gzip and less th
 The go-board element can display a game from a sgf file. You can display a game from [OGS](https://online-go.com).
 
 ```html
-<go-board
-  coords
-  src="https://online-go.com/api/v1/games/53010116/sgf"
-></go-board>
+<go-board coords>
+  <go-source src="https://online-go.com/api/v1/games/53010116/sgf"></go-source>
+</go-board>
 ```
 
 `go-board` can also be used as a form element. It will submit the game key of the current board. This can can be parsed to set the board state manually.
@@ -65,9 +66,7 @@ Stones and spaces can be decorated with markers. The `go-marker` element can be 
 | Item              | description                                                          |
 | ----------------- | -------------------------------------------------------------------- |
 | coords            | determines if the column and row lables are displayed                |
-| src               | path to a sgf file. sfg files describe the steps in a game of go     |
 | readonly          | disables manually placing stones                                     |
-| sfx               | enable sound effects. Point to a directory with sound files          |
 | disablelastmarker | disable marking the last stone placed. Useful for documenting shapes |
 | novalidate        | disables all stone placement logic                                   |
 
