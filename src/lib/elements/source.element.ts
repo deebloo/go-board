@@ -1,4 +1,4 @@
-import { inject, injectable, injected } from "@joist/di";
+import { inject, injectable } from "@joist/di";
 import { attr, element } from "@joist/element";
 
 import { GoBoardContext } from "../util/context.js";
@@ -17,8 +17,13 @@ export class GoBoardSourceElement extends HTMLElement {
 
   #ctx = inject(GoBoardContext);
 
-  @injected()
-  onInjected() {
+  attributeChangedCallback() {
+    if (this.isConnected) {
+      this.import();
+    }
+  }
+
+  connectedCallback() {
     this.import();
   }
 

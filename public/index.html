@@ -38,13 +38,17 @@
   </style>
 
   <form>
-    <go-board></go-board>
+    <go-board>
+      <go-source></go-source>
+      <go-sfx src="./sfx/"></go-sfx>
+    </go-board>
   </form>
 
   <script src="./go-board.min.js"></script>
 
   <script type="module">
     const board = document.querySelector("go-board");
+    const source = document.querySelector("go-source");
     const url = new URL(window.location);
 
     board.coords = url.searchParams.has("coords");
@@ -57,7 +61,7 @@
     if (url.searchParams.has("ogsid")) {
       const ogsid = url.searchParams.get("ogsid");
 
-      board.src = `https://online-go.com/api/v1/games/${ogsid}/sgf`;
+      source.src = `https://online-go.com/api/v1/games/${ogsid}/sgf`;
     }
   </script>
 </body>

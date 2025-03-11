@@ -15,19 +15,17 @@ export class GoBoardSfx extends HTMLElement {
   accessor src = "";
 
   #sfx: Sfx | null = null;
-  #controller: AbortController | null = null;
+  #controller = new AbortController();
   #ctx = inject(GoBoardContext);
 
-  connectedCallback() {
-    const ctx = this.#ctx();
-
+  attributeChangedCallback() {
     if (this.src) {
       this.#sfx = new Sfx(this.src);
     }
+  }
 
-    if (this.#controller === null) {
-      this.#controller = new AbortController();
-    }
+  connectedCallback() {
+    const ctx = this.#ctx();
 
     ctx.addEventListener(
       "stone-placed",
