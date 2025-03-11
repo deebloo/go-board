@@ -2,9 +2,7 @@
 
 Go Board WebComponent. The entire library weights less than 5kb gzip and less than 4k brotli which makes it performant to embed into existing web pages. If you want to see exactly what the board is calculating you can enable debugging by adding the "debug" attribute to go-board. (`<go-board debug></go-board>`)
 
-[Demo](https://go-viewer.web.app?coords&sfx)
-
-[StackBlitz](https://stackblitz.com/edit/go-board-demo?file=index.html)
+[Demo](https://deebloo.github.io/go-board/?ogsid=73076486)
 
 ## All you need to get started is some markup and a script tag
 
