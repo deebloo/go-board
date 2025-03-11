@@ -36,9 +36,14 @@ jobs:
           node-version: 23.x
           cache: "npm"
 
-      - run: npm ci
-      - run: npm test
-      - run: npm run build
+      - name: Bootstrap
+        run: npm ci
+  
+      - name: Test
+        run: npm test
+  
+      - name: Build
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
