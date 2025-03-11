@@ -3,7 +3,8 @@ import { inject, injectable } from "@joist/di";
 import type { GoBoardElement } from "../elements/board.element.js";
 import type { GoStoneElement } from "../elements/stone.element.js";
 import { StonesCapturedEvent } from "../util/events.js";
-import { Debug } from "./debug.js";
+import { Debug } from "./debug.service.js";
+import { PromptService } from "./prompt.service.js";
 
 export class GroupState {
   stones = new Set<GoStoneElement>();
@@ -13,6 +14,7 @@ export class GroupState {
 @injectable()
 export class GoGame {
   #debug = inject(Debug);
+  #prompt = inject(PromptService);
 
   findGroup(
     board: GoBoardElement,
@@ -90,6 +92,7 @@ export class GoGame {
     success: () => void,
   ) {
     const debug = this.#debug();
+    const prompt = this.#prompt();
 
     debug.group("Checking stone:", stone);
 
@@ -130,7 +133,7 @@ export class GoGame {
       stone.remove();
 
       // notify the user
-      alert(`Move is not allowed: ${stone.slot + stone.color}`);
+      prompt.alert(`Move is not allowed: ${stone.slot + stone.color}`);
     } else {
       // board state is valid and we can proceed
 
@@ -152,7 +155,7 @@ export class GoGame {
       if (!group.liberties.size) {
         stone.remove();
 
-        alert("Move is suicidal!");
+        prompt.alert("Move is suicidal!");
       } else {
         board.turn = stone.color === "black" ? "white" : "black";
 

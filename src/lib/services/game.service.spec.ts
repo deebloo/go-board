@@ -5,7 +5,7 @@ import { expect, fixture, html } from "@open-wc/testing";
 import type { GoBoardElement } from "../elements/board.element.js";
 
 import { GoStoneElement } from "../elements/stone.element.js";
-import { GoGame } from "./game.js";
+import { GoGame } from "./game.service.js";
 
 describe("game", () => {
   it("should could 4 liberties for a single stone", async () => {

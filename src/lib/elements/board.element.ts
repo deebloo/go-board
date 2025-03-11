@@ -1,8 +1,8 @@
 import { inject, injectable } from "@joist/di";
 import { attr, css, element, html, listen, query } from "@joist/element";
 
-import { Debug } from "../services/debug.js";
-import { GoGame } from "../services/game.js";
+import { Debug } from "../services/debug.service.js";
+import { GoGame } from "../services/game.service.js";
 import { type GoBoard, GoBoardContext } from "../util/context.js";
 import { StonePlacedEvent } from "../util/events.js";
 import type { Move } from "../util/sgf.js";
