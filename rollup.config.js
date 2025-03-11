@@ -1,9 +1,9 @@
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import { minifyHTMLLiterals } from "minify-html-literals";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 export default {
-  input: "target/register.js",
+  input: "target/define.js",
   output: {
     file: "public/go-board.min.js",
     format: "iife",
