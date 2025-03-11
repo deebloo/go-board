@@ -35,9 +35,6 @@ export class GoBoardSourceElement extends HTMLElement {
 
       if (raw) {
         const moves = parseSGF(raw, ctx.columnLabels, ctx.rows);
-        const ogValidateValue = ctx.novalidate;
-
-        ctx.novalidate = true;
 
         for (const move of moves) {
           const stone = new GoStoneElement();
@@ -47,10 +44,7 @@ export class GoBoardSourceElement extends HTMLElement {
           ctx.turn = move.color;
 
           ctx.append(stone);
-          ctx.registerStone(stone);
         }
-
-        ctx.novalidate = ogValidateValue;
       }
     }
   }

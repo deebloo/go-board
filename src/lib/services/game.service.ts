@@ -133,7 +133,7 @@ export class GoGame {
       stone.remove();
 
       // notify the user
-      prompt.alert(`Move is not allowed: ${stone.slot + stone.color}`);
+      prompt.alert(`Move is not allowed: ${stone.slot} ${stone.color}`);
     } else {
       // board state is valid and we can proceed
 
