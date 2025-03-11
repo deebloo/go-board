@@ -1,6 +1,6 @@
 # go-board
 
-Go Board WebComponent. The entire library weights less than 5kb gzip and less than 4k brotli which makes it performant to embed into existing web pages. If you want to see exactly what the board is calculating you can enable debugging by adding the "debug" attribute to go-board. (`<go-board debug></go-board>`)
+Go Board WebComponent. The entire library weights less than 5kb gzip and less than 4k brotli which makes it performant to embed into existing web pages.
 
 [Demo](https://deebloo.github.io/go-board/?ogsid=73076486)
 
