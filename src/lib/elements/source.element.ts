@@ -17,12 +17,6 @@ export class GoBoardSourceElement extends HTMLElement {
 
   #ctx = inject(GoBoardContext);
 
-  attributeChangedCallback() {
-    if (this.isConnected) {
-      this.import();
-    }
-  }
-
   connectedCallback() {
     this.import();
   }

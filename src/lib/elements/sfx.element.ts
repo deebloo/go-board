@@ -14,37 +14,19 @@ export class GoBoardSfx extends HTMLElement {
   @attr()
   accessor src = "";
 
-  #sfx: Sfx | null = null;
-  #controller = new AbortController();
   #ctx = inject(GoBoardContext);
-
-  attributeChangedCallback() {
-    if (this.src) {
-      this.#sfx = new Sfx(this.src);
-    }
-  }
 
   connectedCallback() {
     const ctx = this.#ctx();
 
-    ctx.addEventListener(
-      "stone-placed",
-      () => {
-        this.#sfx?.placeStone();
-      },
-      { signal: this.#controller.signal },
-    );
-
-    ctx.addEventListener(
-      "stones-captured",
-      (e) => {
-        this.#sfx?.captureStones(e.count);
-      },
-      { signal: this.#controller.signal },
-    );
+    if (this.src) {
+      ctx.sfx = new Sfx(this.src);
+    }
   }
 
   disconnectedCallback() {
-    this.#controller?.abort();
+    const ctx = this.#ctx();
+
+    ctx.sfx = null;
   }
 }

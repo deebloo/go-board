@@ -4,7 +4,6 @@ import { expect, fixture, html } from "@open-wc/testing";
 
 import { GoBoardElement } from "./board.element.js";
 import { GoStoneElement } from "./stone.element.js";
-// import { GoStoneElement } from "./stone.js";
 
 describe(GoBoardElement.name, () => {
   it("should create an accurate key of gamestate", async () => {
@@ -29,11 +28,8 @@ describe(GoBoardElement.name, () => {
       </go-board>
     `);
 
-    // should match for the same state
-    expect(board1.key()).to.equal(board1.key());
-
     // should NOT match for different states
-    expect(board1.key()).to.not.equal(board2.key());
+    expect(board1.createKey()).to.not.equal(board2.createKey());
   });
 
   it("should create the same board state even with moves in a different order", async () => {
@@ -51,7 +47,7 @@ describe(GoBoardElement.name, () => {
       </go-board>
     `);
 
-    expect(board1.key()).to.equal(board2.key());
+    expect(board1.createKey()).to.equal(board2.createKey());
   });
 
   it("should add stones to internal map when stone elements are added", async () => {
@@ -97,9 +93,7 @@ describe(GoBoardElement.name, () => {
 
         const form = new FormData(board);
 
-        expect(form.get("game")).to.equal(
-          "*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************",
-        );
+        expect(form.get("game")).to.equal(null);
 
         resolve();
       });

@@ -3,38 +3,10 @@ import { attr, css, element, html, listen, query } from "@joist/element";
 
 import { Debug } from "../services/debug.service.js";
 import { GoGame } from "../services/game.service.js";
+import { type ColumnLabels, DEFAULT_COLUMN_LABELS } from "../util/columns.js";
 import { type GoBoard, GoBoardContext } from "../util/context.js";
-import { StonePlacedEvent } from "../util/events.js";
-import type { Move } from "../util/sgf.js";
+import type { Sfx } from "../util/sfx.js";
 import type { GoStoneElement, StoneColor } from "./stone.element.js";
-
-const DEFAULT_COLUMN_LABELS = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
-];
 
 @injectable({
   name: "go-board-ctx",
@@ -245,20 +217,17 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   @attr()
   accessor novalidate = false;
 
+  sfx: Sfx | null = null;
+  // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
+  // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   spaces = new Map<string, GoStoneElement | null>();
-  moves: Move[] = [];
-  columnLabels = [...DEFAULT_COLUMN_LABELS];
-  previousKey = "";
-  currentKey = Array.from({ length: this.rows * this.cols })
-    .map(() => "*")
-    .join("");
+  columnLabels: ColumnLabels = [...DEFAULT_COLUMN_LABELS];
+  previousKey: string | null = null;
+  currentKey: string | null = null;
 
   #debug = inject(Debug);
   #game = inject(GoGame);
   #internals = this.attachInternals();
-
-  // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
-  // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   #header = query("#header");
 
   constructor() {
@@ -309,11 +278,13 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
 
       this.append(stone);
 
-      this.dispatchEvent(new StonePlacedEvent());
+      if (this.sfx) {
+        this.sfx.placeStone();
+      }
     }
   }
 
-  key() {
+  createKey() {
     let key = "";
 
     for (const [space, stone] of this.spaces) {
@@ -334,7 +305,7 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
       this.spaces.set(key, null);
     }
 
-    this.currentKey = this.key();
+    this.currentKey = this.createKey();
     this.previousKey = "";
     this.turn = "black";
   }

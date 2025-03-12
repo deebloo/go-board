@@ -1,5 +1,7 @@
 export default {
   port: 8000,
-  nodeResolve: true,
+  nodeResolve: {
+    exportConditions: ["production"],
+  },
   files: "target/**/*.spec.js",
 };

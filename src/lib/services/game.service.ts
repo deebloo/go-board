@@ -2,7 +2,6 @@ import { inject, injectable } from "@joist/di";
 
 import type { GoBoardElement } from "../elements/board.element.js";
 import type { GoStoneElement } from "../elements/stone.element.js";
-import { StonesCapturedEvent } from "../util/events.js";
 import { Debug } from "./debug.service.js";
 import { PromptService } from "./prompt.service.js";
 
@@ -119,7 +118,7 @@ export class GoGame {
       }
     }
 
-    const key = board.key();
+    const key = board.createKey();
 
     if (board.currentKey === key || board.previousKey === key) {
       // If the current board state has already existed the move is not allowed
@@ -143,7 +142,9 @@ export class GoGame {
           stone.remove();
         }
 
-        board.dispatchEvent(new StonesCapturedEvent(removedStones.length));
+        if (board.sfx) {
+          board.sfx.captureStones(removedStones.length);
+        }
       }
 
       // find added stones group
