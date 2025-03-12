@@ -17,29 +17,25 @@ export class GoBoardSourceElement extends HTMLElement {
 
   #ctx = inject(GoBoardContext);
 
-  connectedCallback() {
-    this.import();
-  }
+  attributeChangedCallback() {
+    if (this.src && this.isConnected) {
+      fetch(this.src)
+        .then((res) => res.text())
+        .then((res) => {
+          const ctx = this.#ctx();
 
-  async import() {
-    const ctx = this.#ctx();
+          const moves = parseSGF(res, ctx.columnLabels, ctx.rows);
 
-    if (this.src) {
-      const raw = await fetch(this.src).then((res) => res.text());
+          for (const move of moves) {
+            const stone = new GoStoneElement();
+            stone.color = move.color;
+            stone.slot = move.space;
 
-      if (raw) {
-        const moves = parseSGF(raw, ctx.columnLabels, ctx.rows);
+            ctx.turn = move.color;
 
-        for (const move of moves) {
-          const stone = new GoStoneElement();
-          stone.color = move.color;
-          stone.slot = move.space;
-
-          ctx.turn = move.color;
-
-          ctx.append(stone);
-        }
-      }
+            ctx.append(stone);
+          }
+        });
     }
   }
 }

@@ -13,8 +13,8 @@ import type { GoStoneElement } from "./lib/elements/stone.element.js";
 declare global {
   interface HTMLElementTagNameMap {
     "go-board": GoBoardElement;
-    "go-board-source": GoBoardSourceElement;
-    "go-board-sfx": GoBoardSfx;
+    "go-source": GoBoardSourceElement;
+    "go-sfx": GoBoardSfx;
     "go-stone": GoStoneElement;
     "go-marker": GoMarkerElement;
   }
@@ -24,9 +24,9 @@ declare global {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       "go-board": any;
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      "go-board-source": any;
+      "go-source": any;
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      "go-board-sfx": any;
+      "go-sfx": any;
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       "go-stone": any;
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
