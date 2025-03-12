@@ -1,5 +1,5 @@
 import { inject, injectable } from "@joist/di";
-import { attr, css, element, html, listen, query } from "@joist/element";
+import { attr, css, element, html, listen, query, ready } from "@joist/element";
 
 import { Debug } from "../services/debug.service.js";
 import { GoGame } from "../services/game.service.js";
@@ -233,10 +233,13 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   constructor() {
     super();
 
+    this.#internals.setFormValue(this.currentKey);
+  }
+
+  @ready()
+  renderBoard() {
     this.#createBoard();
     this.#createColumnLetters();
-
-    this.#internals.setFormValue(this.currentKey);
   }
 
   connectedCallback() {
