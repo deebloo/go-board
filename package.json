@@ -1,6 +1,6 @@
 {
   "name": "go-board",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": false,
   "description": "Go board",
   "type": "module",
@@ -44,18 +44,31 @@
       ]
     },
     "build": {
-      "dependencies": ["tsc", "bundle"]
+      "dependencies": [
+        "tsc",
+        "bundle"
+      ]
     },
     "tsc": {
       "command": "tsc --build --pretty",
       "clean": "if-file-deleted",
-      "files": ["src/**", "tsconfig.json"],
-      "output": ["target/**", "tsconfig.tsbuildinfo"]
+      "files": [
+        "src/**",
+        "tsconfig.json"
+      ],
+      "output": [
+        "target/**",
+        "tsconfig.tsbuildinfo"
+      ]
     },
     "bundle": {
       "command": "esbuild target/define.js --bundle --minify --outfile=./public/go-board.min.js",
-      "files": ["target/**"],
-      "output": ["public/go-board.min.js"],
+      "files": [
+        "target/**"
+      ],
+      "output": [
+        "public/go-board.min.js"
+      ],
       "dependencies": [
         {
           "script": "tsc",
@@ -65,7 +78,9 @@
     },
     "test": {
       "command": "wtr --config wtr.config.mjs",
-      "files": ["target/**"],
+      "files": [
+        "target/**"
+      ],
       "dependencies": [
         {
           "script": "tsc",
