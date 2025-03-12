@@ -233,13 +233,13 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   constructor() {
     super();
 
+    this.#createBoard();
+    this.#createColumnLetters();
+
     this.#internals.setFormValue(this.currentKey);
   }
 
   connectedCallback() {
-    this.#createBoard();
-    this.#createColumnLetters();
-
     const debug = this.#debug();
 
     this.debug = debug.enabled;
