@@ -17,6 +17,6 @@ export interface GoBoard extends HTMLElement {
   currentKey: string | null;
   sfx: Sfx | null;
 
-  registerStone(stone: GoStoneElement): void;
-  unregisterStone(stone: GoStoneElement): void;
+  onStoneAdded(stone: GoStoneElement): void;
+  onStoneRemoved(stone: GoStoneElement): void;
 }

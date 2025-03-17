@@ -57,12 +57,12 @@ export class GoStoneElement extends HTMLElement {
   connectedCallback() {
     const ctx = this.#ctx();
 
-    ctx.registerStone(this);
+    ctx.onStoneAdded(this);
   }
 
   disconnectedCallback() {
     const ctx = this.#ctx();
 
-    ctx.unregisterStone(this);
+    ctx.onStoneRemoved(this);
   }
 }

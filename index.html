@@ -37,8 +37,8 @@
 
   <form action="/save-game">
     <go-board name="board">
-      <go-source src="https://online-go.com/api/v1/games/73208439/sgf"></go-source>
-      <go-sfx src="/public/sfx/"></go-sfx>
+      <!-- <go-source src="https://online-go.com/api/v1/games/73208439/sgf"></go-source> -->
+      <!-- <go-sfx src="/public/sfx/"></go-sfx> -->
 
       <!-- <go-stone color="black" slot="R17"></go-stone>
       <go-stone color="white" slot="R18"></go-stone>
@@ -59,7 +59,7 @@
   <script type="module">
     import { DOMInjector } from "@joist/di";
 
-    import { ConsoleDebug, Debug } from "./target/lib/services/debug.js";
+    import { ConsoleDebug, Debug } from "./target/lib/services/debug.service.js";
 
     const app = new DOMInjector({
       providers: [
