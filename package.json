@@ -99,7 +99,7 @@
     "@open-wc/testing": "^4.0.0",
     "@types/mocha": "^10.0.1",
     "@web/test-runner": "^0.19.0",
-    "esbuild": "0.25.1",
+    "esbuild": "0.25.2",
     "serve": "^14.2.4",
     "typescript": "^5.7.3",
     "wireit": "^0.14.9"
