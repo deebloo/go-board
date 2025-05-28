@@ -62,24 +62,26 @@ export interface Cell {
 
       #container > j-for-scope slot {
         display: block;
-        position: absolute;
         height: 100%;
         width: 100%;
-        transform: translate(-50%, -50%);
-        top: 0;
-        left: 0;
       }
 
       #container > j-for-scope slot::slotted(*) {
         width: 98%;
         height: 98%;
         position: absolute;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       #container > j-for-scope button {
         width: 100%;
         height: 100%;
         position: absolute;
+        padding: 0;
         top: 0;
         left: 0;
         border-radius: 50%;
@@ -113,18 +115,23 @@ export interface Cell {
         border: none;
       }
 
-      slot::slotted(*) {
-        z-index: 1000;
+      ::slotted(go-stone:last-child)::after {
+        content: "";
+        height: 50%;
+        width: 50%;
+        border-radius: 50%;
+        border: solid 2px;
+        position: absolute;
       }
     `,
     html`
       <j-for bind="cells" key="slot" id="container">
         <template>
-          <j-bind props="name:each.value.slot" class="cell">
+          <j-bind props="name:each.value.slot">
             <slot></slot>
           </j-bind>
 
-          <j-bind props="id:each.value.slot" class="cell-label">
+          <j-bind props="id:each.value.slot">
             <button></button>
           </j-bind>
         </template>
@@ -261,28 +268,4 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
     this.previousKey = "";
     this.turn = "black";
   }
-
-  // #createSlot(row: number, column: number) {
-  //   const slot = document.createElement("slot");
-  //   slot.name = `${this.columnLabels[column]}${this.rows - row}`;
-
-  //   this.spaces.set(slot.name, null);
-
-  //   const spacing = Math.floor(this.rows / 3);
-  //   const start = Math.floor(this.rows / 4) - 1;
-  //   const spaces = [start, start + spacing, start + spacing * 2];
-
-  //   // Define which spaces should be decorated as a starpoint
-  //   if (spaces.includes(row) && spaces.includes(column)) {
-  //     slot.classList.add("starpoint");
-  //   }
-
-  //   const btn = document.createElement("button");
-  //   btn.title = slot.name;
-  //   btn.id = slot.name;
-
-  //   slot.append(btn);
-
-  //   return slot;
-  // }
 }
