@@ -115,14 +115,14 @@ export interface Cell {
         border: none;
       }
 
-      ::slotted(go-stone:last-child)::after {
+      :host(:not([disablelastmarker])) ::slotted(go-stone:last-child)::after {
         content: "";
         height: 50%;
         width: 50%;
         border-radius: 50%;
         border: solid 2px;
         position: absolute;
-      }
+      } 
     `,
     html`
       <j-for bind="cells" key="slot" id="container">
@@ -246,9 +246,11 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   createKey() {
     let key = "";
 
-    for (const [space, stone] of this.spaces) {
-      if (stone !== null) {
-        key += stone.color[0].toUpperCase() + space;
+    for(const cell of this.cells) {
+      const stone = this.spaces.get(cell.slot);
+
+      if (stone !== null && stone !== undefined) {
+        key += stone.color[0].toUpperCase() + cell.slot;
       } else {
         key += "*";
       }
