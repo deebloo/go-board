@@ -175,15 +175,15 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   @bind()
   accessor cols = 19;
 
+  #starRows = [3, 9, 15];
+  #starCols = [3, 9, 15];
+
   @bind({
     compute(self) {
       const size = self.cols;
     
-      const starRows = [3, 9, 15];
-      const starCols = [3, 9, 15];
-
-      return starRows.flatMap(row => 
-        starCols.map(col => (row - 1) * size + (col - 1))
+      return self.#starRows.flatMap(row => 
+        self.#starCols.map(col => (row - 1) * size + (col - 1))
       );
     },
   })
