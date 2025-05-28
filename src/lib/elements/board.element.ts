@@ -249,7 +249,7 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
     for(const cell of this.cells) {
       const stone = this.spaces.get(cell.slot);
 
-      if (stone !== null && stone !== undefined) {
+      if (stone) {
         key += stone.color[0].toUpperCase() + cell.slot;
       } else {
         key += "*";
