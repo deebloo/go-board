@@ -15,6 +15,7 @@ export interface Cell {
   row: number;
   col: number;
   slot: string;
+  isStarPoint: boolean;
 }
 
 @injectable({
@@ -60,6 +61,18 @@ export interface Cell {
         position: relative;
       }
 
+      .star-point {
+        content: "";
+        height: 8px;
+        width: 8px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: #000;
+        border-radius: 50%;
+        transform: translate(50%, 50%);
+      }
+
       #container > j-for-scope slot {
         display: block;
         height: 100%;
@@ -94,7 +107,7 @@ export interface Cell {
       }
 
       #container > j-for-scope button:hover {
-        opacity: .5;
+        opacity: 0.5;
       }
 
       :host([turn="black"]) #container > j-for-scope button {
@@ -106,7 +119,7 @@ export interface Cell {
         border-left: solid 1px #000;
       }
 
-      #container > j-for-scope:nth-last-of-type(-n+19) {
+      #container > j-for-scope:nth-last-of-type(-n + 19) {
         border: none;
         border-top: solid 1px #000;
       }
@@ -122,7 +135,7 @@ export interface Cell {
         border-radius: 50%;
         border: solid 2px;
         position: absolute;
-      } 
+      }
     `,
     html`
       <j-for bind="cells" key="slot" id="container">
@@ -134,6 +147,12 @@ export interface Cell {
           <j-bind props="id:each.value.slot">
             <button></button>
           </j-bind>
+
+          <j-if bind="each.value.isStarPoint">
+            <template>
+              <div class="star-point"></div>
+            </template>
+          </j-if>
         </template>
       </j-for>
     `,
@@ -158,6 +177,20 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
 
   @bind({
     compute(self) {
+      const size = self.cols;
+    
+      const starRows = [3, 9, 15];
+      const starCols = [3, 9, 15];
+
+      return starRows.flatMap(row => 
+        starCols.map(col => (row - 1) * size + (col - 1))
+      );
+    },
+  })
+  accessor starPoints: number[] = [];
+
+  @bind({
+    compute(self) {
       return Array.from({ length: self.rows * self.cols }, (_, i) => {
         const row = Math.floor(i / self.cols);
         const col = i % self.cols;
@@ -166,8 +199,9 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
           row,
           col,
           slot: `${COLUMN_LABELS[col]}${self.rows - row}`,
-        }
-      })
+          isStarPoint: self.starPoints.includes(i)
+        };
+      });
     }
   })
   accessor cells: Cell[] = [];
@@ -246,7 +280,7 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   createKey() {
     let key = "";
 
-    for(const cell of this.cells) {
+    for (const cell of this.cells) {
       const stone = this.spaces.get(cell.slot);
 
       if (stone) {
