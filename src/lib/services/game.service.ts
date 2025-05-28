@@ -4,6 +4,7 @@ import type { GoBoardElement } from "../elements/board.element.js";
 import type { GoStoneElement } from "../elements/stone.element.js";
 import { Debug } from "./debug.service.js";
 import { PromptService } from "./prompt.service.js";
+import { COLUMN_LABELS } from "../util/columns.js";
 
 export class GroupState {
   stones = new Set<GoStoneElement>();
@@ -42,10 +43,9 @@ export class GoGame {
   }
 
   findSurroundingSpaces(board: GoBoardElement, stone: GoStoneElement) {
-    const { columnLabels } = board;
     const coords = parseCoords(stone);
     const row = Number(coords.row);
-    const col = columnLabels.indexOf(coords.col);
+    const col = COLUMN_LABELS.indexOf(coords.col);
 
     const spaces = [
       { row: row + 1, col },
@@ -60,7 +60,7 @@ export class GoGame {
       const { row, col } = spaces[i];
 
       if (row <= board.rows && row > 0 && col > -1 && col < board.cols) {
-        res.push(`${columnLabels[col]}${row}`);
+        res.push(`${COLUMN_LABELS[col]}${row}`);
       }
     }
 

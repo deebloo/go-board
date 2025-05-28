@@ -13,7 +13,13 @@
       "imports": {
         "tslib": "/node_modules/tslib/tslib.es6.js",
         "@joist/di": "/node_modules/@joist/di/target/lib.js",
-        "@joist/element": "/node_modules/@joist/element/target/lib.js"
+        "@joist/di/": "/node_modules/@joist/di/target/lib/",
+        "@joist/element": "/node_modules/@joist/element/target/lib.js",
+        "@joist/element/": "/node_modules/@joist/element/target/lib/",
+        "@joist/observable": "/node_modules/@joist/observable/target/lib.js",
+        "@joist/observable/": "/node_modules/@joist/observable/target/lib/",
+        "@joist/templating": "/node_modules/@joist/templating/target/lib.js",
+        "@joist/templating/": "/node_modules/@joist/templating/target/lib/"
       }
     }
   </script>
@@ -37,10 +43,10 @@
 
   <form action="/save-game">
     <go-board name="board">
-      <go-source src="https://online-go.com/api/v1/games/73208439/sgf"></go-source>
+      <!-- <go-source src="https://online-go.com/api/v1/games/73208439/sgf"></go-source> -->
       <go-sfx src="/public/sfx/"></go-sfx>
 
-      <!-- <go-stone color="black" slot="R17"></go-stone>
+      <go-stone color="black" slot="R17"></go-stone>
       <go-stone color="white" slot="R18"></go-stone>
       <go-stone color="black" slot="Q18"></go-stone>
       <go-stone color="white" slot="S18"></go-stone>
@@ -52,14 +58,14 @@
       <go-stone color="white" slot="Q16"></go-stone>
       <go-stone color="black" slot="S19"></go-stone>
       <go-stone color="white" slot="T19"></go-stone>
-      <go-stone color="black" slot="S19"></go-stone> -->
+      <go-stone color="black" slot="S19"></go-stone>
     </go-board>
   </form>
 
   <script type="module">
     import { DOMInjector } from "@joist/di";
 
-    import { ConsoleDebug, Debug } from "./target/lib/services/debug.js";
+    import { ConsoleDebug, Debug } from "./target/lib/services/debug.service.js";
 
     const app = new DOMInjector({
       providers: [
