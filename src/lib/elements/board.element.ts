@@ -174,7 +174,7 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   @attr()
   @bind()
   accessor cols = 19;
-
+  
   #starRows = [3, 9, 15];
   #starCols = [3, 9, 15];
 
@@ -295,11 +295,6 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
 
   reset() {
     this.innerHTML = "";
-
-    for (const [key] of this.spaces) {
-      this.spaces.set(key, null);
-    }
-
     this.currentKey = this.createKey();
     this.previousKey = "";
     this.turn = "black";
