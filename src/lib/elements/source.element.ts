@@ -4,6 +4,7 @@ import { attr, element } from "@joist/element";
 import { GoBoardContext } from "../util/context.js";
 import { parseSGF } from "../util/sgf.js";
 import { GoStoneElement } from "./stone.element.js";
+import { COLUMN_LABELS } from "../util/columns.js";
 
 @injectable({
   name: "go-source-ctx",
@@ -24,7 +25,7 @@ export class GoBoardSourceElement extends HTMLElement {
         .then((res) => {
           const ctx = this.#ctx();
 
-          const moves = parseSGF(res, ctx.columnLabels, ctx.rows);
+          const moves = parseSGF(res, COLUMN_LABELS, ctx.rows);
 
           for (const move of moves) {
             const stone = new GoStoneElement();

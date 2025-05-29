@@ -1,12 +1,22 @@
+import "@joist/templating/define.js";
+
 import { inject, injectable } from "@joist/di";
-import { attr, css, element, html, listen, query, ready } from "@joist/element";
+import { attr, css, element, html, listen } from "@joist/element";
+import { bind } from "@joist/templating";
 
 import { Debug } from "../services/debug.service.js";
 import { GoGame } from "../services/game.service.js";
-import { type ColumnLabels, DEFAULT_COLUMN_LABELS } from "../util/columns.js";
+import { COLUMN_LABELS } from "../util/columns.js";
 import { type GoBoard, GoBoardContext } from "../util/context.js";
 import type { Sfx } from "../util/sfx.js";
 import type { GoStoneElement, StoneColor } from "./stone.element.js";
+
+export interface Cell {
+  row: number;
+  col: number;
+  slot: string;
+  isStarPoint: boolean;
+}
 
 @injectable({
   name: "go-board-ctx",
@@ -16,6 +26,10 @@ import type { GoStoneElement, StoneColor } from "./stone.element.js";
   tagName: "go-board",
   shadowDom: [
     css`
+      * {
+        box-sizing: border-box;
+      }
+
       :host {
         font-family: system-ui;
         box-sizing: border-box;
@@ -25,32 +39,18 @@ import type { GoStoneElement, StoneColor } from "./stone.element.js";
         position: relative;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
         aspect-ratio: 1/1;
-        font-size: clamp(2.5vh, 2.5vw);
       }
 
-      :is(#header > *, .row > :first-child) {
-        visibility: hidden;
-      }
-
-      :host([coords]) {
-        padding: 1rem 0 0 1rem;
-      }
-
-      :host([coords]) :is(#header > *, .row > *:first-child) {
-        visibility: visible;
-      }
-
-      * {
-        box-sizing: border-box;
-        font-family: inherit;
-      }
-
-      .row {
-        display: flex;
+      #container {
+        display: grid;
         width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(19, 1fr);
+        padding-top: calc(100% / 19);
+        padding-left: calc(100% / 19);
       }
 
-      .row > * {
+      #container > j-for-scope {
         align-items: center;
         justify-content: center;
         border-top: solid 1px #000;
@@ -61,75 +61,74 @@ import type { GoStoneElement, StoneColor } from "./stone.element.js";
         position: relative;
       }
 
-      .row > * > * {
+      .star-point {
+        content: "";
+        height: 8px;
+        width: 8px;
         position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: #000;
+        border-radius: 50%;
+        transform: translate(50%, 50%);
       }
 
-      #header > * {
-        border-color: transparent;
-        transform: translate(-50%, -10px);
+      #container > j-for-scope slot {
+        display: block;
+        height: 100%;
+        width: 100%;
       }
 
-      .row board-spacer {
-        border-color: transparent;
-        transform: translate(-10px, -50%);
-      }
-
-      .row:last-child slot {
-        border-color: transparent;
-        border-top: solid 1px #000;
-      }
-
-      .row slot:last-child {
-        border-color: transparent;
-        border-left: solid 1px #000;
-      }
-
-      .row:last-child slot:last-child {
-        border-color: transparent;
-      }
-
-      .row slot::slotted(go-marker) {
+      #container > j-for-scope slot::slotted(*) {
+        width: 98%;
+        height: 98%;
         position: absolute;
         transform: translate(-50%, -50%);
-        padding: 0;
-        height: 98%;
-        width: 98%;
-      }
-
-      .row slot::slotted(go-stone),
-      .row slot button {
-        position: absolute;
-        transform: translate(-50%, -50%);
-        padding: 0;
-        height: 98%;
-        width: 98%;
+        z-index: 1000;
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .row slot::slotted(go-stone),
-      .row slot::slotted(go-marker) {
-        z-index: 1000;
-      }
-
-      .row slot.starpoint:after {
-        content: "";
-        display: block;
-        height: 25%;
-        width: 25%;
-        background: #000;
-        border-radius: 50%;
+      #container > j-for-scope button {
+        width: 100%;
+        height: 100%;
         position: absolute;
-        transform: translate(-50%, -50%);
+        padding: 0;
         top: 0;
         left: 0;
+        border-radius: 50%;
+        border: none;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        cursor: pointer;
+        background-color: #fff;
+        z-index: 1;
       }
 
-      :host(:not([disablelastmarker]))
-        .row
-        slot::slotted(go-stone:last-of-type)::after {
+      #container > j-for-scope button:hover {
+        opacity: 0.5;
+      }
+
+      :host([turn="black"]) #container > j-for-scope button {
+        background-color: #000;
+      }
+
+      #container > j-for-scope:nth-of-type(19n) {
+        border: none;
+        border-left: solid 1px #000;
+      }
+
+      #container > j-for-scope:nth-last-of-type(-n + 19) {
+        border: none;
+        border-top: solid 1px #000;
+      }
+
+      #container > j-for-scope:last-of-type {
+        border: none;
+      }
+
+      :host(:not([disablelastmarker])) ::slotted(go-stone:last-child)::after {
         content: "";
         height: 50%;
         width: 50%;
@@ -137,59 +136,25 @@ import type { GoStoneElement, StoneColor } from "./stone.element.js";
         border: solid 2px;
         position: absolute;
       }
-
-      :host .row slot::slotted(go-stone[color="white"]:last-child)::after {
-        border-color: #000;
-      }
-
-      :host .row slot::slotted(go-stone[color="black"]:last-child)::after {
-        border-color: #fff;
-      }
-
-      .row slot button {
-        border: none;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 1;
-      }
-
-      .row slot button:hover {
-        background: none;
-        opacity: 0.85 !important;
-      }
-
-      .row slot button:after {
-        content: "";
-        display: block;
-        border-radius: 50%;
-        height: 100%;
-        width: 100%;
-      }
-
-      :host([turn="black"]) .row slot button:hover:after {
-        background: #000;
-      }
-
-      :host([turn="white"]) .row slot button:hover:after {
-        background: #fff;
-      }
-
-      :host([debug]) button {
-        opacity: 0.2;
-      }
-
-      :host([readonly]) .row slot button {
-        cursor: default;
-      }
-
-      :host([readonly]) .row slot button:hover:after {
-        background: none !important;
-      }
     `,
     html`
-      <div id="header" class="row">
-        <board-spacer></board-spacer>
-      </div>
+      <j-for bind="cells" key="slot" id="container">
+        <template>
+          <j-bind props="name:each.value.slot">
+            <slot></slot>
+          </j-bind>
+
+          <j-bind props="id:each.value.slot">
+            <button></button>
+          </j-bind>
+
+          <j-if bind="each.value.isStarPoint">
+            <template>
+              <div class="star-point"></div>
+            </template>
+          </j-if>
+        </template>
+      </j-for>
     `,
   ],
 })
@@ -203,10 +168,43 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   accessor debug = false;
 
   @attr()
+  @bind()
   accessor rows = 19;
 
   @attr()
+  @bind()
   accessor cols = 19;
+  
+  #starRows = [3, 9, 15];
+  #starCols = [3, 9, 15];
+
+  @bind({
+    compute(self) {
+      const size = self.cols;
+    
+      return self.#starRows.flatMap(row => 
+        self.#starCols.map(col => (row - 1) * size + (col - 1))
+      );
+    },
+  })
+  accessor starPoints: number[] = [];
+
+  @bind({
+    compute(self) {
+      return Array.from({ length: self.rows * self.cols }, (_, i) => {
+        const row = Math.floor(i / self.cols);
+        const col = i % self.cols;
+    
+        return {
+          row,
+          col,
+          slot: `${COLUMN_LABELS[col]}${self.rows - row}`,
+          isStarPoint: self.starPoints.includes(i)
+        };
+      });
+    }
+  })
+  accessor cells: Cell[] = [];
 
   @attr()
   accessor coords = false;
@@ -221,25 +219,17 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   // when stones are added or removed this map is updated. This holds a reference to all stones on the board and which space they are in.
   // this makes state calculations very cheap. the stone added/removed lifecycle callbacks keep this map in state.
   spaces = new Map<string, GoStoneElement | null>();
-  columnLabels: ColumnLabels = [...DEFAULT_COLUMN_LABELS];
   previousKey: string | null = null;
   currentKey: string | null = null;
 
   #debug = inject(Debug);
   #game = inject(GoGame);
   #internals = this.attachInternals();
-  #header = query("#header");
 
   constructor() {
     super();
 
     this.#internals.setFormValue(this.currentKey);
-  }
-
-  @ready()
-  renderBoard() {
-    this.#createBoard();
-    this.#createColumnLetters();
   }
 
   connectedCallback() {
@@ -290,9 +280,11 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   createKey() {
     let key = "";
 
-    for (const [space, stone] of this.spaces) {
-      if (stone !== null) {
-        key += stone.color[0].toUpperCase() + space;
+    for (const cell of this.cells) {
+      const stone = this.spaces.get(cell.slot);
+
+      if (stone) {
+        key += stone.color[0].toUpperCase() + cell.slot;
       } else {
         key += "*";
       }
@@ -303,70 +295,8 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
 
   reset() {
     this.innerHTML = "";
-
-    for (const [key] of this.spaces) {
-      this.spaces.set(key, null);
-    }
-
     this.currentKey = this.createKey();
     this.previousKey = "";
     this.turn = "black";
-  }
-
-  #createBoard() {
-    for (let r = 0; r < this.rows; r++) {
-      const row = document.createElement("div");
-      row.className = "row";
-
-      const spacer = document.createElement("board-spacer");
-      row.append(spacer);
-
-      const span = document.createElement("span");
-      span.innerHTML = (this.rows - r).toString();
-
-      spacer.append(span);
-
-      for (let c = 0; c < this.cols; c++) {
-        row.append(this.#createSlot(r, c));
-      }
-
-      this.shadowRoot?.append(row);
-    }
-  }
-
-  #createColumnLetters() {
-    for (let r = 0; r < this.rows; r++) {
-      const col = document.createElement("div");
-      const letter = document.createElement("span");
-      letter.innerHTML = this.columnLabels[r];
-
-      col.append(letter);
-
-      this.#header().append(col);
-    }
-  }
-
-  #createSlot(row: number, column: number) {
-    const slot = document.createElement("slot");
-    slot.name = `${this.columnLabels[column]}${this.rows - row}`;
-
-    this.spaces.set(slot.name, null);
-
-    const spacing = Math.floor(this.rows / 3);
-    const start = Math.floor(this.rows / 4) - 1;
-    const spaces = [start, start + spacing, start + spacing * 2];
-
-    // Define which spaces should be decorated as a starpoint
-    if (spaces.includes(row) && spaces.includes(column)) {
-      slot.classList.add("starpoint");
-    }
-
-    const btn = document.createElement("button");
-    btn.title = slot.name;
-    btn.id = slot.name;
-
-    slot.append(btn);
-
-    return slot;
   }
 }

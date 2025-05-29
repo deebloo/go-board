@@ -11,7 +11,6 @@ export interface GoBoard extends HTMLElement {
   cols: number;
   readonly: boolean;
   novalidate: boolean;
-  columnLabels: string[];
   spaces: Map<string, GoStoneElement | null>;
   previousKey: string | null;
   currentKey: string | null;

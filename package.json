@@ -30,7 +30,8 @@
   "scripts": {
     "start": "wireit",
     "build": "wireit",
-    "test": "wireit"
+    "test": "wireit",
+    "format": "prettier --write \"src/**/*.{ts,js,json,css}\""
   },
   "wireit": {
     "start": {
@@ -90,16 +91,18 @@
     }
   },
   "dependencies": {
-    "@joist/di": "^4.1.1",
-    "@joist/element": "^4.1.1",
+    "@joist/di": "4.2.4-next.5",
+    "@joist/element": "4.2.4-next.5",
+    "@joist/observable": "4.2.4-next.5",
+    "@joist/templating": "4.2.4-next.5",
     "tslib": "^2.5.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
     "@open-wc/testing": "^4.0.0",
     "@types/mocha": "^10.0.1",
     "@web/test-runner": "^0.19.0",
-    "esbuild": "0.25.3",
+    "esbuild": "0.25.1",
+    "prettier": "^3.2.5",
     "serve": "^14.2.4",
     "typescript": "^5.7.3",
     "wireit": "^0.14.9"

@@ -20,7 +20,7 @@ export type ColumnLabels = [
   string,
 ];
 
-export const DEFAULT_COLUMN_LABELS: ColumnLabels = [
+export const COLUMN_LABELS: ColumnLabels = [
   "A",
   "B",
   "C",
