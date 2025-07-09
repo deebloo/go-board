@@ -3,6 +3,7 @@ import "@joist/templating/define.js";
 import { inject, injectable } from "@joist/di";
 import { attr, css, element, html, listen } from "@joist/element";
 import { bind } from "@joist/templating";
+import { observe } from "@joist/observable";
 
 import { Debug } from "../services/debug.service.js";
 import { GoGame } from "../services/game.service.js";
@@ -50,7 +51,7 @@ export interface Cell {
         padding-left: calc(100% / 19);
       }
 
-      #container > j-for-scope {
+      #container > .cell {
         align-items: center;
         justify-content: center;
         border-top: solid 1px #000;
@@ -73,13 +74,13 @@ export interface Cell {
         transform: translate(50%, 50%);
       }
 
-      #container > j-for-scope slot {
+      #container > .cell slot {
         display: block;
         height: 100%;
         width: 100%;
       }
 
-      #container > j-for-scope slot::slotted(*) {
+      #container > .cell slot::slotted(*) {
         width: 98%;
         height: 98%;
         position: absolute;
@@ -90,7 +91,7 @@ export interface Cell {
         justify-content: center;
       }
 
-      #container > j-for-scope button {
+      #container > .cell button {
         width: 100%;
         height: 100%;
         position: absolute;
@@ -106,25 +107,25 @@ export interface Cell {
         z-index: 1;
       }
 
-      #container > j-for-scope button:hover {
+      #container > .cell button:hover {
         opacity: 0.5;
       }
 
-      :host([turn="black"]) #container > j-for-scope button {
+      :host([turn="black"]) #container > .cell button {
         background-color: #000;
       }
 
-      #container > j-for-scope:nth-of-type(19n) {
+      #container > .cell:nth-of-type(19n) {
         border: none;
         border-left: solid 1px #000;
       }
 
-      #container > j-for-scope:nth-last-of-type(-n + 19) {
+      #container > .cell:nth-last-of-type(-n + 19) {
         border: none;
         border-top: solid 1px #000;
       }
 
-      #container > j-for-scope:last-of-type {
+      #container > .cell:last-of-type {
         border: none;
       }
 
@@ -140,19 +141,21 @@ export interface Cell {
     html`
       <j-for bind="cells" key="slot" id="container">
         <template>
-          <j-bind props="name:each.value.slot">
-            <slot></slot>
-          </j-bind>
+          <div class="cell">
+            <j-bind props="name:each.value.slot">
+              <slot></slot>
+            </j-bind>
 
-          <j-bind props="id:each.value.slot">
-            <button></button>
-          </j-bind>
+            <j-bind props="id:each.value.slot">
+              <button></button>
+            </j-bind>
 
-          <j-if bind="each.value.isStarPoint">
-            <template>
-              <div class="star-point"></div>
-            </template>
-          </j-if>
+            <j-if bind="each.value.isStarPoint">
+              <template>
+                <div class="star-point"></div>
+              </template>
+            </j-if>
+          </div>
         </template>
       </j-for>
     `,
@@ -174,16 +177,19 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
   @attr()
   @bind()
   accessor cols = 19;
-  
-  #starRows = [3, 9, 15];
-  #starCols = [3, 9, 15];
+
+  @observe()
+  accessor #starRows = [3, 9, 15];
+
+  @observe()
+  accessor #starCols = [3, 9, 15];
 
   @bind({
     compute(self) {
       const size = self.cols;
-    
-      return self.#starRows.flatMap(row => 
-        self.#starCols.map(col => (row - 1) * size + (col - 1))
+
+      return self.#starRows.flatMap((row) =>
+        self.#starCols.map((col) => (row - 1) * size + (col - 1))
       );
     },
   })
@@ -194,15 +200,15 @@ export class GoBoardElement extends HTMLElement implements GoBoard {
       return Array.from({ length: self.rows * self.cols }, (_, i) => {
         const row = Math.floor(i / self.cols);
         const col = i % self.cols;
-    
+
         return {
           row,
           col,
           slot: `${COLUMN_LABELS[col]}${self.rows - row}`,
-          isStarPoint: self.starPoints.includes(i)
+          isStarPoint: self.starPoints.includes(i),
         };
       });
-    }
+    },
   })
   accessor cells: Cell[] = [];
 

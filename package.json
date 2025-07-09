@@ -91,10 +91,10 @@
     }
   },
   "dependencies": {
-    "@joist/di": "4.2.4-next.5",
-    "@joist/element": "4.2.4-next.5",
-    "@joist/observable": "4.2.4-next.5",
-    "@joist/templating": "4.2.4-next.5",
+    "@joist/di": "^4.2.4-next.17",
+    "@joist/element": "^4.2.4-next.17",
+    "@joist/observable": "^4.2.4-next.17",
+    "@joist/templating": "^4.2.4-next.17",
     "tslib": "^2.5.2"
   },
   "devDependencies": {
